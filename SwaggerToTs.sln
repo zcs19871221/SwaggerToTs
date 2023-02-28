@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwaggerToTs", "SwaggerToTs\SwaggerToTs.csproj", "{CCA1AC1F-CA28-40EA-84F4-B9A548949749}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwaggerToTs.test", "SwaggerToTs.test\SwaggerToTs.test.csproj", "{5A0C4CF2-007B-45F7-A252-CABCF83A87FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{CCA1AC1F-CA28-40EA-84F4-B9A548949749}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCA1AC1F-CA28-40EA-84F4-B9A548949749}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCA1AC1F-CA28-40EA-84F4-B9A548949749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A0C4CF2-007B-45F7-A252-CABCF83A87FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A0C4CF2-007B-45F7-A252-CABCF83A87FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A0C4CF2-007B-45F7-A252-CABCF83A87FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A0C4CF2-007B-45F7-A252-CABCF83A87FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UserPayload"
+        },
+        "responses": {
+          "200": {
+            "description": "not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "UserPayload": {
+        "content": {
+          
+        }
+      }
+    }
+  }
+}

@@ -3,3 +3,8 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+swagger.json
+apis
+dist
+/SwaggerToTs/swagger.json
+/node_modules

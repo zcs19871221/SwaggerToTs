@@ -1,0 +1,32 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "description": "test openapi doc",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "summary": "business endpoint",
+      "description": "all business related info\nhello",
+      "get": {
+        "responses": {
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
+    "/agencies": {
+      "summary": "agencies endpoint",
+      "description": "all agencies related info\r\nhello",
+      "get": {
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

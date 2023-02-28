@@ -1,0 +1,32 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "requestBody": {
+          "description": "request body",
+          "required": true,
+          "content": {
+            "text/html": {
+              
+            },
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "not found"
+          }
+        }
+      }
+    }
+  }
+}

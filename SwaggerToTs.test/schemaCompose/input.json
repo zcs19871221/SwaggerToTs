@@ -1,0 +1,107 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "schemas": {
+      "profile": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "cities": {
+            "enum": ["beijing","shanghai"],
+            "nullable": true
+          }
+        }
+      },
+      "EnumArray": {
+        "type": "array",
+        "items": {
+          "enum": ["hello", "world"],
+          "nullable": true
+        }
+      },
+      "RecordArray": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Info": {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "enums": {
+                          "enum": [1,"2",4444444444.2344],
+                          "nullable": true
+                        },
+                        "recordObject": {
+                          "type": "object",
+                          "nullable": true
+                        },
+                        "unknown": {
+                          "nullable": true
+                        },
+                        "EnumArrayItems": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "enum": ["hello", "world"],
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "RecordArrayItems": {
+                          "$ref": "#/components/schemas/RecordArray"
+                        },
+                        "UnknownArrayItems": {
+                          "type": "array",
+                          "items":{
+                            "type": "array",
+                            "nullable": true,
+                            "items": {
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "ObjectArrayItems": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/profile"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

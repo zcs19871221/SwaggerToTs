@@ -1,14 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>ts</ToolCommandName>
+        
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>SwaggerToTs</RootNamespace>
+
+        <PackageId>OneStrata.SwaggerToTs</PackageId>
+        <Version>1.0.2</Version>
+        <Authors>Chengsi Zhang</Authors>
+        <Company>FreeWheel</Company>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-      <TypeScriptCompile Include="OpenApi.ts" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
 </Project>

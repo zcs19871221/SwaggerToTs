@@ -1,0 +1,41 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "parameters": [
+        {
+          "name": "name",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "parameters": [{
+          "name": "id",
+          "in": "query",
+          "schema": {
+            "type": "number"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "get success"
+          }
+        }
+      }
+    }
+  }
+}

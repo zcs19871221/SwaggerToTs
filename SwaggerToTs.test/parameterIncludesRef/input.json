@@ -1,0 +1,65 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "parameters":{
+      "Name": {
+        "name": "name",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Id": {
+        "name": "id",
+        "in": "query",
+        "description": "ID",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "Date": {
+        "name": "date",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "parameters": [
+          {
+            "name": "permission",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "permission"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Name"
+          },
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "not found"
+          }
+        }
+      }
+    }
+  }
+}

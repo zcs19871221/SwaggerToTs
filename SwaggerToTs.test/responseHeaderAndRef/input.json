@@ -1,0 +1,117 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "headers": {
+      "Encoding": {
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "responses": {
+      "OnlyHeader": {
+        "headers": {
+          "cookie": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "only have header"
+      },
+      "OnlyContent": {
+        "description": "only have content",
+        "content": {
+          "application/octet-stream": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "age": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "HeaderAndContent": {
+        "description": "have header and content",
+        "headers": {
+          "content-type": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "application/octet-stream": {
+            "schema": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "not found"
+          },
+          "201": {
+            "$ref": "#/components/responses/OnlyHeader"
+          },
+          "202": {
+            "$ref": "#/components/responses/OnlyContent"
+          },
+          "203": {
+            "$ref": "#/components/responses/HeaderAndContent"
+          },
+          "200": {
+            "description": "success",
+            "headers": {
+              "encoding":{
+                "$ref": "#/components/headers/Encoding"
+              },
+              "date": {
+                "description": "date time",
+                "required": true,
+                "deprecated": false,
+                "allowEmptyValue": false,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string",
+                      "format": "Date"
+                    }
+                  }
+                }
+              },
+              "cache-control": {
+                "description": "cache-control",
+                "required": false,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

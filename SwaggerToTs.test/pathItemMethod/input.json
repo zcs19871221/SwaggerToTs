@@ -1,0 +1,68 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/api/business/user": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "get success"
+          }
+        }
+      },
+      "put": {
+        "responses": {
+          "200": {
+            "description": "put success"
+          }
+        }
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "post success"
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "delete success"
+          }
+        }
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "options success"
+          }
+        }
+      },
+      "head": {
+        "responses": {
+          "200": {
+            "description": "head success"
+          }
+        }
+      },
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "patch success"
+          }
+        }
+      },
+      "trace": {
+        "operationId": "OperationId",
+        "responses": {
+          "200": {
+            "description": "trace success"
+          }
+        }
+      }
+    }
+  }
+}

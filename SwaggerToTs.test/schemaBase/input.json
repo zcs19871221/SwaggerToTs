@@ -1,0 +1,113 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "parameters": [
+          {
+            "name": "versionInfo",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "nullable": true,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "location": {
+                  "type": "string"
+                }
+              },
+              "required": ["id"],
+              "minProperties": 3,
+              "maxProperties": 8
+            }
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "description": "(5 ~ 17] % 8 == true",
+              "minimum": 5,
+              "maximum": 17,
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": true,
+              "multipleOf": 8,
+              "nullable": true
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "nullable": true,
+              "enum": ["Beijing","Shanghai"]
+            }
+          },
+          {
+            "name": "isDeprecated",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Array",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "maxItems": 8,
+              "minItems": 3,
+              "uniqueItems": false,
+              "items": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "schema": {
+              "description": "string field of info",
+              "title": "string field of info",
+              "type": "string",
+              "format": "address",
+              "pattern": "/[a-z]*/",
+              "maxLength": 50,
+              "minLength": 5,
+              "nullable": true
+            }
+          },
+          {
+            "name": "record",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "nullable": true
+            }
+          },
+          {
+            "name": "any",
+            "in": "query",
+            "schema": {
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

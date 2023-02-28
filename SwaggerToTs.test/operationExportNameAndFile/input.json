@@ -1,0 +1,36 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/api/business/{name}/{id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "get success"
+          }
+        }
+      }
+    },
+    "/api/business": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "get success"
+          }
+        }
+      }
+    },
+    "/api/business/{id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "get success"
+          }
+        }
+      }
+    }
+  }
+}

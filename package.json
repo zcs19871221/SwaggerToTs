@@ -1,0 +1,22 @@
+{
+  "name": "swaggertots",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write ./SwaggerToTs.test/**/expect/{*.ts,**/*.ts}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcs19871221/SwaggerToTs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zcs19871221/SwaggerToTs/issues"
+  },
+  "homepage": "https://github.com/zcs19871221/SwaggerToTs#readme",
+  "dependencies": {
+    "prettier": "^2.8.4"
+  }
+}

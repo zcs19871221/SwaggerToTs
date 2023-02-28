@@ -1,0 +1,136 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "schemas": {
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "bark": {
+            "type": "string"
+          },
+          "size": {
+            "enum": ["Big","small"]
+          }
+        },
+        "required": ["bark"]
+      },
+      "Cat": {
+        "type": "object",
+        "properties": {
+          "climb": {
+            "type": "boolean"
+          },
+          "catch": {
+            "type": "boolean"
+          }
+        },
+        "required": ["climb"]
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "oneOf": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/Dog"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    },
+                    "AnyOf": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/Dog"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    },
+                    "AllOf": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/Dog"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    },
+                    "mix": {
+                      "oneOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "description": "name",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "description": "age",
+                              "properties": {
+                                "age": {
+                                  "type": "number"
+                                }
+                              }
+                            },
+                            {
+                              "allOf": [
+                                {
+                                  "type": "object",
+                                  "description": "city",
+                                  "properties": {
+                                    "city": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "description": "salary",
+                                  "properties": {
+                                    "salary": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}
