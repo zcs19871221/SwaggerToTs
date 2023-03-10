@@ -122,5 +122,6 @@ public enum SchemaType
   AnyOf,
   AllOf,
   Not,
+  Integer,
   Any
 }

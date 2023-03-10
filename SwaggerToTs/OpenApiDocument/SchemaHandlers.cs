@@ -91,7 +91,14 @@ public class NumberSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Number;
+    if (schema.Type is "number")
+    {
+      schema.SchemaType = SchemaType.Number;
+    }
+    else
+    {
+      schema.SchemaType = SchemaType.Integer;
+    }
     schema.AddComment(nameof(schema.Minimum), schema.Minimum.ToString())
       .AddComment(nameof(schema.Maximum), schema.Maximum.ToString())
       .AddComment(nameof(schema.ExclusiveMinimum), schema.ExclusiveMinimum.ToString())
@@ -170,7 +177,7 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
         if (TsCodeWriter.Get().TryToGuessRequired && parent.Optional == true)
         {
           if (item is not SchemaObject o || o.Nullable) return;
-          if (o.SchemaType is SchemaType.Bool or SchemaType.Number ||
+          if (o.SchemaType is SchemaType.Bool or SchemaType.Integer ||
               (o.SchemaType == SchemaType.String &&
                o.Format is "date-time" or "uuid"))
           {
