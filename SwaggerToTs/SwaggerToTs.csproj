@@ -11,7 +11,7 @@
         <RootNamespace>SwaggerToTs</RootNamespace>
 
         <PackageId>OneStrata.SwaggerToTs</PackageId>
-        <Version>1.0.4</Version>
+        <Version>1.0.5</Version>
         <Authors>Chengsi Zhang</Authors>
         <Company>FreeWheel</Company>
 
