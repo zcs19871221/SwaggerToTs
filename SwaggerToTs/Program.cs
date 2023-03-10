@@ -13,6 +13,7 @@ public static class SwaggerToTs
     var targetDirectory = Path.Combine(Directory.GetCurrentDirectory(), "apis");
     List<string>? tagsToIgnore = null;
     List<string>? tagsToMatch = null;
+    var tryGuessRequire = false;
     var printWidth = 80;
     for (var i = 0; i < args.Length; i++)
     {
@@ -44,26 +45,30 @@ public static class SwaggerToTs
         case "match":
           tagsToMatch = GetOptValue().Split(",").ToList();
           break;
+        case "r":
+        case "guessRequire":
+          tryGuessRequire = true;
+          break;
       }
     }
 
     var text = File.ReadAllText(swaggerLocation);
 
-    var writer = CreateTsCode(text, targetDirectory, printWidth, tagsToIgnore, tagsToMatch);
+    var writer = CreateTsCode(text, targetDirectory, printWidth, tagsToIgnore, tagsToMatch, tryGuessRequire);
     writer.Write(writer.Generate());
 
     Console.WriteLine($"ts file generate successfully to {targetDirectory}");
   }
 
   public static TsCodeWriter CreateTsCode(string swaggerJson, string targetDirectory, int printWidth = 80,
-    List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null)
+    List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null, bool? tryToGuessRequire = false)
   {
     var openApiDocument = JsonConvert.DeserializeObject<OpenApiObject>(
                             swaggerJson,
                             new JsonSerializerSettings
                               { MetadataPropertyHandling = MetadataPropertyHandling.Ignore }) ??
                           throw new InvalidOperationException();
-    return TsCodeWriter.Create(targetDirectory, printWidth, tagsToIgnore, tagsToMatch,
+    return TsCodeWriter.Create(targetDirectory, printWidth, tagsToIgnore, tagsToMatch,tryToGuessRequire,
       openApiDocument);
   }
 }

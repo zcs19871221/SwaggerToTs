@@ -164,7 +164,20 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
    
     schema.ExportTypeValue = ExportType.Interface;
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
-      (key, item, parent) => { parent.Optional = !schema.Required.Contains(key); }));
+      (key, item, parent) =>
+      {
+        parent.Optional = !schema.Required.Contains(key);
+        if (TsCodeWriter.Get().TryToGuessRequired && parent.Optional == true)
+        {
+          if (item is not SchemaObject o || o.Nullable) return;
+          if (o.SchemaType is SchemaType.Bool or SchemaType.Number ||
+              (o.SchemaType == SchemaType.String &&
+               o.Format is "date-time" or "uuid"))
+          {
+            parent.Optional = false;
+          }
+        }
+      }));
   }
 }
 

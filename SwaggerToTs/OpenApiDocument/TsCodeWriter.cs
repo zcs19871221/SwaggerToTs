@@ -13,6 +13,8 @@ public class TsCodeWriter
   private readonly string? _outputPath;
 
   private readonly List<string>? _tagsToIgnore;
+  
+  public bool TryToGuessRequired { get; set; }
 
   private readonly List<string>? _tagsToMatch;
 
@@ -22,11 +24,13 @@ public class TsCodeWriter
  */";
 
   private TsCodeWriter(string outputPath, int printWidth, List<string>? tagsToIgnore, List<string>? tagsToMatch,
+    bool tryToGuessRequired,
     OpenApiObject openApiObject)
   {
     _outputPath = outputPath;
     PrintWidth = printWidth;
     _tagsToIgnore = tagsToIgnore;
+    TryToGuessRequired = tryToGuessRequired;
     _tagsToMatch = tagsToMatch;
     _openApiObject = openApiObject;
     ComponentsObject = openApiObject.Components;
@@ -72,10 +76,10 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   }
 
   public static TsCodeWriter Create(string outputPath, int printWidth, List<string>? tagsToIgnore,
-    List<string>? tagsToMatch, OpenApiObject openApiObject)
+    List<string>? tagsToMatch, bool? tryToGuessRequired,OpenApiObject openApiObject)
   {
     if (_writer == null || _writer._openApiObject != openApiObject)
-      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, openApiObject);
+      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, tryToGuessRequired ?? false, openApiObject);
     return _writer;
   }
 
