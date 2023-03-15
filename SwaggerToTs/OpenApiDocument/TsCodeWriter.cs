@@ -25,12 +25,15 @@ public class TsCodeWriter
 
   private TsCodeWriter(string outputPath, int printWidth, List<string>? tagsToIgnore, List<string>? tagsToMatch,
     bool tryToGuessRequired,
-    OpenApiObject openApiObject)
+    OpenApiObject openApiObject,
+    bool nullValueIgnore
+    )
   {
     _outputPath = outputPath;
     PrintWidth = printWidth;
     _tagsToIgnore = tagsToIgnore;
     TryToGuessRequired = tryToGuessRequired;
+    NullValueIgnore = nullValueIgnore;
     _tagsToMatch = tagsToMatch;
     _openApiObject = openApiObject;
     ComponentsObject = openApiObject.Components;
@@ -67,6 +70,7 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   public ComponentsObject? ComponentsObject { get; set; }
   public int PrintWidth { get; set; }
   public HashSet<string> OperationIds { get; set; } = new();
+  public bool NullValueIgnore { get; set; }
 
   public static TsCodeWriter Get()
   {
@@ -76,10 +80,10 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   }
 
   public static TsCodeWriter Create(string outputPath, int printWidth, List<string>? tagsToIgnore,
-    List<string>? tagsToMatch, bool? tryToGuessRequired,OpenApiObject openApiObject)
+    List<string>? tagsToMatch, bool? tryToGuessRequired,OpenApiObject openApiObject, bool? nullValueIgnore)
   {
     if (_writer == null || _writer._openApiObject != openApiObject)
-      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, tryToGuessRequired ?? false, openApiObject);
+      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, tryToGuessRequired ?? false, openApiObject, nullValueIgnore ?? true);
     return _writer;
   }
 

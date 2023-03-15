@@ -44,6 +44,11 @@ public class SchemaObject : TsCodeElement
       if (handler.IsMatch(this))
       {
         handler.CreateTsCode(this);
+        if (TsCodeWriter.Get().NullValueIgnore && Nullable)
+        {
+          Nullable = false;
+          Optional = true;
+        }
         if (Nullable && ExportName == null)
         {
           Contents += " | null";
