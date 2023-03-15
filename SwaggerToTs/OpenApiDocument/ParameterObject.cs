@@ -128,7 +128,12 @@ public class ParameterObject : TsCodeElement
 
 
       var type = ToPascalCase(parameterType);
-      parameter.ExtractTo(operation.ExportNameBase + type, operation.FileLocate);
+      var fileLocate = operation.FileLocate;
+      if (TsCodeWriter.Get().SchemaSaveToCommon)
+      {
+        fileLocate = $"common/{parameterType}";
+      }
+      parameter.ExtractTo(operation.ExportNameBase + type, fileLocate);
 
       requestParameters.Add(type, parameter);
     }

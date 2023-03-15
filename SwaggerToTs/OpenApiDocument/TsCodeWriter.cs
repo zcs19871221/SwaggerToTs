@@ -26,7 +26,8 @@ public class TsCodeWriter
   private TsCodeWriter(string outputPath, int printWidth, List<string>? tagsToIgnore, List<string>? tagsToMatch,
     bool tryToGuessRequired,
     OpenApiObject openApiObject,
-    bool nullValueIgnore
+    bool nullValueIgnore,
+    bool schemaSaveToCommon
     )
   {
     _outputPath = outputPath;
@@ -37,6 +38,7 @@ public class TsCodeWriter
     _tagsToMatch = tagsToMatch;
     _openApiObject = openApiObject;
     ComponentsObject = openApiObject.Components;
+    SchemaSaveToCommon = schemaSaveToCommon;
   }
 
   public static string OneOfName = "OneOf";
@@ -71,6 +73,7 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   public int PrintWidth { get; set; }
   public HashSet<string> OperationIds { get; set; } = new();
   public bool NullValueIgnore { get; set; }
+  public bool SchemaSaveToCommon { get; set; }
 
   public static TsCodeWriter Get()
   {
@@ -80,10 +83,10 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   }
 
   public static TsCodeWriter Create(string outputPath, int printWidth, List<string>? tagsToIgnore,
-    List<string>? tagsToMatch, bool? tryToGuessRequired,OpenApiObject openApiObject, bool? nullValueIgnore)
+    List<string>? tagsToMatch, bool? tryToGuessRequired,OpenApiObject openApiObject, bool? nullValueIgnore, bool? schemaSaveToCommon)
   {
     if (_writer == null || _writer._openApiObject != openApiObject)
-      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, tryToGuessRequired ?? false, openApiObject, nullValueIgnore ?? true);
+      _writer = new TsCodeWriter(outputPath, printWidth, tagsToIgnore, tagsToMatch, tryToGuessRequired ?? false, openApiObject, nullValueIgnore ?? true, schemaSaveToCommon ?? true);
     return _writer;
   }
 
@@ -114,7 +117,11 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
   private string GetOrSetFileLocateIfNotExists(TsCodeElement element)
   {
     if (element.FileLocate != null) return element.FileLocate;
-
+    if (SchemaSaveToCommon)
+    {
+      element.FileLocate = element.DefaultFileLocate ?? throw new InvalidOperationException();
+      return element.FileLocate;
+    }
     HashSet<string> file = new();
     foreach (var codeReference in element.References) file.Add(GetOrSetFileLocateIfNotExists(codeReference));
 
@@ -137,6 +144,11 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
 
   private string GetRelativePath(string baseFile, string fileToImport)
   {
+
+    if (baseFile.StartsWith("common/") && fileToImport.StartsWith("common/"))
+    {
+      return $"./{fileToImport.Replace("common/", "")}";
+    }
     var pathCount = baseFile.Split("/").Length - 1;
     StringBuilder sb = new();
     for (var i = 0; i < pathCount; i++) sb.Append("../");

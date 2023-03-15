@@ -135,4 +135,10 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"NullValueIgnoreAndGuess", nullValueIgnore:true, tryToGuessRequire:true);
   }
+  
+  [Test]
+  public void ShouldSaveToCommonCorrectly()
+  { 
+    InvokeThenAssert(dir:"SaveToCommon", schemaSaveToCommon:true);
+  }
 }

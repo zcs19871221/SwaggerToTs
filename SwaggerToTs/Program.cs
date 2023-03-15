@@ -66,7 +66,7 @@ public static class SwaggerToTs
   }
 
   public static TsCodeWriter CreateTsCode(string swaggerJson, string targetDirectory, int printWidth = 80,
-    List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null, bool? tryToGuessRequire = false, bool? nullValueIgnore = false)
+    List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null, bool? tryToGuessRequire = false, bool? nullValueIgnore = false, bool? schemaSaveToCommon = true)
   {
     var openApiDocument = JsonConvert.DeserializeObject<OpenApiObject>(
                             swaggerJson,
@@ -74,6 +74,6 @@ public static class SwaggerToTs
                               { MetadataPropertyHandling = MetadataPropertyHandling.Ignore }) ??
                           throw new InvalidOperationException();
     return TsCodeWriter.Create(targetDirectory, printWidth, tagsToIgnore, tagsToMatch,tryToGuessRequire,
-      openApiDocument, nullValueIgnore);
+      openApiDocument, nullValueIgnore, schemaSaveToCommon);
   }
 }
