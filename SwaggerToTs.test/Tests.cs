@@ -115,5 +115,24 @@ public class Test:TestBase
   public void ShouldGenerateSchemaComposeTypeCorrectly()
   { 
     InvokeThenAssert("schemaComposeType");
+  }  
+  
+  [Test]
+  public void ShouldGuessOptionalCorrectly()
+  { 
+    InvokeThenAssert(dir:"GuessIfRequiredForMDM", tryToGuessRequire:true);
+  }
+  
+    
+  [Test]
+  public void ShouldNullValueIgnoreCorrectly()
+  { 
+    InvokeThenAssert(dir:"NullValueIgnore", nullValueIgnore:true);
+  }
+  
+  [Test]
+  public void ShouldNullValueIgnoreAndGuessCorrectly()
+  { 
+    InvokeThenAssert(dir:"NullValueIgnoreAndGuess", nullValueIgnore:true, tryToGuessRequire:true);
   }
 }

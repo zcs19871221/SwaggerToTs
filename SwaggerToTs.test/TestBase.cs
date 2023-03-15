@@ -11,7 +11,7 @@ public class TestBase
   private const string Expect = "expect";
   private const string DebugPath = "dist";
   
-  protected void InvokeThenAssert(string dir)
+  protected void InvokeThenAssert(string dir, List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null, bool? tryToGuessRequire = false, bool? nullValueIgnore = false)
   {
    
       var subDir = Path.GetFullPath(_root + dir + "/");
@@ -19,7 +19,7 @@ public class TestBase
       var outputDir = Path.GetFullPath(subDir + Expect);
 
       var text = File.ReadAllText(inputJson);
-      var result = SwaggerToTs.CreateTsCode(text, outputDir).Generate();
+      var result = SwaggerToTs.CreateTsCode(text, outputDir, 80,tagsToIgnore, tagsToMatch, tryToGuessRequire, nullValueIgnore).Generate();
       var expect = new Dictionary<string, string>();
       foreach (string file in Directory.EnumerateFiles(outputDir, "*.ts", SearchOption.AllDirectories))
       {
@@ -32,7 +32,7 @@ public class TestBase
       }
       catch (AssertionException)
       {
-        InvokeThenOutputForDebug(dir);
+        InvokeThenOutputForDebug(dir, tagsToIgnore, tagsToMatch, tryToGuessRequire, nullValueIgnore);
         var expects = expect.Keys.ToList();
         var results = result.Keys.ToList();
         foreach (var expectKey in expect.Keys)
@@ -63,7 +63,7 @@ public class TestBase
         }
         catch (AssertionException e)
         {
-          InvokeThenOutputForDebug(dir);
+          InvokeThenOutputForDebug(dir, tagsToIgnore, tagsToMatch, tryToGuessRequire, nullValueIgnore);
           throw new AssertionException($"/{subDir.Split("/")[^2]}/{Expect}{key.Replace(outputDir, "")} :\n{e.Message}");
         }
       }
@@ -77,14 +77,14 @@ public class TestBase
     cmd.WaitForExit();    
   }
 
-  private void InvokeThenOutputForDebug(string dir)
+  private void InvokeThenOutputForDebug(string dir, List<string>? tagsToIgnore = null, List<string>? tagsToMatch = null, bool? tryToGuessRequire = false, bool? nullValueIgnore = false)
   {
     var subDir = Path.GetFullPath(_root + dir + "/");
     var inputJson = Path.GetFullPath(subDir + Input);
     var outputDir = Path.GetFullPath(subDir + DebugPath);
 
     var text = File.ReadAllText(inputJson);
-    var result = SwaggerToTs.CreateTsCode(text, outputDir);
+    var result = SwaggerToTs.CreateTsCode(text, outputDir, 80,tagsToIgnore, tagsToMatch, tryToGuessRequire, nullValueIgnore);
     TsCodeWriter.Get().Write(result.Generate());
   }
 
