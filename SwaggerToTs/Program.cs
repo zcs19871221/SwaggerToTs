@@ -16,6 +16,7 @@ public static class SwaggerToTs
     var tryGuessRequire = false;
     var nullValueIgnore = true;
     var printWidth = 80;
+    var saveToCommon = false;
     for (var i = 0; i < args.Length; i++)
     {
       string GetOptValue()
@@ -54,12 +55,16 @@ public static class SwaggerToTs
         case "nullValueIgnore":
           nullValueIgnore = true;
           break;
+        case "c":
+        case "saveToCommon":
+          saveToCommon = true;
+          break;
       }
     }
 
     var text = File.ReadAllText(swaggerLocation);
 
-    var writer = CreateTsCode(text, targetDirectory, printWidth, tagsToIgnore, tagsToMatch, tryGuessRequire, nullValueIgnore);
+    var writer = CreateTsCode(text, targetDirectory, printWidth, tagsToIgnore, tagsToMatch, tryGuessRequire, nullValueIgnore, saveToCommon);
     writer.Write(writer.Generate());
 
     Console.WriteLine($"ts file generate successfully to {targetDirectory}");
