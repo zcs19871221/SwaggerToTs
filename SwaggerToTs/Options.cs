@@ -20,6 +20,7 @@ public class Options
     new PrintWidth(),
     new NullableAsOptional(),
     new AggregateSchemaFile(),
+    new Helper()
   };
   
   public T Get<T>() where T: IOption
@@ -58,7 +59,6 @@ public class Options
       }
     }
 
-    var hasHandler = false;
     var tips = string.Join("\n  ", OptionHandlers.Select(e =>
       $"-{e.ShortCommandName}, --{e.CommandName}".PadRight(25, ' ') +  $"{e.Desc}{(e.DefaultValue != null ? " (default: " + e.DefaultValue + ")" : "")}").Prepend("Options:").Prepend("dotnet ts [options]"));
     foreach (var (name,value) in arguments)
@@ -68,14 +68,8 @@ public class Options
       {
         throw new Exception($"doesn't have options: - {name} \n\n ${tips} \n\n");
       }
-   
-      hasHandler = true;
-      optionHandler.SetValue(value);
+      optionHandler.SetValue(optionHandler is Helper ? tips : value);
     }
-
-    if (hasHandler) return;
-
-    Console.WriteLine(tips);
   }
 }
 
@@ -180,8 +174,21 @@ class AggregateSchemaFile : BoolHandler, IOption
   public string CommandName => "aggregate";
   public string ShortCommandName => "a";
   public string Desc => "save reference file to common files, default is save to the files group by swagger tags";
-
 }
+
+class Helper : IOption
+{
+  public string CommandName => "help";
+  public string ShortCommandName => "h";
+  public string Desc => "show all options";
+
+  public string Value { get; set; } = "";
+  public void SetValue(string param)
+  {
+    Value = param;
+  }
+}
+
 
 
 

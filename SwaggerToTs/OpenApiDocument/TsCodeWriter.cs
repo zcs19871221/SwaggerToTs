@@ -138,17 +138,6 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
 
   private string GetRelativePath(string baseFile, string fileToImport)
   {
-
-    // if (baseFile.StartsWith("common/") && fileToImport.StartsWith("common/"))
-    // {
-    //   return $"./{fileToImport.Replace("common/", "")}";
-    // }
-    // var pathCount = baseFile.Split("/").Length - 1;
-    // StringBuilder sb = new();
-    // for (var i = 0; i < pathCount; i++) sb.Append("../");
-    //
-    // if (sb.Length == 0) fileToImport = $"./{fileToImport}";
-
     return $"./{fileToImport}";
   }
 
