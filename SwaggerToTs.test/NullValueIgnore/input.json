@@ -14,7 +14,7 @@
             "schema": {
               "type": "object",
               "nullable": true,
-              "required": ["id", "isActive", "uid", "Date-From", "idWithNull", "isActive", "isActiveNull","uidNull","Date-FromNull"],
+              "required": ["id", "isActive", "uid", "date-From", "idWithNull", "isActive", "isActiveNull","uidNull","date-FromNull"],
               "properties": {
                 "id": {
                   "type": "integer"
@@ -26,7 +26,7 @@
                   "type": "string",
                   "format": "uuid"
                 },
-                "Date-From": {
+                "date-From": {
                   "type": "string",
                   "format": "date-time"
                 },
@@ -43,7 +43,7 @@
                   "format": "uuid",
                   "nullable": true
                 },
-                "Date-FromNull": {
+                "date-FromNull": {
                   "type": "string",
                   "format": "date-time",
                   "nullable": true

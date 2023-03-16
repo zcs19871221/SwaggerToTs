@@ -116,13 +116,6 @@ public class Test:TestBase
   { 
     InvokeThenAssert("schemaComposeType");
   }  
-  
-  [Test]
-  public void ShouldGuessNullableCorrectly()
-  { 
-    InvokeThenAssert(dir:"GuessNullable", new []{"-g"});
-  }
-  
     
   [Test]
   public void ShouldNullValueIgnoreCorrectly()
@@ -130,15 +123,10 @@ public class Test:TestBase
     InvokeThenAssert(dir:"NullValueIgnore", new []{"-n"});
   }
   
+
   [Test]
-  public void ShouldNullValueIgnoreAndGuessCorrectly()
+  public void ShouldAggregateSchemaFileCorrectly()
   { 
-    InvokeThenAssert(dir:"NullValueIgnoreAndGuess", new []{"-g", "-n"});
-  }
-  
-  [Test]
-  public void ShouldSaveToCommonCorrectly()
-  { 
-    InvokeThenAssert(dir:"SaveToCommon", new []{"-s"});
+    InvokeThenAssert(dir:"AggregateSchemaFile", new []{"-a"});
   }
 }

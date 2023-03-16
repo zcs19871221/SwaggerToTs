@@ -11,15 +11,15 @@ export interface BusinessGetEP {
     200: {
       Content: {
         'application/json': {
-          readonly Info?: {
-            readonly EnumArrayItems?: readonly ('hello' | 'world' | null)[][];
+          readonly info?: {
+            readonly enumArrayItems?: readonly ('hello' | 'world' | null)[][];
             readonly enums?: 1 | '2' | 4444444444.2344 | null;
-            readonly ObjectArrayItems?: readonly Profile[];
+            readonly objectArrayItems?: readonly Profile[];
             readonly profile?: Profile;
-            readonly RecordArrayItems?: RecordArray;
+            readonly recordArrayItems?: RecordArray;
             readonly recordObject?: Record<string, unknown> | null;
             readonly unknown?: unknown;
-            readonly UnknownArrayItems?: readonly (unknown[] | null)[];
+            readonly unknownArrayItems?: readonly (unknown[] | null)[];
           };
         };
       };

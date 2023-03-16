@@ -141,7 +141,7 @@ public class ComponentsObject
           throw new Exception("available key is Schemas,responses, parameters,requestBodies, headers");
       }
     }
-    element.DefaultFileLocate = "common/" + location;
+    element.DefaultFileLocate = TsCodeWriter.SchemaFile;
     return element;
   }
 }

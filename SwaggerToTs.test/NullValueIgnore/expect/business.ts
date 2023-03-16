@@ -22,14 +22,14 @@ export interface BusinessGetQuery {
     /**
      * @Format date-time
      */
-    readonly 'Date-From': string;
+    readonly 'date-From': string;
     /**
      * @Format date-time
      */
-    readonly 'Date-FromNull': string;
+    readonly 'date-FromNull'?: string;
     readonly id: number;
     readonly idWithNull?: number;
-    readonly isActive?: boolean;
+    readonly isActive: boolean;
     readonly isActiveNull?: boolean;
     /**
      * @Format uuid

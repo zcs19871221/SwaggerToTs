@@ -3,10 +3,12 @@
  * Do not make direct changes to the file.
  */
 
-import { BusinessGetCookie } from './common/cookie';
-import { BusinessGetHeader } from './common/header';
-import { BusinessGetPath } from './common/path';
-import { BusinessGetQuery } from './common/query';
+import {
+  BusinessGetCookie,
+  BusinessGetHeader,
+  BusinessGetPath,
+  BusinessGetQuery
+} from './data-schema';
 
 /**
  * @Summary business get operation summary

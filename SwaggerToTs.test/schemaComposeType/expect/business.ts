@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import { AnyOf, OneOf } from './common/helper';
+import { AnyOf, OneOf } from './helper';
 
 export interface BusinessGetEP {
   Responses: {
@@ -13,8 +13,8 @@ export interface BusinessGetEP {
     200: {
       Content: {
         'application/json': {
-          readonly AllOf?: Dog & Cat;
-          readonly AnyOf?: AnyOf<[Dog, Cat]>;
+          readonly allOf?: Dog & Cat;
+          readonly anyOf?: AnyOf<[Dog, Cat]>;
           /**
            * @Description name
            *

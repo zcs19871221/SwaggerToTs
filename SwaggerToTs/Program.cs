@@ -11,7 +11,6 @@ public static class SwaggerToTs
 
     var writer = Create(args);
     writer.Write(writer.Generate());
-
     Console.WriteLine($"ts file generate successfully to {writer.Options.Get<Dist>().Value}");
   }
   

@@ -131,7 +131,7 @@ public class ParameterObject : TsCodeElement
       var fileLocate = operation.FileLocate;
       if (TsCodeWriter.Get().Options.Get<AggregateSchemaFile>().Value)
       {
-        fileLocate = $"common/schema";
+        fileLocate = TsCodeWriter.SchemaFile;
       }
       parameter.ExtractTo(operation.ExportNameBase + type, fileLocate);
 

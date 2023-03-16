@@ -3,7 +3,6 @@ public interface IOption
 {
   public string CommandName { get; }
   public string ShortCommandName { get; }
-  public string Helper => "";
   public string Desc { get; }
   public void SetValue(string param);
   public string? DefaultValue => null;
@@ -19,7 +18,6 @@ public class Options
     new IgnoreTags(),
     new MatchTags(),
     new PrintWidth(),
-    new GuessNullable(),
     new NullableAsOptional(),
     new AggregateSchemaFile(),
   };
@@ -31,7 +29,6 @@ public class Options
     {
       throw new Exception($"not add type:{typeof(T)} to optionHandlers");
     }
-
     return (T)optionHandler;
   }
   public Options(string[] args)
@@ -46,32 +43,39 @@ public class Options
       throw new Exception("has duplicate ShortCommandName");
     }
     
-    List<(string,string)> arguments = new ();
-    for (var i = 0; i < args.Length; i++)
+    Stack<(string,string)> arguments = new ();
+    foreach (var arg in args)
     {
-      var opt = args[i].Trim().Replace("-", "").Trim();
-      var value = i + 1 < args.Length ? args[++i]: "";
-      arguments.Add((opt, value));
+      if (arg.Contains('-'))
+      {
+        arguments.Push((arg.Trim().Replace("-", "").Trim(), ""));
+      }
+      else
+      {
+        var last = arguments.Pop();
+        last.Item2 = arg;
+        arguments.Push(last);
+      }
     }
 
     var hasHandler = false;
+    var tips = string.Join("\n  ", OptionHandlers.Select(e =>
+      $"-{e.ShortCommandName}, --{e.CommandName}".PadRight(25, ' ') +  $"{e.Desc}{(e.DefaultValue != null ? " (default: " + e.DefaultValue + ")" : "")}").Prepend("Options:").Prepend("dotnet ts [options]"));
     foreach (var (name,value) in arguments)
     {
       var optionHandler = OptionHandlers.Find(o => o.CommandName == name || o.ShortCommandName == name);
-      if (optionHandler != null)
+      if (optionHandler == null)
       {
-        hasHandler = true;
-        optionHandler.SetValue(value);
+        throw new Exception($"doesn't have options: - {name} \n\n ${tips} \n\n");
       }
+   
+      hasHandler = true;
+      optionHandler.SetValue(value);
     }
-    if (!hasHandler)
-    {
-    
-      var tips = string.Join("  \n", OptionHandlers.Select(e =>
-        $"-{e.ShortCommandName}, --${e.CommandName}${(string.IsNullOrWhiteSpace(e.Helper) ? " " + e.Helper + " " : "").PadRight(20, ' ')} ${e.Desc}${(e.DefaultValue != null ? " default: " + e.DefaultValue : "")}").Prepend("Options:").Prepend("dotnet ts [options]"));
-      Console.WriteLine(tips);
-    }
-    
+
+    if (hasHandler) return;
+
+    Console.WriteLine(tips);
   }
 }
 
@@ -81,14 +85,16 @@ class Swagger : IOption
   public string ShortCommandName => "s";
   public string Desc => "swagger file locate to use";
 
-  public string Value { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "swagger.json");
+  private static readonly string DefaultPath = Path.Combine(Directory.GetCurrentDirectory(), "swagger.json");
+  public string Value { get; set; } = DefaultPath;
+
+  public string DefaultValue => DefaultPath;
+  
 
   public void SetValue(string path)
   {
     Value = Path.GetFullPath(path);
   }
-  
-  public bool IsRequired => true;
 }
 class Dist : IOption
 {
@@ -99,9 +105,11 @@ class Dist : IOption
   {
     Value = Path.GetFullPath(path);
   }
-  public string Value { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "apis");
-  public bool IsRequired => true;
 
+  private static readonly string DefaultPath = Path.Combine(Directory.GetCurrentDirectory(), "apis");
+  public string Value { get; set; } = DefaultPath;
+
+  public string DefaultValue => DefaultPath;
 }
 
 class IgnoreTags : IOption
@@ -160,12 +168,6 @@ class BoolHandler
 
   public bool Value { get; set; }
   public string DefaultValue => "false";
-}
-class GuessNullable : BoolHandler,IOption
-{
-  public string CommandName => "guessRequire";
-  public string ShortCommandName => "g";
-  public string Desc => "guess if one property is nullable (only needed in MDM since mdm doesn't set Nullable:enable in .csproj ";
 }
 class NullableAsOptional : BoolHandler,IOption
 {

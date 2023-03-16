@@ -25,7 +25,7 @@ public class TestBase
         dist
       };
       var debugArgs = args.GetRange(0, args.Count);
-      debugArgs[2] = Path.GetFullPath(subDir + DebugPath);
+      debugArgs[3] = Path.GetFullPath(subDir + DebugPath);
       if (inputArgs != null)
       {
         args.AddRange(inputArgs);

@@ -170,6 +170,7 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
     Add(schema);
    
     schema.ExportTypeValue = ExportType.Interface;
+    schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a => a.Value);
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
       (key, item, parent) =>
       {
@@ -182,22 +183,12 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
           }
 
           var options = TsCodeWriter.Get().Options;
-          if (options.Get<GuessNullable>().Value)
-          {
-            if (o.SchemaType is SchemaType.Bool or SchemaType.Integer ||
-                (o.SchemaType == SchemaType.String &&
-                 o.Format is "date-time" or "uuid"))
-            {
-              o.Nullable = false;
-            }
-          }
-
+          
           if (options.Get<NullableAsOptional>().Value)
           {
             o.Nullable = false;
             parent.Optional = true;
           }
-       
         }
       }));
   }

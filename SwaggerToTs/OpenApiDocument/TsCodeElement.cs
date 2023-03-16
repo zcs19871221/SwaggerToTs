@@ -366,7 +366,7 @@ public abstract class TsCodeElement
     return result;
   }
 
-  private string ToCamelCase(string name)
+  public static string ToCamelCase(string name)
   {
     return char.ToLowerInvariant(name[0]) + name.Substring(1);
   }

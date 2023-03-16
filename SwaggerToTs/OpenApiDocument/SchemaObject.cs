@@ -50,12 +50,6 @@ public class SchemaObject : TsCodeElement
           if (ExportName == null && nullableAsOptional == false) {
               Contents += " | null";
           }
-
-          if (nullableAsOptional)
-          {
-            Nullable = false;
-            Optional = true;
-          }
         }
   
         return this;
