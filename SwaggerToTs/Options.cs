@@ -20,6 +20,7 @@ public class Options
     new PrintWidth(),
     new NullableAsOptional(),
     new AggregateSchemaFile(),
+    new EnableNullableContext(),
     new Helper()
   };
   
@@ -161,19 +162,25 @@ class BoolHandler
   }
 
   public bool Value { get; set; }
-  public string DefaultValue => "false";
 }
 class NullableAsOptional : BoolHandler,IOption
 {
   public string CommandName => "nullableAsOptional";
   public string ShortCommandName => "n";
-  public string Desc => "make nullable reference optional(if set NullValueHandling.Ignore in newtonsoft looks like only mdm set this configuration)";
+  public string Desc => "make nullable reference optional - set this when the NullValueHandling.Ignore configuration in newtonsoft is added (default: false)";
 }
 class AggregateSchemaFile : BoolHandler, IOption
 {
   public string CommandName => "aggregate";
   public string ShortCommandName => "a";
-  public string Desc => "save reference file to common files, default is save to the files group by swagger tags";
+  public string Desc => "save reference file to common files, default is save to the files group by swagger tags  (default: false)";
+}
+class EnableNullableContext : BoolHandler, IOption
+{
+  public string CommandName => "enableNullableContext";
+  public string ShortCommandName => "e";
+  public string Desc => "Treat all non-nullable types as required (default: Treat value types: int, struct(DateTime, Guid), bool, enum as mandatory)";
+
 }
 
 class Helper : IOption

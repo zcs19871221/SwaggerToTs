@@ -27,11 +27,11 @@ export interface BusinessGetEP {
           readonly mix?: OneOf<[AnyOf<[{
             readonly name?: string;
           }, {
-            readonly age?: number;
+            readonly age: number;
           }, {
             readonly city?: string;
           } & {
-            readonly salary?: number;
+            readonly salary?: number | null;
           }]>, Cat]>;
           readonly oneOf?: OneOf<[Dog, Cat]>;
         };
@@ -41,11 +41,28 @@ export interface BusinessGetEP {
 }
 
 export interface Cat {
-  readonly catch?: boolean;
+  readonly catch: boolean;
   readonly climb: boolean;
 }
 
 export interface Dog {
   readonly bark: string;
-  readonly size?: 'Big' | 'small';
+  readonly color?: 'red' | 'green' | null;
+  /**
+   * @Format date-time
+   */
+  readonly 'date-time': string;
+  /**
+   * @Format date-time
+   */
+  readonly 'date-timeNull'?: string | null;
+  readonly size: 'Big' | 'small';
+  /**
+   * @Format uuid
+   */
+  readonly uid: string;
+  /**
+   * @Format uuid
+   */
+  readonly uidNull?: string | null;
 }

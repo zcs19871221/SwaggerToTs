@@ -129,4 +129,17 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"AggregateSchemaFile", new []{"-a"});
   }
+  
+  [Test]
+  public void ShouldEnableNullableContextCorrectly()
+  { 
+    InvokeThenAssert(dir:"EnableNullableContext", new []{"-e"});
+  }
+  
+    
+  [Test]
+  public void ShouldNotEnableNullableContextCorrectly()
+  { 
+    InvokeThenAssert(dir:"NotEnableNullableContext");
+  }
 }

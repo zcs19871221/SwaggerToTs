@@ -15,9 +15,7 @@ public static class Helper
         element is SchemaObject { SchemaType: SchemaType.Enum } or SchemaObject { Nullable: true }
           or SchemaObject { SchemaType: SchemaType.OneOf } or SchemaObject { SchemaType: SchemaType.AllOf }
           or SchemaObject { SchemaType: SchemaType.AnyOf })
-    {
       content = $"({content})";
-    }
 
     return content;
   }
@@ -43,17 +41,17 @@ public class EnumSchemaHandler : ISchemaHandler
     {
       switch (e)
       {
-        case Byte:
-        case SByte:
-        case UInt16:
-        case UInt32:
-        case UInt64:
-        case Int16:
-        case Int32:
-        case Int64:
-        case Decimal:
-        case Double:
-        case Single:
+        case byte:
+        case sbyte:
+        case ushort:
+        case uint:
+        case ulong:
+        case short:
+        case int:
+        case long:
+        case decimal:
+        case double:
+        case float:
           return $"{e}";
         default:
           return $"'{e}'";
@@ -92,13 +90,10 @@ public class NumberSchemaHandler : ISchemaHandler
   public void CreateTsCode(SchemaObject schema)
   {
     if (schema.Type is "number")
-    {
       schema.SchemaType = SchemaType.Number;
-    }
     else
-    {
       schema.SchemaType = SchemaType.Integer;
-    }
+
     schema.AddComment(nameof(schema.Minimum), schema.Minimum.ToString())
       .AddComment(nameof(schema.Maximum), schema.Maximum.ToString())
       .AddComment(nameof(schema.ExclusiveMinimum), schema.ExclusiveMinimum.ToString())
@@ -149,7 +144,8 @@ public class ArraySchemaHandler : ISchemaHandler
   }
 }
 
-public class CommonSchemaHandler {
+public class CommonSchemaHandler
+{
   protected void Add(SchemaObject schema)
   {
     schema.SchemaType = SchemaType.Object;
@@ -157,7 +153,8 @@ public class CommonSchemaHandler {
       .AddComment(nameof(schema.MaxProperties), schema.MaxProperties.ToString());
   }
 }
-public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
+
+public class ObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
 {
   public bool IsMatch(SchemaObject schema)
   {
@@ -168,7 +165,7 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
   public void CreateTsCode(SchemaObject schema)
   {
     Add(schema);
-   
+
     schema.ExportTypeValue = ExportType.Interface;
     schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a => a.Value);
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
@@ -177,25 +174,29 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
         parent.Optional = !schema.Required.Contains(key);
         if (item is SchemaObject o)
         {
-          if (!o.Nullable)
-          {
-            return;
-          }
-
           var options = TsCodeWriter.Get().Options;
-          
-          if (options.Get<NullableAsOptional>().Value)
+
+          switch (o.Nullable)
           {
-            o.Nullable = false;
-            parent.Optional = true;
+            case false when options.Get<EnableNullableContext>().Value:
+            case false when !options.Get<EnableNullableContext>().Value &&
+                            (o.SchemaType is SchemaType.Integer or SchemaType.Number or SchemaType.Bool ||
+                             (o.SchemaType == SchemaType.String && o.Format is "date-time" or "uuid") ||
+                             o.SchemaType == SchemaType.Enum
+                            ):
+              parent.Optional = false;
+              break;
+            case true when options.Get<NullableAsOptional>().Value:
+              o.Nullable = false;
+              parent.Optional = true;
+              break;
           }
         }
       }));
   }
 }
 
-
-public class AnyObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
+public class AnyObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
 {
   public bool IsMatch(SchemaObject schema)
   {
@@ -209,6 +210,7 @@ public class AnyObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
     schema.Contents = @"Record<string, unknown>";
   }
 }
+
 public class UnknownSchemaHandler : ISchemaHandler
 {
   public bool IsMatch(SchemaObject schema)
@@ -233,23 +235,20 @@ public class OneOfHandler : ISchemaHandler
   }
 
   private static readonly Dictionary<string, TsCodeElement> Helpers = new();
+
   public void CreateTsCode(SchemaObject schema)
   {
-
     schema.SchemaType = SchemaType.OneOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Oneof)
     {
       var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element =>
-      {
-        contents.Add(element);
-      });
+      schema.Merge(each, element => { contents.Add(element); });
     }
 
-   
+
     var name = TsCodeWriter.OneOfName;
-    
+
     schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
     schema.HelpersToImport.Add(name);
   }
@@ -261,28 +260,24 @@ public class AnyOfHandler : ISchemaHandler
   {
     return schema.AnyOf.Any();
   }
-  
-  
+
+
   private static readonly Dictionary<string, TsCodeElement> Helpers = new();
+
   public void CreateTsCode(SchemaObject schema)
   {
-
     schema.SchemaType = SchemaType.AnyOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.AnyOf)
     {
       var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element =>
-      {
-        contents.Add(element);
-      });
+      schema.Merge(each, element => { contents.Add(element); });
     }
 
     var name = TsCodeWriter.AnyOfName;
-    
+
     schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
     schema.HelpersToImport.Add(name);
-      return;
   }
 }
 
@@ -296,16 +291,12 @@ public class AllOfHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-
     schema.SchemaType = SchemaType.AllOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Allof)
     {
       var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element =>
-      {
-        contents.Add(element);
-      });
+      schema.Merge(each, element => { contents.Add(element); });
     }
 
     schema.Contents = string.Join(" & ", contents.Select(Helper.AddBracketIfNeed));

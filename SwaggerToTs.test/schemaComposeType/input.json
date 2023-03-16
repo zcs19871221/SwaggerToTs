@@ -9,11 +9,33 @@
       "Dog": {
         "type": "object",
         "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uidNull": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "date-time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date-timeNull": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
           "bark": {
             "type": "string"
           },
           "size": {
             "enum": ["Big","small"]
+          },
+          "color": {
+            "enum": ["red","green"],
+            "nullable": true
           }
         },
         "required": ["bark"]
@@ -110,7 +132,8 @@
                                   "description": "salary",
                                   "properties": {
                                     "salary": {
-                                      "type": "number"
+                                      "type": "number",
+                                      "nullable": true
                                     }
                                   }
                                 }
