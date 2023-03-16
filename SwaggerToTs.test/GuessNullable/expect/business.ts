@@ -26,11 +26,11 @@ export interface BusinessGetQuery {
     /**
      * @Format date-time
      */
-    readonly 'Date-FromNull'?: string;
+    readonly 'Date-FromNull'?: string | null;
     readonly id?: number;
-    readonly idWithNull?: number;
+    readonly idWithNull?: number | null;
     readonly isActive?: boolean;
-    readonly isActiveNull?: boolean;
+    readonly isActiveNull?: boolean | null;
     /**
      * @Format uuid
      */
@@ -38,6 +38,6 @@ export interface BusinessGetQuery {
     /**
      * @Format uuid
      */
-    readonly uidNull?: string;
-  };
+    readonly uidNull?: string | null;
+  } | null;
 }

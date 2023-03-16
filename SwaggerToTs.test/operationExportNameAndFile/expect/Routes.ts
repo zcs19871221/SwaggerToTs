@@ -3,11 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import {
-  BusinessGetEP,
-  BusinessGetEP1,
-  BusinessGetEP2
-} from './Operations/business';
+import { BusinessGetEP, BusinessGetEP1, BusinessGetEP2 } from './business';
 
 /**
  * @OpenApi 3.0.1

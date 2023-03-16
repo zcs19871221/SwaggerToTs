@@ -118,27 +118,27 @@ public class Test:TestBase
   }  
   
   [Test]
-  public void ShouldGuessOptionalCorrectly()
+  public void ShouldGuessNullableCorrectly()
   { 
-    InvokeThenAssert(dir:"GuessIfRequiredForMDM", tryToGuessRequire:true);
+    InvokeThenAssert(dir:"GuessNullable", new []{"-g"});
   }
   
     
   [Test]
   public void ShouldNullValueIgnoreCorrectly()
   { 
-    InvokeThenAssert(dir:"NullValueIgnore", nullValueIgnore:true);
+    InvokeThenAssert(dir:"NullValueIgnore", new []{"-n"});
   }
   
   [Test]
   public void ShouldNullValueIgnoreAndGuessCorrectly()
   { 
-    InvokeThenAssert(dir:"NullValueIgnoreAndGuess", nullValueIgnore:true, tryToGuessRequire:true);
+    InvokeThenAssert(dir:"NullValueIgnoreAndGuess", new []{"-g", "-n"});
   }
   
   [Test]
   public void ShouldSaveToCommonCorrectly()
   { 
-    InvokeThenAssert(dir:"SaveToCommon", schemaSaveToCommon:true);
+    InvokeThenAssert(dir:"SaveToCommon", new []{"-s"});
   }
 }

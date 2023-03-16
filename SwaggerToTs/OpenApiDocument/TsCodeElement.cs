@@ -13,7 +13,8 @@ public abstract class TsCodeElement
 
   private readonly List<(string, string)> _comments = new();
   private HashSet<TsCodeElement> _imports = new();
-  public readonly List<string> HelpersToImport = new();
+  public  List<string> HelpersToImport = new();
+  public  List<string> HelpersForWrite = new();
 
   private string? _exportName;
   private bool _isContentArray;
@@ -115,6 +116,10 @@ public abstract class TsCodeElement
       case "Head-Body":
         AppendImports(code);
         AppendComments(code);
+        if (code.Optional !=null && Optional == null)
+        {
+          Optional = code.Optional;
+        }
         if (code is SchemaObject { SchemaType: SchemaType.Array, ExportName: null })
         {
           _isContentArray = true;
@@ -216,7 +221,7 @@ public abstract class TsCodeElement
       case ExportType.Type:
         name = $"export type {ExportName}";
         connector = " = ";
-        if (content.Contains("|") && $"{name}{connector}{content};".Length > TsCodeWriter.Get().PrintWidth)
+        if (content.Contains("|") && $"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
         {
           var separator = NewLine + "  | ";
           connector = " =";
@@ -243,7 +248,7 @@ public abstract class TsCodeElement
     return codeBody;
   }
 
-  public void AppendImports(TsCodeElement t)
+  private void AppendImports(TsCodeElement t)
   {
     foreach (var tDependency in t._imports)
     {
@@ -293,6 +298,8 @@ public abstract class TsCodeElement
     Name = null;
     _comments.Clear();
     _imports = new HashSet<TsCodeElement> { this };
+    HelpersForWrite = HelpersToImport;
+    HelpersToImport = new();
     TsCodeWriter.Get().Add(this);
     _isExtracted = true;
     return this;

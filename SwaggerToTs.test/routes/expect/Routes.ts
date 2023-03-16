@@ -3,8 +3,8 @@
  * Do not make direct changes to the file.
  */
 
-import { AgenciesGetEP } from './Operations/agencies';
-import { BusinessGetEP } from './Operations/business';
+import { AgenciesGetEP } from './agencies';
+import { BusinessGetEP } from './business';
 
 /**
  * @OpenApi 3.0.1

@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import { AnyOf, OneOf } from '../common/helper';
+import { AnyOf, OneOf } from './common/helper';
 
 export interface BusinessGetEP {
   Responses: {

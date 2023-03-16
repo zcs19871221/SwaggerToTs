@@ -3,8 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import { AnyOf, OneOf } from './common/helper';
-import { BusinessGetEP } from './Operations/business';
+import { BusinessGetEP } from './business';
 
 /**
  * @OpenApi 3.0.1

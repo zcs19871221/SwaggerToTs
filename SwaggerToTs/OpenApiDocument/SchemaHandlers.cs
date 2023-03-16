@@ -174,15 +174,30 @@ public class ObjectSchemaHandler : CommonSchemaHandler,ISchemaHandler
       (key, item, parent) =>
       {
         parent.Optional = !schema.Required.Contains(key);
-        if (TsCodeWriter.Get().TryToGuessRequired && parent.Optional == true)
+        if (item is SchemaObject o)
         {
-          if (item is not SchemaObject o || o.Nullable) return;
-          if (o.SchemaType is SchemaType.Bool or SchemaType.Integer ||
-              (o.SchemaType == SchemaType.String &&
-               o.Format is "date-time" or "uuid"))
+          if (!o.Nullable)
           {
-            parent.Optional = false;
+            return;
           }
+
+          var options = TsCodeWriter.Get().Options;
+          if (options.Get<GuessNullable>().Value)
+          {
+            if (o.SchemaType is SchemaType.Bool or SchemaType.Integer ||
+                (o.SchemaType == SchemaType.String &&
+                 o.Format is "date-time" or "uuid"))
+            {
+              o.Nullable = false;
+            }
+          }
+
+          if (options.Get<NullableAsOptional>().Value)
+          {
+            o.Nullable = false;
+            parent.Optional = true;
+          }
+       
         }
       }));
   }

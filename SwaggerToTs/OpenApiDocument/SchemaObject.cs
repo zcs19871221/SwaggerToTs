@@ -44,10 +44,20 @@ public class SchemaObject : TsCodeElement
       if (handler.IsMatch(this))
       {
         handler.CreateTsCode(this);
-        if (Nullable && ExportName == null && TsCodeWriter.Get().NullValueIgnore == false)
+        if (Nullable)
         {
-          Contents += " | null";
+          var nullableAsOptional = TsCodeWriter.Get().Options.Get<NullableAsOptional>().Value;
+          if (ExportName == null && nullableAsOptional == false) {
+              Contents += " | null";
+          }
+
+          if (nullableAsOptional)
+          {
+            Nullable = false;
+            Optional = true;
+          }
         }
+  
         return this;
       }
 

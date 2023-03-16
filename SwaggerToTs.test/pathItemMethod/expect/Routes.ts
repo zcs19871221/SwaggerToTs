@@ -12,7 +12,7 @@ import {
   BusinessPostEP,
   BusinessPutEP,
   OperationIdEP
-} from './Operations/business';
+} from './business';
 
 /**
  * @OpenApi 3.0.1

@@ -45,7 +45,7 @@ public class OperationObject : TsCodeElement
 
     ExportName = exportName;
     ExportNameBase = Regex.Replace(exportName, $"{EndWith}(\\d*)$", "$1");
-    FileLocate = $"Operations/{fileName}";
+    FileLocate = $"{fileName}";
   }
 
   protected override void ValidateOpenApiDocument()
