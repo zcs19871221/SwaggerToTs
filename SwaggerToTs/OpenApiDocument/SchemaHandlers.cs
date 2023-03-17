@@ -12,9 +12,9 @@ public static class Helper
   {
     var content = element.GenerateCodeBody();
     if (element.ExportName == null &&
-        element is SchemaObject { SchemaType: SchemaType.Enum } or SchemaObject { Nullable: true }
-          or SchemaObject { SchemaType: SchemaType.OneOf } or SchemaObject { SchemaType: SchemaType.AllOf }
-          or SchemaObject { SchemaType: SchemaType.AnyOf })
+        element is SchemaObject { SchemaType: SchemaTypeEnums.Enum } or SchemaObject { Nullable: true }
+          or SchemaObject { SchemaType: SchemaTypeEnums.OneOf } or SchemaObject { SchemaType: SchemaTypeEnums.AllOf }
+          or SchemaObject { SchemaType: SchemaTypeEnums.AnyOf })
       content = $"({content})";
 
     return content;
@@ -36,28 +36,38 @@ public class EnumSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Enum;
-    schema.Contents = string.Join(" | ", schema.Enum.Select(e =>
+    schema.SchemaType = SchemaTypeEnums.Enum;
+  
+    if (TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value)
     {
-      switch (e)
+      schema.Contents =  "{\n  " + string.Join(",\n  ", schema.Enum.Select(e =>  e + $" = '{e}'")) + "\n}";
+      schema.ExportTypeValue = ExportType.Enum;
+    }
+    else
+    {
+      schema.ExportTypeValue = ExportType.Type;
+      schema.Contents = string.Join(" | ", schema.Enum.Select(e =>
       {
-        case byte:
-        case sbyte:
-        case ushort:
-        case uint:
-        case ulong:
-        case short:
-        case int:
-        case long:
-        case decimal:
-        case double:
-        case float:
-          return $"{e}";
-        default:
-          return $"'{e}'";
-      }
-    }));
-    schema.ExportTypeValue = ExportType.Type;
+        switch (e)
+        {
+          case byte:
+          case sbyte:
+          case ushort:
+          case uint:
+          case ulong:
+          case short:
+          case int:
+          case long:
+          case decimal:
+          case double:
+          case float:
+            return $"{e}";
+          default:
+            return $"'{e}'";
+        }
+      }));
+    }
+ 
   }
 }
 
@@ -71,7 +81,7 @@ public class StringSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.String;
+    schema.SchemaType = SchemaTypeEnums.String;
     schema.AddComment(nameof(schema.Pattern), schema.Pattern);
     schema.AddComment(nameof(schema.MinLength), schema.MinLength.ToString());
     schema.AddComment(nameof(schema.MaxLength), schema.MaxLength.ToString());
@@ -89,10 +99,7 @@ public class NumberSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    if (schema.Type is "number")
-      schema.SchemaType = SchemaType.Number;
-    else
-      schema.SchemaType = SchemaType.Integer;
+    schema.SchemaType = schema.Type is "number" ? SchemaTypeEnums.Number : SchemaTypeEnums.Integer;
 
     schema.AddComment(nameof(schema.Minimum), schema.Minimum.ToString())
       .AddComment(nameof(schema.Maximum), schema.Maximum.ToString())
@@ -113,7 +120,7 @@ public class BoolSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Bool;
+    schema.SchemaType = SchemaTypeEnums.Bool;
     schema.Contents = "boolean";
   }
 }
@@ -128,7 +135,7 @@ public class ArraySchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Array;
+    schema.SchemaType = SchemaTypeEnums.Array;
     schema.AddComment(nameof(schema.MaxItems), schema.MaxItems.ToString())
       .AddComment(nameof(schema.MinItems), schema.MinItems.ToString()).AddComment(nameof(schema.UniqueItems),
         schema.UniqueItems?.ToString()).ReadOnly = true;
@@ -148,7 +155,7 @@ public class CommonSchemaHandler
 {
   protected void Add(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Object;
+    schema.SchemaType = SchemaTypeEnums.Object;
     schema.AddComment(nameof(schema.MinProperties), schema.MinProperties.ToString())
       .AddComment(nameof(schema.MaxProperties), schema.MaxProperties.ToString());
   }
@@ -169,30 +176,10 @@ public class ObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
     schema.ExportTypeValue = ExportType.Interface;
     schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a => a.Value);
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
-      (key, item, parent) =>
+      (key, body, headPlusBody) =>
       {
-        parent.Optional = !schema.Required.Contains(key);
-        if (item is SchemaObject o)
-        {
-          var options = TsCodeWriter.Get().Options;
-
-          switch (o.Nullable)
-          {
-            case false when options.Get<EnableNullableContext>().Value:
-            case false when !options.Get<EnableNullableContext>().Value &&
-                            (o.SchemaType is SchemaType.Integer or SchemaType.Number or SchemaType.Bool ||
-                             (o.SchemaType == SchemaType.String && o.Format is "date-time" or "uuid") ||
-                             o.SchemaType == SchemaType.Enum
-                            ):
-              parent.Optional = false;
-              break;
-            case true when options.Get<NullableAsOptional>().Value:
-              o.Nullable = false;
-              parent.Optional = true;
-              break;
-          }
-        }
-      }));
+        headPlusBody.Optional = !schema.Required.Contains(key);
+      }, null));
   }
 }
 
@@ -221,7 +208,7 @@ public class UnknownSchemaHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.Any;
+    schema.SchemaType = SchemaTypeEnums.Any;
     schema.Nullable = false;
     schema.Contents = "unknown";
   }
@@ -238,7 +225,7 @@ public class OneOfHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.OneOf;
+    schema.SchemaType = SchemaTypeEnums.OneOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Oneof)
     {
@@ -266,7 +253,7 @@ public class AnyOfHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.AnyOf;
+    schema.SchemaType = SchemaTypeEnums.AnyOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.AnyOf)
     {
@@ -291,7 +278,7 @@ public class AllOfHandler : ISchemaHandler
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaType.AllOf;
+    schema.SchemaType = SchemaTypeEnums.AllOf;
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Allof)
     {

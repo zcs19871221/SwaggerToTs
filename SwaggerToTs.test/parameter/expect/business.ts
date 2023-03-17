@@ -32,7 +32,7 @@ export interface BusinessGetCookie {
 
 export interface BusinessGetHeader {
   readonly accept?: string;
-  readonly gzip?: boolean;
+  readonly gzip?: boolean | null;
 }
 
 export interface BusinessGetPath {

@@ -142,4 +142,10 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"NotEnableNullableContext");
   }
+  
+  [Test]
+  public void ShouldEnumUseEnum()
+  { 
+    InvokeThenAssert(dir:"enumUseEnum", new []{"-eUe"});
+  }
 }

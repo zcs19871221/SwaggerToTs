@@ -4,6 +4,9 @@
  */
 
 export interface BusinessGetEP {
+  Request: {
+    Query: BusinessGetQuery;
+  };
   Responses: {
     /**
      * @Description not found
@@ -18,6 +21,13 @@ export interface BusinessGetEP {
       };
     };
   };
+}
+
+export interface BusinessGetQuery {
+  readonly address?: {
+    readonly isActive: boolean;
+  };
+  readonly id: number;
 }
 
 export interface Age {

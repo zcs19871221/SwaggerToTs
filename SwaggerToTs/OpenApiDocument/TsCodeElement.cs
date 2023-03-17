@@ -61,6 +61,8 @@ public abstract class TsCodeElement
 
   public bool? Optional { get; set; }
 
+  public bool? OverrideHeadOptional { get; set; } = null;
+
   public string? Summary { get; set; }
   public string? Description { get; set; }
 
@@ -114,13 +116,18 @@ public abstract class TsCodeElement
       case "Head-Head":
         throw new Exception("not correct merge");
       case "Head-Body":
+        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Enum, ExportName: null } && TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value)
+        {
+          code.ExtractTo(Name, TsCodeWriter.SchemaFile);
+        }
         AppendImports(code);
         AppendComments(code);
-        if (code.Optional !=null && Optional == null)
+        // if (code.Optional !=null && Optional == null)
+        if (code.OverrideHeadOptional !=null)
         {
-          Optional = code.Optional;
+          Optional = code.OverrideHeadOptional;
         }
-        if (code is SchemaObject { SchemaType: SchemaType.Array, ExportName: null })
+        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Array, ExportName: null })
         {
           _isContentArray = true;
         }
@@ -201,7 +208,7 @@ public abstract class TsCodeElement
   private string ExportToString()
   {
     string name;
-    string connector;
+    string connector = " ";
     var content = GenerateCodeBody();
     var exportType = ExportTypeValue;
     switch (exportType)
@@ -230,6 +237,10 @@ public abstract class TsCodeElement
 
         content += ";";
         break;
+      case ExportType.Enum:
+        name = $"export enum {ExportName}";
+        break;
+
       default:
         throw new Exception("To be exported code doesn't  have export type");
     }
@@ -348,15 +359,15 @@ public abstract class TsCodeElement
   }
 
   public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict, bool isReadonly = false,
-    Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null) where T : TsCodeElement
+    Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null, bool? defaultOptional = false) where T : TsCodeElement
   {
     var sorted = dict.OrderBy(e => e.Key);
     List<TsCodeElement> tsCodes = new();
     foreach (var (key, c) in sorted)
     {
       var code = c.GenerateTsCode();
-      var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = false };
-      if (onItemGenerated != null) onItemGenerated(key, c, t);
+      var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = defaultOptional };
+      if (onItemGenerated != null) onItemGenerated(key, code, t);
       t.Merge(code);
       tsCodes.Add(t);
     }
@@ -407,5 +418,6 @@ public abstract class TsCodeElement
 public enum ExportType
 {
   Interface,
-  Type
+  Type,
+  Enum,
 }

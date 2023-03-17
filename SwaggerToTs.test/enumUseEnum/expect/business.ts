@@ -3,13 +3,15 @@
  * Do not make direct changes to the file.
  */
 
+import { City, Color } from './data-schema';
+
 export interface BusinessGetEP {
   Request: {
     Query: BusinessGetQuery;
   };
   Responses: {
     /**
-     * @Description get success
+     * @Description success
      */
     200: {
       Content: null;
@@ -18,6 +20,6 @@ export interface BusinessGetEP {
 }
 
 export interface BusinessGetQuery {
-  readonly id: number;
-  readonly name?: string;
+  readonly city?: City;
+  readonly color: Color;
 }

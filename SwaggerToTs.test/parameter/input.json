@@ -72,7 +72,8 @@
             "name": "gzip",
             "in": "header",
             "schema": {
-              "type": "boolean"
+              "type": "boolean",
+              "nullable": true
             }
           },
           {

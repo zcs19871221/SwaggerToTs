@@ -1,0 +1,35 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "nullable": true,
+              "enum": ["Beijing","Shanghai"]
+            }
+          },
+          {
+            "name": "color",
+            "in": "query",
+            "schema": {
+              "enum": ["red","green"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

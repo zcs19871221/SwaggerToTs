@@ -21,6 +21,7 @@ public class Options
     new NullableAsOptional(),
     new AggregateSchemaFile(),
     new EnableNullableContext(),
+    new EnumUseEnum(),
     new Helper()
   };
   
@@ -179,7 +180,14 @@ class EnableNullableContext : BoolHandler, IOption
 {
   public string CommandName => "enableNullableContext";
   public string ShortCommandName => "e";
-  public string Desc => "Treat all non-nullable types as required (default: Treat value types: int, struct(DateTime, Guid), bool, enum as mandatory)";
+  public string Desc => "Treat all non-nullable types as required (default: Treat non-nullable value types: int, struct(DateTime, Guid), bool, enum as mandatory)";
+}
+
+class EnumUseEnum : BoolHandler, IOption
+{
+  public string CommandName => "enumUseEnum";
+  public string ShortCommandName => "eUe";
+  public string Desc => "Convert enumerated types to Enum type (default: Convert enumerated types to union types)";
 
 }
 

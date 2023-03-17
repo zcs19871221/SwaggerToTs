@@ -21,6 +21,30 @@
       "summary": "business endpoint",
       "description": "all business related info",
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "nullable": false
+            }
+          },
+          {
+            "in": "query",
+            "name": "address",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isActive": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "not found",
