@@ -13,7 +13,11 @@ public class MediaTypeObject : TsCodeElement
   protected override TsCodeElement CreateTsCode()
   {
     ReadOnly = true;
-    if (Schema != null) return Schema.GenerateTsCode();
+    if (Schema != null)
+    {
+      Schema.IsFromResponse = true;
+      return Schema.GenerateTsCode();
+    }
 
     return this;
   }

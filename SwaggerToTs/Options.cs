@@ -62,7 +62,7 @@ public class Options
     }
 
     var tips = string.Join("\n  ", OptionHandlers.Select(e =>
-      $"-{e.ShortCommandName}, --{e.CommandName}".PadRight(25, ' ') +  $"{e.Desc}{(e.DefaultValue != null ? " (default: " + e.DefaultValue + ")" : "")}").Prepend("Options:").Prepend("dotnet ts [options]"));
+      $"-{e.ShortCommandName,-5}, --{e.CommandName}".PadRight(35, ' ') +  $"{e.Desc}{(e.DefaultValue != null ? " (default: " + e.DefaultValue + ")" : "")}").Prepend("Options:").Prepend("dotnet ts [options]"));
     foreach (var (name,value) in arguments)
     {
       var optionHandler = OptionHandlers.Find(o => o.CommandName == name || o.ShortCommandName == name);
@@ -168,7 +168,7 @@ class NullableAsOptional : BoolHandler,IOption
 {
   public string CommandName => "nullableAsOptional";
   public string ShortCommandName => "n";
-  public string Desc => "make nullable reference optional - set this when the NullValueHandling.Ignore configuration in newtonsoft is added (default: false)";
+  public string Desc => "make nullable reference optional(both in request and response) - set this when the NullValueHandling.Ignore configuration in newtonsoft is added (default: false)";
 }
 class AggregateSchemaFile : BoolHandler, IOption
 {
@@ -180,7 +180,7 @@ class EnableNullableContext : BoolHandler, IOption
 {
   public string CommandName => "enableNullableContext";
   public string ShortCommandName => "e";
-  public string Desc => "Treat all non-nullable types as required (default: Treat non-nullable value types: int, struct(DateTime, Guid), bool, enum as mandatory)";
+  public string Desc => "Treat all non-nullable types as required in response (default: Treat non-nullable value types: int, struct(DateTime, Guid), bool, enum as required in response)";
 }
 
 class EnumUseEnum : BoolHandler, IOption

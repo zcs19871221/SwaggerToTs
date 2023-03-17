@@ -41,7 +41,7 @@ export interface BusinessGetEP {
 }
 
 export interface Cat {
-  readonly catch: boolean;
+  readonly catch?: boolean;
   readonly climb: boolean;
 }
 
@@ -51,16 +51,16 @@ export interface Dog {
   /**
    * @Format date-time
    */
-  readonly 'date-time': string;
+  readonly 'date-time'?: string;
   /**
    * @Format date-time
    */
   readonly 'date-timeNull'?: string | null;
-  readonly size: 'Big' | 'small';
+  readonly size?: 'Big' | 'small';
   /**
    * @Format uuid
    */
-  readonly uid: string;
+  readonly uid?: string;
   /**
    * @Format uuid
    */

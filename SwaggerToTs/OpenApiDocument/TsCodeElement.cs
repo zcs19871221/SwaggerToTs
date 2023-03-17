@@ -342,8 +342,8 @@ public abstract class TsCodeElement
     if (Reference != null)
     {
       var element = TsCodeWriter.Get().ComponentsObject?.GetRef(Reference);
+ 
       if (element == null) throw new Exception("ref element should not be null");
-
       target = element.DoCreateTsCode().ExtractTo();
       TsCodeWriter.Get().RefMappingCode.Add(Reference, target);
       element._isGenerated = true;
@@ -359,14 +359,14 @@ public abstract class TsCodeElement
   }
 
   public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict, bool isReadonly = false,
-    Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null, bool? defaultOptional = false) where T : TsCodeElement
+    Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null) where T : TsCodeElement
   {
     var sorted = dict.OrderBy(e => e.Key);
     List<TsCodeElement> tsCodes = new();
     foreach (var (key, c) in sorted)
     {
       var code = c.GenerateTsCode();
-      var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = defaultOptional };
+      var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = false};
       if (onItemGenerated != null) onItemGenerated(key, code, t);
       t.Merge(code);
       tsCodes.Add(t);

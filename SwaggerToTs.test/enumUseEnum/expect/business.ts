@@ -21,5 +21,5 @@ export interface BusinessGetEP {
 
 export interface BusinessGetQuery {
   readonly city?: City;
-  readonly color: Color;
+  readonly color?: Color;
 }

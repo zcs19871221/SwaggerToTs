@@ -33,7 +33,6 @@ public class EnumSchemaHandler : ISchemaHandler
     return schema.Enum.Any();
   }
 
-
   public void CreateTsCode(SchemaObject schema)
   {
     schema.SchemaType = SchemaTypeEnums.Enum;
@@ -142,6 +141,11 @@ public class ArraySchemaHandler : ISchemaHandler
     if (schema.Items == null) throw new Exception("array should not have empty items");
 
     schema.Optional ??= schema.Items.Optional;
+    
+    if (schema.IsFromResponse)
+    {
+      schema.Items.IsFromResponse = true;
+    }
 
     schema.Merge(schema.Items.GenerateTsCode(), element =>
     {
@@ -174,12 +178,20 @@ public class ObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
     Add(schema);
 
     schema.ExportTypeValue = ExportType.Interface;
-    schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a => a.Value);
+    schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a =>
+    {
+      if (schema.IsFromResponse)
+      {
+        a.Value.IsFromResponse = true;
+      }
+
+      return a.Value;
+    });
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
       (key, body, headPlusBody) =>
       {
         headPlusBody.Optional = !schema.Required.Contains(key);
-      }, null));
+      }));
   }
 }
 
@@ -229,6 +241,10 @@ public class OneOfHandler : ISchemaHandler
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Oneof)
     {
+      if (schema.IsFromResponse)
+      {
+        schemaObject.IsFromResponse = true;
+      }
       var each = schemaObject.GenerateTsCode();
       schema.Merge(each, element => { contents.Add(element); });
     }
@@ -257,6 +273,10 @@ public class AnyOfHandler : ISchemaHandler
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.AnyOf)
     {
+      if (schema.IsFromResponse)
+      {
+        schemaObject.IsFromResponse = true;
+      }
       var each = schemaObject.GenerateTsCode();
       schema.Merge(each, element => { contents.Add(element); });
     }
@@ -282,6 +302,10 @@ public class AllOfHandler : ISchemaHandler
     List<TsCodeElement> contents = new();
     foreach (var schemaObject in schema.Allof)
     {
+      if (schema.IsFromResponse)
+      {
+        schemaObject.IsFromResponse = true;
+      }
       var each = schemaObject.GenerateTsCode();
       schema.Merge(each, element => { contents.Add(element); });
     }

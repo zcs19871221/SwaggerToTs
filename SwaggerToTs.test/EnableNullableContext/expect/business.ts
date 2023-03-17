@@ -12,7 +12,7 @@ export interface BusinessGetEP {
       Content: {
         'application/json': {
           readonly int: number;
-          readonly object: Age;
+          readonly object?: Age;
           readonly string: string;
         };
       };
@@ -21,5 +21,5 @@ export interface BusinessGetEP {
 }
 
 export interface Age {
-  readonly name: string;
+  readonly name?: string;
 }

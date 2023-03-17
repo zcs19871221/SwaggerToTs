@@ -25,11 +25,12 @@ export interface BusinessGetEP {
 
 export interface BusinessGetQuery {
   readonly address?: {
-    readonly isActive: boolean;
+    readonly isActive?: boolean;
   };
-  readonly id: number;
+  readonly id?: number;
 }
 
 export interface Age {
+  readonly id?: boolean;
   readonly name?: string;
 }

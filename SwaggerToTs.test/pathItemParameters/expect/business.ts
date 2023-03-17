@@ -18,6 +18,6 @@ export interface BusinessGetEP {
 }
 
 export interface BusinessGetQuery {
-  readonly id: number;
+  readonly id?: number;
   readonly name?: string;
 }
