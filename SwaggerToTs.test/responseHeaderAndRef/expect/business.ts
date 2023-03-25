@@ -3,6 +3,13 @@
  * Do not make direct changes to the file.
  */
 
+import {
+  Encoding,
+  HeaderAndContent,
+  OnlyContent,
+  OnlyHeader
+} from './data-schema';
+
 export interface BusinessGetEP {
   Responses: {
     /**
@@ -39,42 +46,5 @@ export interface BusinessGetEP {
     404: {
       Content: null;
     };
-  };
-}
-
-export type Encoding = number;
-
-/**
- * @Description have header and content
- */
-export interface HeaderAndContent {
-  Content: {
-    'application/json': string;
-    'application/octet-stream': number;
-  };
-  Headers: {
-    'content-type'?: string;
-  };
-}
-
-/**
- * @Description only have content
- */
-export interface OnlyContent {
-  Content: {
-    'application/octet-stream': {
-      readonly age?: number;
-      readonly name?: string;
-    };
-  };
-}
-
-/**
- * @Description only have header
- */
-export interface OnlyHeader {
-  Content: null;
-  Headers: {
-    cookie?: string;
   };
 }

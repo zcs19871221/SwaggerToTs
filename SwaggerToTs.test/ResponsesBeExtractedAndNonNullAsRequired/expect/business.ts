@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+import { Age } from './data-schema';
 import { NonNullAsRequired } from './helper';
 
 export interface BusinessGetEP {
@@ -26,7 +27,3 @@ export interface BusinessGet200ApplicationJson {
 
 export type BusinessGet200ApplicationJsonResponse =
   NonNullAsRequired<BusinessGet200ApplicationJson>;
-
-export interface Age {
-  readonly name?: string;
-}

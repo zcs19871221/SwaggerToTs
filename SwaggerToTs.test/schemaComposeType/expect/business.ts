@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+import { Cat, Dog } from './data-schema';
 import { AnyOf, NonNullAsRequired, OneOf } from './helper';
 
 export interface BusinessGetEP {
@@ -44,30 +45,3 @@ export interface BusinessGet200ApplicationJson {
 
 export type BusinessGet200ApplicationJsonResponse =
   NonNullAsRequired<BusinessGet200ApplicationJson>;
-
-export interface Cat {
-  readonly catch?: boolean;
-  readonly climb: boolean;
-}
-
-export interface Dog {
-  readonly bark: string;
-  readonly color?: 'red' | 'green' | null;
-  /**
-   * @Format date-time
-   */
-  readonly 'date-time'?: string;
-  /**
-   * @Format date-time
-   */
-  readonly 'date-timeNull'?: string | null;
-  readonly size?: 'Big' | 'small';
-  /**
-   * @Format uuid
-   */
-  readonly uid?: string;
-  /**
-   * @Format uuid
-   */
-  readonly uidNull?: string | null;
-}

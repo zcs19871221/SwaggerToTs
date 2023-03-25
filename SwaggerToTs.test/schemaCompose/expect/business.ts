@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+import { Profile, RecordArray } from './data-schema';
 import { NonNullAsRequired } from './helper';
 
 export interface BusinessGetEP {
@@ -33,9 +34,3 @@ export interface BusinessGet200ApplicationJson {
 
 export type BusinessGet200ApplicationJsonResponse =
   NonNullAsRequired<BusinessGet200ApplicationJson>;
-
-export interface Profile {
-  readonly cities?: 'beijing' | 'shanghai' | null;
-}
-
-export type RecordArray = ((Record<string, unknown> | null)[] | null)[];

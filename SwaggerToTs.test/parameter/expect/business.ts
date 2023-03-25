@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { Age } from './data-schema';
+
 /**
  * @Summary business get operation summary
  *
@@ -58,13 +60,4 @@ export interface BusinessGetQuery extends Age {
    * @SerializeFormat application/json
    */
   readonly bu?: string;
-}
-
-/**
- * @Description age query
- *
- * @Format base64
- */
-export interface Age {
-  readonly ag?: string;
 }

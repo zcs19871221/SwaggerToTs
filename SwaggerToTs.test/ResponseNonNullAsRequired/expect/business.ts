@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+import { Address, AddressResponse } from './data-schema';
 import { NonNullAsRequired } from './helper';
 
 export interface BusinessGetEP {
@@ -43,10 +44,3 @@ export type BusinessGet200ApplicationXhtmlXmlResponse =
 export interface BusinessGetQuery {
   readonly id?: Address;
 }
-
-export interface Address {
-  readonly id?: boolean;
-  readonly name?: string;
-}
-
-export type AddressResponse = NonNullAsRequired<Address>;

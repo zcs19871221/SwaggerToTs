@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { UserPayload } from './data-schema';
+
 export interface BusinessGetEP {
   Request: {
     Body: UserPayload;
@@ -15,8 +17,4 @@ export interface BusinessGetEP {
       Content: null;
     };
   };
-}
-
-export interface UserPayload {
-  'application/json': string;
 }
