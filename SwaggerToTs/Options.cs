@@ -19,7 +19,6 @@ public class Options
     new MatchTags(),
     new PrintWidth(),
     new NullableAsOptional(),
-    new AggregateSchemaFile(),
     new EnumUseEnum(),
     new Helper()
   };
@@ -168,12 +167,6 @@ class NullableAsOptional : BoolHandler,IOption
   public string CommandName => "nullableAsOptional";
   public string ShortCommandName => "n";
   public string Desc => "make nullable reference optional(both in request and response) - set this when the NullValueHandling.Ignore configuration in newtonsoft is added (default: false)";
-}
-class AggregateSchemaFile : BoolHandler, IOption
-{
-  public string CommandName => "aggregate";
-  public string ShortCommandName => "a";
-  public string Desc => "save reference file to common files, default is save to the files group by swagger tags  (default: false)";
 }
 
 class EnumUseEnum : BoolHandler, IOption

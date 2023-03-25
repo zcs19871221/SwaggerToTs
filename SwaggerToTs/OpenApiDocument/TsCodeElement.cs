@@ -28,10 +28,8 @@ public abstract class TsCodeElement
   public HashSet<TsCodeElement> ExtractedCodeImports { get; private set; } = new();
   public string? ExportContent { get; private set; }
 
-  public static string NewLine = "\n";
+  public static readonly string NewLine = "\n";
   public List<string> Extends { get; } = new();
-
-  public HashSet<TsCodeElement> References { get; } = new();
 
   public string? ExportName
   {
@@ -50,8 +48,6 @@ public abstract class TsCodeElement
 
   public int Priority { get; set; }
 
-  public string? DefaultFileLocate { get; set; }
-
   public ExportType ExportTypeValue { get; set; } = ExportType.Interface;
 
 
@@ -61,14 +57,14 @@ public abstract class TsCodeElement
 
   public bool? Optional { get; set; }
 
-  public bool? OverrideHeadOptional { get; set; } = null;
+  protected bool? OverrideHeadOptional { get; set; }
 
   public string? Summary { get; set; }
   public string? Description { get; set; }
 
   [JsonProperty(PropertyName = "$ref")] public string? Reference { get; set; }
 
-  private CodeType _codeType => Name == null ? CodeType.Body : CodeType.Head;
+  private CodeType CodePosition => Name == null ? CodeType.Body : CodeType.Head;
 
   private string FormatExportName(string? value)
   {
@@ -110,7 +106,7 @@ public abstract class TsCodeElement
   {
     if (code.IsEmpty()) return this;
 
-    var mergeType = _codeType + "-" + code._codeType;
+    var mergeType = CodePosition + "-" + code.CodePosition;
     switch (mergeType)
     {
       case "Head-Head":
@@ -180,7 +176,7 @@ public abstract class TsCodeElement
     var name = "";
     var connector = "";
     var content = Contents;
-    if (_codeType == CodeType.Head)
+    if (CodePosition == CodeType.Head)
     {
       name = $"{(ReadOnly ? "readonly " : "")}{Name}{(Optional ?? true ? "?" : "")}";
       connector = ": ";
@@ -318,8 +314,6 @@ public abstract class TsCodeElement
 
     if (string.IsNullOrWhiteSpace(ExportName)) throw new Exception("export Name should not be empty");
 
-    foreach (var dep in _imports) dep.References.Add(this);
-
     ExtractedCodeImports = _imports;
 
     ExportContent = ExportToString();
@@ -428,7 +422,7 @@ public abstract class TsCodeElement
     return char.ToUpperInvariant(name[0]) + name.Substring(1);
   }
 
-  public static TsCodeElement CreateFragment(IEnumerable<TsCodeElement> codes,
+  protected static TsCodeElement CreateFragment(IEnumerable<TsCodeElement> codes,
     Action<TsCodeElement, TsCodeElement>? mergeHandler = null)
   {
     var fragment = new TsCodeFragment

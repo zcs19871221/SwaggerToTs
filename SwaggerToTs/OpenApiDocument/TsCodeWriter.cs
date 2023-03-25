@@ -121,34 +121,6 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
     _codes.Add(element);
   }
 
-  private string GetOrSetFileLocateIfNotExists(TsCodeElement element)
-  {
-    if (element.FileLocate != null) return element.FileLocate;
-    if (Options.Get<AggregateSchemaFile>().Value)
-    {
-      element.FileLocate = element.DefaultFileLocate ?? throw new InvalidOperationException();
-      return element.FileLocate;
-    }
-    HashSet<string> file = new();
-    foreach (var codeReference in element.References) file.Add(GetOrSetFileLocateIfNotExists(codeReference));
-
-    string fileLocate;
-
-    if (file.Count == 1)
-    {
-      fileLocate = file.First();
-      element.Priority = 1;
-    }
-    else
-    {
-      fileLocate = element.DefaultFileLocate ?? throw new InvalidOperationException();
-    }
-
-    element.FileLocate = fileLocate;
-    return fileLocate;
-  }
-
-
   private string GetRelativePath(string baseFile, string fileToImport)
   {
     return $"./{fileToImport}";
@@ -159,7 +131,7 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
   {
     var separator = exclusiveRow ? TsCodeElement.NewLine + "  " : " ";
     var content =
-      $@"import {{{separator}{string.Join("," + separator, imports)}{(exclusiveRow ? TsCodeElement.NewLine : " ")}}} from '{GetRelativePath(fileLocate, fileToImport)}';";
+      $@"import {{{separator}{string.Join("," + separator, imports)}{(exclusiveRow ? TsCodeElement.NewLine : " ")}}} from './{fileToImport}';";
     if (!exclusiveRow && content.Length > Options.Get<PrintWidth>().Value) return CreateImport(imports, fileLocate, fileToImport, true);
 
     return content;
@@ -184,8 +156,7 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
     Dictionary<string, string> fileMappingText = new();
     foreach (var code in _codes)
     {
-      code.FileLocate = GetOrSetFileLocateIfNotExists(code);
-      fileMappingOutput.GetOrCreate(code.FileLocate).Add(code);
+      fileMappingOutput.GetOrCreate(code.FileLocate ?? throw new Exception("should have fileLocate")).Add(code);
     }
 
     foreach (var (fileLocate, outputs) in fileMappingOutput)
@@ -210,10 +181,9 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
         dup.Add(output.ExportName);
         foreach (var codeDependency in output.ExtractedCodeImports)
         {
-          var dependencyLocate = GetOrSetFileLocateIfNotExists(codeDependency);
-          if (codeDependency.ExportName == null) throw new Exception("code to export should not have empty value");
+          if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty value");
 
-          if (dependencyLocate != fileLocate) imports.GetOrCreate(dependencyLocate).Add(codeDependency.ExportName);
+          if (codeDependency.FileLocate != fileLocate) imports.GetOrCreate(codeDependency.FileLocate).Add(codeDependency.ExportName);
         }
 
         foreach (var helperName in output.ExtractedCodeImportedHelpers)
