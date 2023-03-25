@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { Name } from './data-schema';
+
 export interface BusinessGetEP {
   Request: {
     Query: Name;
@@ -15,8 +17,4 @@ export interface BusinessGetEP {
       Content: null;
     };
   };
-}
-
-export interface Name {
-  readonly name?: string;
 }
