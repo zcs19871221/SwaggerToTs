@@ -20,7 +20,6 @@ public class Options
     new PrintWidth(),
     new NullableAsOptional(),
     new AggregateSchemaFile(),
-    new EnableNullableContext(),
     new EnumUseEnum(),
     new Helper()
   };
@@ -175,12 +174,6 @@ class AggregateSchemaFile : BoolHandler, IOption
   public string CommandName => "aggregate";
   public string ShortCommandName => "a";
   public string Desc => "save reference file to common files, default is save to the files group by swagger tags  (default: false)";
-}
-class EnableNullableContext : BoolHandler, IOption
-{
-  public string CommandName => "enableNullableContext";
-  public string ShortCommandName => "e";
-  public string Desc => "Treat all non-nullable types as required in response (default: Treat non-nullable value types: int, struct(DateTime, Guid), bool, enum as required in response)";
 }
 
 class EnumUseEnum : BoolHandler, IOption

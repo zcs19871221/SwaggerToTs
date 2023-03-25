@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { NonNullAsRequired } from './helper';
+
 export interface BusinessGetEP {
   Responses: {
     /**
@@ -10,15 +12,19 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': {
-          readonly int: number;
-          readonly object?: Age;
-          readonly string: string;
-        };
+        'application/json': BusinessGet200JsonResponse;
       };
     };
   };
 }
+
+export interface BusinessGet200Json {
+  readonly int?: number;
+  readonly object?: Age;
+  readonly string?: string;
+}
+
+export type BusinessGet200JsonResponse = NonNullAsRequired<BusinessGet200Json>;
 
 export interface Age {
   readonly name?: string;

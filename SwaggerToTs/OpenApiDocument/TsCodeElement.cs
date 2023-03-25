@@ -13,19 +13,19 @@ public abstract class TsCodeElement
 
   private readonly List<(string, string)> _comments = new();
   private HashSet<TsCodeElement> _imports = new();
-  public  List<string> HelpersToImport = new();
-  public  List<string> HelpersForWrite = new();
+  public List<string> ImportedHelpers = new();
+  public List<string> ExtractedCodeImportedHelpers = new();
+
 
   private string? _exportName;
   private bool _isContentArray;
 
-  
 
   private bool _isExtracted;
 
   private bool _isGenerated;
   private string? _name;
-  public HashSet<TsCodeElement> Imports { get; private set; } = new();
+  public HashSet<TsCodeElement> ExtractedCodeImports { get; private set; } = new();
   public string? ExportContent { get; private set; }
 
   public static string NewLine = "\n";
@@ -116,21 +116,13 @@ public abstract class TsCodeElement
       case "Head-Head":
         throw new Exception("not correct merge");
       case "Head-Body":
-        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Enum, ExportName: null } && TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value)
-        {
-          code.ExtractTo(Name, TsCodeWriter.SchemaFile);
-        }
+        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Enum, ExportName: null } &&
+            TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value) code.ExtractTo(Name, TsCodeWriter.SchemaFile);
         AppendImports(code);
         AppendComments(code);
         // if (code.Optional !=null && Optional == null)
-        if (code.OverrideHeadOptional !=null)
-        {
-          Optional = code.OverrideHeadOptional;
-        }
-        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Array, ExportName: null })
-        {
-          _isContentArray = true;
-        }
+        if (code.OverrideHeadOptional != null) Optional = code.OverrideHeadOptional;
+        if (code is SchemaObject { SchemaType: SchemaTypeEnums.Array, ExportName: null }) _isContentArray = true;
         break;
       case "Body-Body":
         AppendImports(code);
@@ -160,7 +152,7 @@ public abstract class TsCodeElement
 
     return $"'{name}'";
   }
-  
+
   private StringBuilder WriteComments()
   {
     StringBuilder sb = new();
@@ -208,7 +200,7 @@ public abstract class TsCodeElement
   private string ExportToString()
   {
     string name;
-    string connector = " ";
+    var connector = " ";
     var content = GenerateCodeBody();
     var exportType = ExportTypeValue;
     switch (exportType)
@@ -228,7 +220,8 @@ public abstract class TsCodeElement
       case ExportType.Type:
         name = $"export type {ExportName}";
         connector = " = ";
-        if (content.Contains("|") && $"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
+        if (content.Contains("|") &&
+            $"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
         {
           var separator = NewLine + "  | ";
           connector = " =";
@@ -261,15 +254,9 @@ public abstract class TsCodeElement
 
   private void AppendImports(TsCodeElement t)
   {
-    foreach (var tDependency in t._imports)
-    {
-      _imports.Add(tDependency);
-    }
+    foreach (var tDependency in t._imports) _imports.Add(tDependency);
 
-    foreach (var helpers in t.HelpersToImport)
-    {
-      HelpersToImport.Add(helpers);
-    }
+    foreach (var helpers in t.ImportedHelpers) ImportedHelpers.Add(helpers);
   }
 
   private void AppendComments(TsCodeElement code)
@@ -286,6 +273,35 @@ public abstract class TsCodeElement
     return this;
   }
 
+  public TsCodeElement NonNullAsRequired()
+  {
+    if (!_isExtracted || ExportName == null) throw new Exception("NonNullAsRequired should apply on extracted code");
+
+    if (ExtractedForResponse != null) return ExtractedForResponse;
+    var newItem = new TsCodeFragment();
+    var newExportName = ExportName;
+    newItem.ExportName = newExportName + "Response";
+    newItem.FileLocate = FileLocate;
+    newItem.ExtractedCodeImports = new HashSet<TsCodeElement>
+    {
+      this
+    };
+    newItem.Contents = newItem.ExportName;
+    newItem._imports = new HashSet<TsCodeElement>
+    {
+      newItem
+    };
+    newItem.ExtractedCodeImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
+
+    newItem.ExportTypeValue = ExportType.Type;
+    newItem.ExportContent = $"export type {newItem.ExportName} = {TsCodeWriter.NonNullAsRequired}<{ExportName}>;";
+    TsCodeWriter.Get().Add(newItem);
+    ExtractedForResponse = newItem;
+    return newItem;
+  }
+
+  private TsCodeElement? ExtractedForResponse { get; set; }
+
   public TsCodeElement ExtractTo(string? exportName = null, string? fileLocate = null)
   {
     if (IsEmpty() || _isExtracted) return this;
@@ -295,22 +311,19 @@ public abstract class TsCodeElement
 
     if (fileLocate != null) FileLocate = fileLocate;
 
-    if (string.IsNullOrWhiteSpace(ExportName))
-    {
-      throw new Exception("export Name should not be empty");
-    }
+    if (string.IsNullOrWhiteSpace(ExportName)) throw new Exception("export Name should not be empty");
 
     foreach (var dep in _imports) dep.References.Add(this);
 
-    Imports = _imports;
+    ExtractedCodeImports = _imports;
 
     ExportContent = ExportToString();
     Contents = ExportName;
     Name = null;
     _comments.Clear();
     _imports = new HashSet<TsCodeElement> { this };
-    HelpersForWrite = HelpersToImport;
-    HelpersToImport = new();
+    ExtractedCodeImportedHelpers = ImportedHelpers;
+    ImportedHelpers = new List<string>();
     TsCodeWriter.Get().Add(this);
     _isExtracted = true;
     return this;
@@ -342,7 +355,7 @@ public abstract class TsCodeElement
     if (Reference != null)
     {
       var element = TsCodeWriter.Get().ComponentsObject?.GetRef(Reference);
- 
+
       if (element == null) throw new Exception("ref element should not be null");
       target = element.DoCreateTsCode().ExtractTo();
       TsCodeWriter.Get().RefMappingCode.Add(Reference, target);
@@ -358,19 +371,40 @@ public abstract class TsCodeElement
     return target;
   }
 
-  public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict, bool isReadonly = false,
-    Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null) where T : TsCodeElement
+  // public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict, bool isReadonly = false,
+  //   Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null, Action<TsCodeElement>? mergeHandler = null) where T : TsCodeElement
+  // {
+  //   var sorted = dict.OrderBy(e => e.Key);
+  //   List<TsCodeElement> tsCodes = new();
+  //   foreach (var (key, c) in sorted)
+  //   {
+  //     var code = c.GenerateTsCode();
+  //     var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = false};
+  //     if (onItemGenerated != null) onItemGenerated(key, code, t);
+  //     t.Merge(code, mergeHandler);
+  //     tsCodes.Add(t);
+  //   }
+  //
+  //   var result = CreateFragment(tsCodes);
+  //   result.Contents = WriteBrackets(result.Contents);
+  //   return result;
+  // }
+
+  private static TsCodeElement DefaultHandler<T>(string key, T item) where T : TsCodeElement
+  {
+    var t = new TsCodeFragment { Name = key, ReadOnly = false, Optional = false };
+    var code = item.GenerateTsCode();
+    t.Merge(code);
+    return t;
+  }
+
+  public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict,
+    Func<string, T, TsCodeElement>? handler = null) where T : TsCodeElement
   {
     var sorted = dict.OrderBy(e => e.Key);
+    handler ??= DefaultHandler;
     List<TsCodeElement> tsCodes = new();
-    foreach (var (key, c) in sorted)
-    {
-      var code = c.GenerateTsCode();
-      var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = false};
-      if (onItemGenerated != null) onItemGenerated(key, code, t);
-      t.Merge(code);
-      tsCodes.Add(t);
-    }
+    foreach (var (key, item) in sorted) tsCodes.Add(handler(key, item));
 
     var result = CreateFragment(tsCodes);
     result.Contents = WriteBrackets(result.Contents);
@@ -419,5 +453,5 @@ public enum ExportType
 {
   Interface,
   Type,
-  Enum,
+  Enum
 }

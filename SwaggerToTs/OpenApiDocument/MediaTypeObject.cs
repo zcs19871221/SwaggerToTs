@@ -4,6 +4,7 @@ public class MediaTypeObject : TsCodeElement
 {
   public SchemaObject? Schema { get; set; }
 
+  public bool IsFromResponse { get; set; }
   //encoding todo
 
   protected override void ValidateOpenApiDocument()
@@ -15,7 +16,6 @@ public class MediaTypeObject : TsCodeElement
     ReadOnly = true;
     if (Schema != null)
     {
-      Schema.IsFromResponse = true;
       return Schema.GenerateTsCode();
     }
 

@@ -41,24 +41,12 @@ public class SchemaObject : TsCodeElement
   {
     AddComment(nameof(Title), Title).AddComment(nameof(Format), Format);
     var options = TsCodeWriter.Get().Options;
-    var enableNullableContext = options.Get<EnableNullableContext>().Value;
     foreach (var handler in SchemaHandlers)
       if (handler.IsMatch(this))
       {
         handler.CreateTsCode(this);
         switch (Nullable)
         {
-          case false when enableNullableContext:
-          case false when !enableNullableContext &&
-                          (SchemaType is SchemaTypeEnums.Integer or SchemaTypeEnums.Number or SchemaTypeEnums.Bool ||
-                           (SchemaType == SchemaTypeEnums.String && Format is "date-time" or "uuid") ||
-                           SchemaType == SchemaTypeEnums.Enum
-                          ):
-            if (IsFromResponse)
-            {
-              OverrideHeadOptional = false;
-            }
-            break;
           case true :
             if (options.Get<NullableAsOptional>().Value)
             {
@@ -130,7 +118,6 @@ public class SchemaObject : TsCodeElement
 
   public int? MinProperties { get; set; }
   public int? MaxProperties { get; set; }
-  public bool IsFromResponse { get; set; }
 
   #endregion
 }

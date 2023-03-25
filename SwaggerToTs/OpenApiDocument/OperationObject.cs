@@ -69,10 +69,19 @@ public class OperationObject : TsCodeElement
     RequestBodyObject.MergeRequestBody(requestParameters, this);
 
 
-    var responses = CreateFragment(Responses);
     return Merge(CreateFragment(new Dictionary<string, TsCodeElement>
     {
-      { "Request", CreateFragment(requestParameters) }, { "Responses", responses }
+      { "Request", CreateFragment(requestParameters) }, { "Responses",  CreateFragment(Responses, (s, o) =>
+      {
+        var wrapper = new TsCodeFragment
+        {
+          Optional = false,
+          Name = s
+        };
+        o.OperationObject = this;
+        o.StatusCode = s;
+        return wrapper.Merge(o.GenerateTsCode());
+      }) }
     })).ExtractTo();
   }
 }

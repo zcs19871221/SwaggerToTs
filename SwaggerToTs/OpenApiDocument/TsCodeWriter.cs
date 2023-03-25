@@ -30,6 +30,7 @@ public class TsCodeWriter
 
   public static string OneOfName = "OneOf";
   public static string AnyOfName = "AnyOf";
+  public static string NonNullAsRequired = "NonNullAsRequired";
 
   public  const string SchemaFile = "data-schema";
   private static readonly string HelperContent = $@"/* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,6 +54,18 @@ export type {OneOfName}<T extends any[]> = {{
 }}[number];
 
 export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
+
+type NullKeys<T> = {{
+  [k in keyof T]: null extends T[k] ? k : never;
+}}[keyof T];
+
+export type {NonNullAsRequired}<T> = T extends (infer U)[]
+  ? NonNullAsRequired<U>[]
+  : T extends object
+  ? Pick<T, NullKeys<T>> & {{
+      [K in Exclude<keyof T, NullKeys<T>>]-?: NonNullAsRequired<T[K]>;
+    }}
+  : T;
 ";
 
   private const string HelperLocate = "helper";
@@ -195,7 +208,7 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
           throw new Exception($"dup export name {output.ExportName} in {fileLocate}");
 
         dup.Add(output.ExportName);
-        foreach (var codeDependency in output.Imports)
+        foreach (var codeDependency in output.ExtractedCodeImports)
         {
           var dependencyLocate = GetOrSetFileLocateIfNotExists(codeDependency);
           if (codeDependency.ExportName == null) throw new Exception("code to export should not have empty value");
@@ -203,7 +216,7 @@ export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
           if (dependencyLocate != fileLocate) imports.GetOrCreate(dependencyLocate).Add(codeDependency.ExportName);
         }
 
-        foreach (var helperName in output.HelpersForWrite)
+        foreach (var helperName in output.ExtractedCodeImportedHelpers)
         {
           imports.GetOrCreate(HelperLocate).Add(helperName);
           fileMappingText.TryAdd(GetFullPath(HelperLocate), HelperContent);

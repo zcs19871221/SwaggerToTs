@@ -23,12 +23,13 @@ public class RequestBodyObject : TsCodeElement
     return this;
   }
 
-  private static string _bodyName = "Body";
+  private const string BodyName = "Body";
+
   public static void MergeRequestBody(IDictionary<string, TsCodeElement> requestParameters, OperationObject operation)
   {
     if (operation.RequestBody != null)
     {
-      requestParameters.Add(_bodyName, operation.RequestBody.GenerateTsCode());
+      requestParameters.Add(BodyName, operation.RequestBody.GenerateTsCode());
     }
   }
 }

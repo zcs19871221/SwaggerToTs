@@ -142,11 +142,6 @@ public class ArraySchemaHandler : ISchemaHandler
 
     schema.Optional ??= schema.Items.Optional;
     
-    if (schema.IsFromResponse)
-    {
-      schema.Items.IsFromResponse = true;
-    }
-
     schema.Merge(schema.Items.GenerateTsCode(), element =>
     {
       var content = Helper.AddBracketIfNeed(element);
@@ -178,138 +173,123 @@ public class ObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
     Add(schema);
 
     schema.ExportTypeValue = ExportType.Interface;
-    schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a =>
+    schema.Properties = schema.Properties.ToDictionary(a => TsCodeElement.ToCamelCase(a.Key), a => a.Value);
+    schema.Merge(TsCodeElement.CreateFragment(schema.Properties, (key, o) =>
     {
-      if (schema.IsFromResponse)
+      var wrapper = new TsCodeFragment
       {
-        a.Value.IsFromResponse = true;
-      }
-
-      return a.Value;
-    });
-    schema.Merge(TsCodeElement.CreateFragment(schema.Properties, true,
-      (key, body, headPlusBody) =>
-      {
-        headPlusBody.Optional = !schema.Required.Contains(key);
-      }));
+        Name = key,
+        ReadOnly = true,
+        Optional = false,
+      };
+      var item = o.GenerateTsCode();
+      wrapper.Optional = !schema.Required.Contains(key);
+      return wrapper.Merge(item);
+    }));
   }
 }
 
-public class AnyObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
-{
-  public bool IsMatch(SchemaObject schema)
+  public class AnyObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
   {
-    return schema.Type == "object" && !schema.Properties.Any();
-  }
-
-
-  public void CreateTsCode(SchemaObject schema)
-  {
-    Add(schema);
-    schema.Contents = @"Record<string, unknown>";
-  }
-}
-
-public class UnknownSchemaHandler : ISchemaHandler
-{
-  public bool IsMatch(SchemaObject schema)
-  {
-    return true;
-  }
-
-
-  public void CreateTsCode(SchemaObject schema)
-  {
-    schema.SchemaType = SchemaTypeEnums.Any;
-    schema.Nullable = false;
-    schema.Contents = "unknown";
-  }
-}
-
-public class OneOfHandler : ISchemaHandler
-{
-  public bool IsMatch(SchemaObject schema)
-  {
-    return schema.Oneof.Any();
-  }
-
-  private static readonly Dictionary<string, TsCodeElement> Helpers = new();
-
-  public void CreateTsCode(SchemaObject schema)
-  {
-    schema.SchemaType = SchemaTypeEnums.OneOf;
-    List<TsCodeElement> contents = new();
-    foreach (var schemaObject in schema.Oneof)
+    public bool IsMatch(SchemaObject schema)
     {
-      if (schema.IsFromResponse)
-      {
-        schemaObject.IsFromResponse = true;
-      }
-      var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element => { contents.Add(element); });
+      return schema.Type == "object" && !schema.Properties.Any();
     }
 
 
-    var name = TsCodeWriter.OneOfName;
-
-    schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
-    schema.HelpersToImport.Add(name);
-  }
-}
-
-public class AnyOfHandler : ISchemaHandler
-{
-  public bool IsMatch(SchemaObject schema)
-  {
-    return schema.AnyOf.Any();
-  }
-
-
-  private static readonly Dictionary<string, TsCodeElement> Helpers = new();
-
-  public void CreateTsCode(SchemaObject schema)
-  {
-    schema.SchemaType = SchemaTypeEnums.AnyOf;
-    List<TsCodeElement> contents = new();
-    foreach (var schemaObject in schema.AnyOf)
+    public void CreateTsCode(SchemaObject schema)
     {
-      if (schema.IsFromResponse)
-      {
-        schemaObject.IsFromResponse = true;
-      }
-      var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element => { contents.Add(element); });
+      Add(schema);
+      schema.Contents = @"Record<string, unknown>";
+    }
+  }
+
+  public class UnknownSchemaHandler : ISchemaHandler
+  {
+    public bool IsMatch(SchemaObject schema)
+    {
+      return true;
     }
 
-    var name = TsCodeWriter.AnyOfName;
 
-    schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
-    schema.HelpersToImport.Add(name);
-  }
-}
-
-public class AllOfHandler : ISchemaHandler
-{
-  public bool IsMatch(SchemaObject schema)
-  {
-    return schema.Allof.Any();
-  }
-
-
-  public void CreateTsCode(SchemaObject schema)
-  {
-    schema.SchemaType = SchemaTypeEnums.AllOf;
-    List<TsCodeElement> contents = new();
-    foreach (var schemaObject in schema.Allof)
+    public void CreateTsCode(SchemaObject schema)
     {
-      if (schema.IsFromResponse)
-      {
-        schemaObject.IsFromResponse = true;
-      }
-      var each = schemaObject.GenerateTsCode();
-      schema.Merge(each, element => { contents.Add(element); });
+      schema.SchemaType = SchemaTypeEnums.Any;
+      schema.Nullable = false;
+      schema.Contents = "unknown";
+    }
+  }
+
+  public class OneOfHandler : ISchemaHandler
+  {
+    public bool IsMatch(SchemaObject schema)
+    {
+      return schema.Oneof.Any();
     }
 
-    schema.Contents = string.Join(" & ", contents.Select(Helper.AddBracketIfNeed));
+    public void CreateTsCode(SchemaObject schema)
+    {
+      schema.SchemaType = SchemaTypeEnums.OneOf;
+      List<TsCodeElement> contents = new();
+      foreach (var schemaObject in schema.Oneof)
+      {
+        var each = schemaObject.GenerateTsCode();
+        schema.Merge(each, element => { contents.Add(element); });
+      }
+
+
+      var name = TsCodeWriter.OneOfName;
+
+      schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
+      schema.ImportedHelpers.Add(name);
+    }
   }
+
+  public class AnyOfHandler : ISchemaHandler
+  {
+    public bool IsMatch(SchemaObject schema)
+    {
+      return schema.AnyOf.Any();
+    }
+
+
+    private static readonly Dictionary<string, TsCodeElement> Helpers = new();
+
+    public void CreateTsCode(SchemaObject schema)
+    {
+      schema.SchemaType = SchemaTypeEnums.AnyOf;
+      List<TsCodeElement> contents = new();
+      foreach (var schemaObject in schema.AnyOf)
+      {
+        var each = schemaObject.GenerateTsCode();
+        schema.Merge(each, element => { contents.Add(element); });
+      }
+
+      var name = TsCodeWriter.AnyOfName;
+
+      schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
+      schema.ImportedHelpers.Add(name);
+    }
+  }
+
+  public class AllOfHandler : ISchemaHandler
+  {
+    public bool IsMatch(SchemaObject schema)
+    {
+      return schema.Allof.Any();
+    }
+
+
+    public void CreateTsCode(SchemaObject schema)
+    {
+      schema.SchemaType = SchemaTypeEnums.AllOf;
+      List<TsCodeElement> contents = new();
+      foreach (var schemaObject in schema.Allof)
+      {
+        var each = schemaObject.GenerateTsCode();
+        schema.Merge(each, element => { contents.Add(element); });
+      }
+
+      schema.Contents = string.Join(" & ", contents.Select(Helper.AddBracketIfNeed));
+    }
 }
