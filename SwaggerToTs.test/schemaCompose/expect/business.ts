@@ -12,13 +12,13 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': BusinessGet200JsonResponse;
+        'application/json': BusinessGet200ApplicationJsonResponse;
       };
     };
   };
 }
 
-export interface BusinessGet200Json {
+export interface BusinessGet200ApplicationJson {
   readonly info?: {
     readonly enumArrayItems?: readonly ('hello' | 'world' | null)[][];
     readonly enums?: 1 | '2' | 4444444444.2344 | null;
@@ -31,7 +31,8 @@ export interface BusinessGet200Json {
   };
 }
 
-export type BusinessGet200JsonResponse = NonNullAsRequired<BusinessGet200Json>;
+export type BusinessGet200ApplicationJsonResponse =
+  NonNullAsRequired<BusinessGet200ApplicationJson>;
 
 export interface Profile {
   readonly cities?: 'beijing' | 'shanghai' | null;

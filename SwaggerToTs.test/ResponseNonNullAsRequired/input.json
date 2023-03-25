@@ -6,7 +6,7 @@
   },
   "components": {
     "schemas": {
-      "Age":{
+      "Address":{
         "type": "object",
         "properties": {
           "name": {
@@ -30,21 +30,7 @@
             "name": "id",
             "required": false,
             "schema": {
-              "type": "integer",
-              "nullable": false
-            }
-          },
-          {
-            "in": "query",
-            "name": "address",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "isActive": {
-                  "type": "boolean"
-                }
-              }
+              "$ref": "#/components/schemas/Address"
             }
           }
         ],
@@ -54,16 +40,36 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              },
+              "application/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              },
+              "application/xhtml+xml": {
+                "schema": {
                   "type": "object",
                   "properties": {
-                    "string": {
+                    "name": {
                       "type": "string"
                     },
-                    "int": {
-                      "type": "integer"
+                    "id": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              },
+              "application/stream+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
                     },
-                    "object": {
-                      "$ref": "#/components/schemas/Age"
+                    "id": {
+                      "type": "boolean"
                     }
                   }
                 }

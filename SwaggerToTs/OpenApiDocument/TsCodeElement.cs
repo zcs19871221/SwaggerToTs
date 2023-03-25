@@ -197,11 +197,11 @@ public abstract class TsCodeElement
     return ToString(body);
   }
 
-  private string ExportToString()
+  private string ExportToString(string? content = null)
   {
     string name;
     var connector = " ";
-    var content = GenerateCodeBody();
+    content ??= GenerateCodeBody();
     var exportType = ExportTypeValue;
     switch (exportType)
     {
@@ -220,14 +220,19 @@ public abstract class TsCodeElement
       case ExportType.Type:
         name = $"export type {ExportName}";
         connector = " = ";
-        if (content.Contains("|") &&
-            $"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
+        if ($"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
         {
-          var separator = NewLine + "  | ";
-          connector = " =";
-          content = separator + string.Join(separator, content.Split("|").Select(e => e.Trim()));
+          if (content.Contains("|"))
+          {
+            var separator = NewLine + "  | ";
+            connector = " =";
+            content = separator + string.Join(separator, content.Split("|").Select(e => e.Trim()));
+          }
+          else
+          {
+            connector = " =\n  ";
+          }
         }
-
         content += ";";
         break;
       case ExportType.Enum:
@@ -294,7 +299,7 @@ public abstract class TsCodeElement
     newItem.ExtractedCodeImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
 
     newItem.ExportTypeValue = ExportType.Type;
-    newItem.ExportContent = $"export type {newItem.ExportName} = {TsCodeWriter.NonNullAsRequired}<{ExportName}>;";
+    newItem.ExportContent = newItem.ExportToString($"{TsCodeWriter.NonNullAsRequired}<{ExportName}>");
     TsCodeWriter.Get().Add(newItem);
     ExtractedForResponse = newItem;
     return newItem;
@@ -410,6 +415,8 @@ public abstract class TsCodeElement
     result.Contents = WriteBrackets(result.Contents);
     return result;
   }
+  
+  
 
   public static string ToCamelCase(string name)
   {

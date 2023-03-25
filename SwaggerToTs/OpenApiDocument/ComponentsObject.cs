@@ -49,7 +49,7 @@ public class ComponentsObject
         continue;
       }
 
-      if (reference.Contains("-")) formatName = formatName.Replace("-", "");
+      if (reference.Contains('-')) formatName = formatName.Replace("-", "");
       if (Regex.IsMatch(formatName, @"[^a-zA-Z_\d$.]")) throw new Exception($"can' get export name from {formatName}");
 
       var shortName = formatName.Split(".")[^1];
@@ -85,7 +85,7 @@ public class ComponentsObject
       var baseClassSchema = schemas.GetValueOrDefault(baseClass);
       var baseClassShotName = baseClassSchema?.ExportName ?? baseClass.Split(".")[^1];
       var genericShortNames = string.Join("$", matched.Groups[2].ToString().Split(",")
-        .Where(e => !e.Contains("=") && schemas.ContainsKey(e)).Select(e =>
+        .Where(e => !e.Contains('=') && schemas.ContainsKey(e)).Select(e =>
           schemas.GetValueOrDefault(e)?.ExportName ?? e.Split(",")[^1]));
       schemaObject.ExportName = baseClassShotName + genericShortNames;
     }

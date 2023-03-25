@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import { AnyOf, OneOf } from './helper';
+import { AnyOf, NonNullAsRequired, OneOf } from './helper';
 
 export interface BusinessGetEP {
   Responses: {
@@ -12,33 +12,38 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': {
-          readonly allOf?: Dog & Cat;
-          readonly anyOf?: AnyOf<[Dog, Cat]>;
-          /**
-           * @Description name
-           *
-           * @Description age
-           *
-           * @Description city
-           *
-           * @Description salary
-           */
-          readonly mix?: OneOf<[AnyOf<[{
-            readonly name?: string;
-          }, {
-            readonly age: number;
-          }, {
-            readonly city?: string;
-          } & {
-            readonly salary?: number | null;
-          }]>, Cat]>;
-          readonly oneOf?: OneOf<[Dog, Cat]>;
-        };
+        'application/json': BusinessGet200ApplicationJsonResponse;
       };
     };
   };
 }
+
+export interface BusinessGet200ApplicationJson {
+  readonly allOf?: Dog & Cat;
+  readonly anyOf?: AnyOf<[Dog, Cat]>;
+  /**
+   * @Description name
+   *
+   * @Description age
+   *
+   * @Description city
+   *
+   * @Description salary
+   */
+  readonly mix?: OneOf<[AnyOf<[{
+    readonly name?: string;
+  }, {
+    readonly age?: number;
+  }, {
+    readonly city?: string;
+  } & {
+    readonly salary?: number | null;
+  }]>, Cat]>;
+  readonly oneOf?: OneOf<[Dog, Cat]>;
+}
+
+export type BusinessGet200ApplicationJsonResponse =
+  NonNullAsRequired<BusinessGet200ApplicationJson>;
 
 export interface Cat {
   readonly catch?: boolean;

@@ -138,9 +138,9 @@ public class Test:TestBase
   
     
   [Test]
-  public void ShouldNotEnableNullableContextCorrectly()
+  public void ShouldResponseNonNullAsRequiredCorrectly()
   { 
-    InvokeThenAssert(dir:"NotEnableNullableContext");
+    InvokeThenAssert(dir:"ResponseNonNullAsRequired");
   }
   
   [Test]

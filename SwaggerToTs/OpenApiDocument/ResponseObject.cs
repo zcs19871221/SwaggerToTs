@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace SwaggerToTs.OpenApiDocument;
 
 public class ResponseObject : TsCodeElement
@@ -44,7 +46,10 @@ public class ResponseObject : TsCodeElement
         {
           if (string.IsNullOrWhiteSpace(media.ExportName))
           {
-            media.ExtractTo(OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + ToPascalCase(contentType[(contentType.IndexOf("/", StringComparison.Ordinal) + 1)..]), OperationObject.FileLocate);
+            var contentTypeName =
+              ToPascalCase(Regex.Replace(contentType,
+                @"[^a-zA-Z_\d$](\S)", m => m.Groups[1].ToString().ToUpper()));
+            media.ExtractTo(OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + contentTypeName, OperationObject.FileLocate);
           }
 
           media = media.NonNullAsRequired();
