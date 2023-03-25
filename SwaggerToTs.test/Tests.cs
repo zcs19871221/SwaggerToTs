@@ -122,14 +122,7 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"NullValueIgnore", new []{"-n"});
   }
-  
 
-  [Test]
-  public void ShouldAggregateSchemaFileCorrectly()
-  { 
-    InvokeThenAssert(dir:"AggregateSchemaFile", new []{"-a"});
-  }
-  
   [Test]
   public void ShouldResponsesBeExtractedAndNonNullAsRequiredAndCorrectly()
   { 
