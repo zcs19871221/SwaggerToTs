@@ -63,7 +63,7 @@ export interface HeaderAndContent {
 export interface OnlyContent {
   Content: {
     'application/octet-stream': {
-      readonly age: number;
+      readonly age?: number;
       readonly name?: string;
     };
   };

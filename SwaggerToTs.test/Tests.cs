@@ -131,9 +131,9 @@ public class Test:TestBase
   }
   
   [Test]
-  public void ShouldEnableNullableContextCorrectly()
+  public void ShouldResponsesBeExtractedAndNonNullAsRequiredAndCorrectly()
   { 
-    InvokeThenAssert(dir:"EnableNullableContext", new []{"-e"});
+    InvokeThenAssert(dir:"ResponsesBeExtractedAndNonNullAsRequired");
   }
   
     
