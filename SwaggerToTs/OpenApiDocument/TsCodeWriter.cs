@@ -120,19 +120,13 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
   {
     _codes.Add(element);
   }
-
-  private string GetRelativePath(string baseFile, string fileToImport)
-  {
-    return $"./{fileToImport}";
-  }
-
-  private string CreateImport(List<string> imports, string fileLocate, string fileToImport,
+  private string CreateImport(List<string> imports, string fileToImport,
     bool exclusiveRow = false)
   {
     var separator = exclusiveRow ? TsCodeElement.NewLine + "  " : " ";
     var content =
       $@"import {{{separator}{string.Join("," + separator, imports)}{(exclusiveRow ? TsCodeElement.NewLine : " ")}}} from './{fileToImport}';";
-    if (!exclusiveRow && content.Length > Options.Get<PrintWidth>().Value) return CreateImport(imports, fileLocate, fileToImport, true);
+    if (!exclusiveRow && content.Length > Options.Get<PrintWidth>().Value) return CreateImport(imports, fileToImport, true);
 
     return content;
   }
@@ -201,7 +195,7 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
       {
         var x = importName.ToList();
         x.Sort((s, s1) => string.Compare(s, s1, StringComparison.Ordinal));
-        importBlock.AppendLine(CreateImport(x, fileLocate, fileToImport));
+        importBlock.AppendLine(CreateImport(x, fileToImport));
       }
 
       if (importBlock.Length > 0) importBlock.AppendLine();

@@ -35,7 +35,6 @@ public class ComponentsObject
     List<(string, T)> inlineTypeNames = new();
     foreach (var (reference, schemaObject) in schemas)
     {
-      schemaObject.Priority = 1;
       var formatName = reference;
       if (reference.Contains("[["))
       {

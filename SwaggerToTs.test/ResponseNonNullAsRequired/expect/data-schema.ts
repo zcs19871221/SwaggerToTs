@@ -5,9 +5,9 @@
 
 import { NonNullAsRequired } from './helper';
 
-export type AddressResponse = NonNullAsRequired<Address>;
-
 export interface Address {
   readonly id?: boolean;
   readonly name?: string;
 }
+
+export type AddressResponse = NonNullAsRequired<Address>;
