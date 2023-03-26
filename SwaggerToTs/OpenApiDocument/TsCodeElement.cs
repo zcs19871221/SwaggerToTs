@@ -218,15 +218,21 @@ public abstract class TsCodeElement
         connector = " = ";
         if ($"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
         {
-          if (content.Contains("|"))
+          if (content.Contains("NonNullAsRequired"))
           {
-            var separator = NewLine + "  | ";
-            connector = " =";
-            content = separator + string.Join(separator, content.Split("|").Select(e => e.Trim()));
-          }
-          else
+            if (content.Contains("NonNullAsRequired<{"))
+            {
+              
+            }
+            else
+            {
+              connector = " =\n  ";
+            }
+          } else if (content.Contains("|"))
           {
-            connector = " =\n  ";
+            // var separator = NewLine + "  | ";
+            // connector = " =";
+            // content = separator + string.Join(separator, content.Split("|").Select(e => e.Trim()));
           }
         }
         content += ";";
@@ -295,7 +301,7 @@ public abstract class TsCodeElement
     newItem.ExtractedCodeImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
 
     newItem.ExportTypeValue = ExportType.Type;
-    newItem.ExportContent = newItem.ExportToString(@$"{{{TsCodeWriter.NonNullAsRequired}}}<{ExportName}>");
+    newItem.ExportContent = newItem.ExportToString(@$"{TsCodeWriter.NonNullAsRequired}<{ExportName}>");
     TsCodeWriter.Get().Add(newItem);
     ExtractedForResponse = newItem;
     return newItem;

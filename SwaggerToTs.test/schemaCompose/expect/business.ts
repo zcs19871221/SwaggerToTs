@@ -13,13 +13,13 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': BusinessGet200ApplicationJsonResponse;
+        'application/json': BusinessGet200ApplicationJson;
       };
     };
   };
 }
 
-export interface BusinessGet200ApplicationJson {
+export type BusinessGet200ApplicationJson = NonNullAsRequired<{
   readonly info?: {
     readonly enumArrayItems?: readonly ('hello' | 'world' | null)[][];
     readonly enums?: 1 | '2' | 4444444444.2344 | null;
@@ -30,7 +30,4 @@ export interface BusinessGet200ApplicationJson {
     readonly unknown?: unknown;
     readonly unknownArrayItems?: readonly (unknown[] | null)[];
   };
-}
-
-export type BusinessGet200ApplicationJsonResponse =
-  NonNullAsRequired<BusinessGet200ApplicationJson>;
+}>;

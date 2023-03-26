@@ -18,28 +18,22 @@ export interface BusinessGetEP {
       Content: {
         'application/html': AddressResponse;
         'application/json': AddressResponse;
-        'application/stream+json': BusinessGet200ApplicationStreamJsonResponse;
-        'application/xhtml+xml': BusinessGet200ApplicationXhtmlXmlResponse;
+        'application/stream+json': BusinessGet200ApplicationStreamJson;
+        'application/xhtml+xml': BusinessGet200ApplicationXhtmlXml;
       };
     };
   };
 }
 
-export interface BusinessGet200ApplicationStreamJson {
+export type BusinessGet200ApplicationStreamJson = NonNullAsRequired<{
   readonly id?: boolean;
   readonly name?: string;
-}
+}>;
 
-export type BusinessGet200ApplicationStreamJsonResponse =
-  NonNullAsRequired<BusinessGet200ApplicationStreamJson>;
-
-export interface BusinessGet200ApplicationXhtmlXml {
+export type BusinessGet200ApplicationXhtmlXml = NonNullAsRequired<{
   readonly id?: boolean;
   readonly name?: string;
-}
-
-export type BusinessGet200ApplicationXhtmlXmlResponse =
-  NonNullAsRequired<BusinessGet200ApplicationXhtmlXml>;
+}>;
 
 export interface BusinessGetQuery {
   readonly id?: Address;

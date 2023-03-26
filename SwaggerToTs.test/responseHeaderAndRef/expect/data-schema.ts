@@ -33,8 +33,7 @@ export interface OnlyContent {
   };
 }
 
-export type OnlyContentApplicationOctetStream =
-  NonNullAsRequired<{
+export type OnlyContentApplicationOctetStream = NonNullAsRequired<{
   readonly age?: number;
   readonly name?: string;
 }>;

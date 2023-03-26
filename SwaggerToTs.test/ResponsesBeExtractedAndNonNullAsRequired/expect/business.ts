@@ -13,17 +13,14 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': BusinessGet200ApplicationJsonResponse;
+        'application/json': BusinessGet200ApplicationJson;
       };
     };
   };
 }
 
-export interface BusinessGet200ApplicationJson {
+export type BusinessGet200ApplicationJson = NonNullAsRequired<{
   readonly int?: number;
   readonly object?: Age;
   readonly string?: string;
-}
-
-export type BusinessGet200ApplicationJsonResponse =
-  NonNullAsRequired<BusinessGet200ApplicationJson>;
+}>;
