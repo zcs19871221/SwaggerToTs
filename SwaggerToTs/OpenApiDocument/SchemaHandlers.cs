@@ -141,8 +141,12 @@ public class ArraySchemaHandler : ISchemaHandler
     if (schema.Items == null) throw new Exception("array should not have empty items");
 
     schema.Optional ??= schema.Items.Optional;
-    
-    schema.Merge(schema.Items.GenerateTsCode(), element =>
+    var item = schema.Items.GenerateTsCode();
+    if (!string.IsNullOrWhiteSpace(item.ExportName) && schema.IsFromResponse)
+    {
+      item = item.NonNullAsRequired();
+    }
+    schema.Merge(item, element =>
     {
       var content = Helper.AddBracketIfNeed(element);
       schema.Contents += content + "[]";

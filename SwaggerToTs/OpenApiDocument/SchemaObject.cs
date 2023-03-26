@@ -2,6 +2,7 @@ namespace SwaggerToTs.OpenApiDocument;
 
 public class SchemaObject : TsCodeElement
 {
+  public Boolean IsFromResponse = false;
   private static readonly List<ISchemaHandler> SchemaHandlers = new()
   {
     new EnumSchemaHandler(),

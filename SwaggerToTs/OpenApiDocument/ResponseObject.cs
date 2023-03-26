@@ -8,7 +8,7 @@ public class ResponseObject : TsCodeElement
   public Dictionary<string, HeaderObject>? Headers { get; set; }
 
   public Dictionary<string, MediaTypeObject>? Content { get; set; }
-  public string StatusCode { get; set; } = null!;
+  public string StatusCode { get; set; }
 
   protected override void ValidateOpenApiDocument()
   {
@@ -41,20 +41,34 @@ public class ResponseObject : TsCodeElement
           Name = contentType,
           Optional = false,
         };
-        var media = item.GenerateTsCode();
-        if (OperationObject != null)
+        var schema = item.GenerateTsCode();
+        var contentTypeName =
+          ToPascalCase(Regex.Replace(contentType,
+            @"[^a-zA-Z_\d$](\S)", m => m.Groups[1].ToString().ToUpper()));
+        if (string.IsNullOrWhiteSpace(schema.ExportName))
         {
-          if (string.IsNullOrWhiteSpace(media.ExportName))
+          var extractedResponseName = "";
+          var fileLocate = "";
+          if (!string.IsNullOrWhiteSpace(ExportName))
           {
-            var contentTypeName =
-              ToPascalCase(Regex.Replace(contentType,
-                @"[^a-zA-Z_\d$](\S)", m => m.Groups[1].ToString().ToUpper()));
-            media.ExtractTo(OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + contentTypeName, OperationObject.FileLocate);
+            extractedResponseName = ExportName + contentTypeName;
+            fileLocate = FileLocate;
           }
-
-          media = media.NonNullAsRequired();
+          else if (OperationObject != null)
+          {
+       
+            extractedResponseName = OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + contentTypeName;
+            fileLocate = OperationObject.FileLocate;
+          }
+          
+          schema.ExtractTo(extractedResponseName, fileLocate, true);
         }
-        return wrapper.Merge(media);
+        else
+        {
+          schema = schema.NonNullAsRequired();
+        }
+    
+        return wrapper.Merge(schema);
       });
       response.Add("Content", content);
     }

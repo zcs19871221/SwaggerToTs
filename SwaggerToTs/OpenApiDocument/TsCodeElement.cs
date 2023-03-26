@@ -295,7 +295,7 @@ public abstract class TsCodeElement
     newItem.ExtractedCodeImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
 
     newItem.ExportTypeValue = ExportType.Type;
-    newItem.ExportContent = newItem.ExportToString($"{TsCodeWriter.NonNullAsRequired}<{ExportName}>");
+    newItem.ExportContent = newItem.ExportToString(@$"{{{TsCodeWriter.NonNullAsRequired}}}<{ExportName}>");
     TsCodeWriter.Get().Add(newItem);
     ExtractedForResponse = newItem;
     return newItem;
@@ -303,7 +303,7 @@ public abstract class TsCodeElement
 
   private TsCodeElement? ExtractedForResponse { get; set; }
 
-  public TsCodeElement ExtractTo(string? exportName = null, string? fileLocate = null)
+  public TsCodeElement ExtractTo(string? exportName = null, string? fileLocate = null,bool? nonNullAsRequired = null)
   {
     if (IsEmpty() || _isExtracted) return this;
 
@@ -316,7 +316,16 @@ public abstract class TsCodeElement
 
     ExtractedCodeImports = _imports;
 
-    ExportContent = ExportToString();
+    if (nonNullAsRequired == true)
+    {
+      ExportTypeValue = ExportType.Type;
+      ExportContent = ExportToString(@$"{TsCodeWriter.NonNullAsRequired}<{Contents}>");
+      ImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
+    }
+    else
+    {
+      ExportContent = ExportToString();
+    }
     Contents = ExportName;
     Name = null;
     _comments.Clear();
@@ -369,25 +378,6 @@ public abstract class TsCodeElement
 
     return target;
   }
-
-  // public static TsCodeElement CreateFragment<T>(IDictionary<string, T> dict, bool isReadonly = false,
-  //   Action<string, TsCodeElement, TsCodeElement>? onItemGenerated = null, Action<TsCodeElement>? mergeHandler = null) where T : TsCodeElement
-  // {
-  //   var sorted = dict.OrderBy(e => e.Key);
-  //   List<TsCodeElement> tsCodes = new();
-  //   foreach (var (key, c) in sorted)
-  //   {
-  //     var code = c.GenerateTsCode();
-  //     var t = new TsCodeFragment { Name = key, ReadOnly = isReadonly, Optional = false};
-  //     if (onItemGenerated != null) onItemGenerated(key, code, t);
-  //     t.Merge(code, mergeHandler);
-  //     tsCodes.Add(t);
-  //   }
-  //
-  //   var result = CreateFragment(tsCodes);
-  //   result.Contents = WriteBrackets(result.Contents);
-  //   return result;
-  // }
 
   private static TsCodeElement DefaultHandler<T>(string key, T item) where T : TsCodeElement
   {

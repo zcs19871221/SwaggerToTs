@@ -2,7 +2,7 @@ namespace SwaggerToTs.OpenApiDocument;
 
 public class ParameterObject : TsCodeElement
 {
-  private string SerializeFormat = "";
+  public string SerializeFormat = "";
 
   public string? In { get; set; }
 
