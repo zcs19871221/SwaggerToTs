@@ -46,19 +46,9 @@ public class SchemaObject : TsCodeElement
       if (handler.IsMatch(this))
       {
         handler.CreateTsCode(this);
-        switch (Nullable)
+        if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
         {
-          case true :
-            if (options.Get<NullableAsOptional>().Value)
-            {
-              OverrideHeadOptional = true;
-              Nullable = false;
-            }
-            else if (ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
-            {
-              Contents += " | null";
-            }
-            break;
+          Contents += " | null";
         }
         return this;
       }

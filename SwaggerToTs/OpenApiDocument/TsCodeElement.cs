@@ -57,8 +57,6 @@ public abstract class TsCodeElement
 
   public bool? Optional { get; set; }
 
-  protected bool? OverrideHeadOptional { get; set; }
-
   public string? Summary { get; set; }
   public string? Description { get; set; }
 
@@ -116,8 +114,6 @@ public abstract class TsCodeElement
             TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value) code.ExtractTo(Name, TsCodeWriter.SchemaFile);
         AppendImports(code);
         AppendComments(code);
-        // if (code.Optional !=null && Optional == null)
-        if (code.OverrideHeadOptional != null) Optional = code.OverrideHeadOptional;
         if (code is SchemaObject { SchemaType: SchemaTypeEnums.Array, ExportName: null }) _isContentArray = true;
         break;
       case "Body-Body":
@@ -193,12 +189,12 @@ public abstract class TsCodeElement
     return ToString(body);
   }
 
-  private string ExportToString(string? content = null)
+  private string ExportToString()
   {
     string name;
     var connector = " ";
-    content ??= GenerateCodeBody();
-    var exportType = ExportTypeValue;
+    var content = GenerateCodeBody();
+    var exportType= ExportTypeValue;
     switch (exportType)
     {
       case ExportType.Interface:
@@ -216,25 +212,6 @@ public abstract class TsCodeElement
       case ExportType.Type:
         name = $"export type {ExportName}";
         connector = " = ";
-        if ($"{name}{connector}{content};".Length > TsCodeWriter.Get().Options.Get<PrintWidth>().Value)
-        {
-          if (content.Contains("NonNullAsRequired"))
-          {
-            if (content.Contains("NonNullAsRequired<{"))
-            {
-              
-            }
-            else
-            {
-              connector = " =\n  ";
-            }
-          } else if (content.Contains("|"))
-          {
-            // var separator = NewLine + "  | ";
-            // connector = " =";
-            // content = separator + string.Join(separator, content.Split("|").Select(e => e.Trim()));
-          }
-        }
         content += ";";
         break;
       case ExportType.Enum:
@@ -280,36 +257,8 @@ public abstract class TsCodeElement
     return this;
   }
 
-  public TsCodeElement NonNullAsRequired()
-  {
-    if (!_isExtracted || ExportName == null) throw new Exception("NonNullAsRequired should apply on extracted code");
 
-    if (ExtractedForResponse != null) return ExtractedForResponse;
-    var newItem = new TsCodeFragment();
-    var newExportName = ExportName;
-    newItem.ExportName = newExportName + "Response";
-    newItem.FileLocate = FileLocate;
-    newItem.ExtractedCodeImports = new HashSet<TsCodeElement>
-    {
-      this
-    };
-    newItem.Contents = newItem.ExportName;
-    newItem._imports = new HashSet<TsCodeElement>
-    {
-      newItem
-    };
-    newItem.ExtractedCodeImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
-
-    newItem.ExportTypeValue = ExportType.Type;
-    newItem.ExportContent = newItem.ExportToString(@$"{TsCodeWriter.NonNullAsRequired}<{ExportName}>");
-    TsCodeWriter.Get().Add(newItem);
-    ExtractedForResponse = newItem;
-    return newItem;
-  }
-
-  private TsCodeElement? ExtractedForResponse { get; set; }
-
-  public TsCodeElement ExtractTo(string? exportName = null, string? fileLocate = null,bool? nonNullAsRequired = null)
+  public TsCodeElement ExtractTo(string? exportName = null, string? fileLocate = null)
   {
     if (IsEmpty() || _isExtracted) return this;
 
@@ -321,17 +270,8 @@ public abstract class TsCodeElement
     if (string.IsNullOrWhiteSpace(ExportName)) throw new Exception("export Name should not be empty");
 
     ExtractedCodeImports = _imports;
-
-    if (nonNullAsRequired == true)
-    {
-      ExportTypeValue = ExportType.Type;
-      ExportContent = ExportToString(@$"{TsCodeWriter.NonNullAsRequired}<{Contents}>");
-      ImportedHelpers.Add(TsCodeWriter.NonNullAsRequired);
-    }
-    else
-    {
-      ExportContent = ExportToString();
-    }
+    
+    ExportContent = ExportToString();
     Contents = ExportName;
     Name = null;
     _comments.Clear();

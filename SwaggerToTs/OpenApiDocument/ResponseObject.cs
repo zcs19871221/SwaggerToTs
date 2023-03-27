@@ -45,30 +45,24 @@ public class ResponseObject : TsCodeElement
         var contentTypeName =
           ToPascalCase(Regex.Replace(contentType,
             @"[^a-zA-Z_\d$](\S)", m => m.Groups[1].ToString().ToUpper()));
-        if (string.IsNullOrWhiteSpace(schema.ExportName))
-        {
-          var extractedResponseName = "";
-          var fileLocate = "";
-          if (!string.IsNullOrWhiteSpace(ExportName))
-          {
-            extractedResponseName = ExportName + contentTypeName;
-            fileLocate = FileLocate;
-          }
-          else if (OperationObject != null)
-          {
-       
-            extractedResponseName = OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + contentTypeName;
-            fileLocate = OperationObject.FileLocate;
-          }
-          
-          schema.ExtractTo(extractedResponseName, fileLocate, true);
-        }
-        else
-        {
-          schema = schema.NonNullAsRequired();
-        }
-    
         return wrapper.Merge(schema);
+        // var extractedResponseName = "";
+        // var fileLocate = "";
+        // if (!string.IsNullOrWhiteSpace(ExportName))
+        // {
+        //   extractedResponseName = ExportName + contentTypeName;
+        //   fileLocate = FileLocate;
+        // }
+        // else if (OperationObject != null)
+        // {
+        //
+        //   extractedResponseName = OperationObject.ExportName?.Replace(OperationObject.EndWith, "") + StatusCode + contentTypeName;
+        //   fileLocate = OperationObject.FileLocate;
+        // }
+        //   
+        // schema.ExtractTo(extractedResponseName, fileLocate);
+        //
+        // return wrapper.Merge(schema);
       });
       response.Add("Content", content);
     }

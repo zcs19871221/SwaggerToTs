@@ -135,18 +135,14 @@ public class ArraySchemaHandler : ISchemaHandler
   public void CreateTsCode(SchemaObject schema)
   {
     schema.SchemaType = SchemaTypeEnums.Array;
+    schema.ExportTypeValue = ExportType.Type;
     schema.AddComment(nameof(schema.MaxItems), schema.MaxItems.ToString())
       .AddComment(nameof(schema.MinItems), schema.MinItems.ToString()).AddComment(nameof(schema.UniqueItems),
         schema.UniqueItems?.ToString()).ReadOnly = true;
     if (schema.Items == null) throw new Exception("array should not have empty items");
 
     schema.Optional ??= schema.Items.Optional;
-    var item = schema.Items.GenerateTsCode();
-    if (!string.IsNullOrWhiteSpace(item.ExportName) && schema.IsFromResponse)
-    {
-      item = item.NonNullAsRequired();
-    }
-    schema.Merge(item, element =>
+    schema.Merge(schema.Items.GenerateTsCode(), element =>
     {
       var content = Helper.AddBracketIfNeed(element);
       schema.Contents += content + "[]";
@@ -256,8 +252,6 @@ public class ObjectSchemaHandler : CommonSchemaHandler, ISchemaHandler
       return schema.AnyOf.Any();
     }
 
-
-    private static readonly Dictionary<string, TsCodeElement> Helpers = new();
 
     public void CreateTsCode(SchemaObject schema)
     {

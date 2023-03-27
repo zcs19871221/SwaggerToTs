@@ -30,7 +30,6 @@ public class TsCodeWriter
 
   public static string OneOfName = "OneOf";
   public static string AnyOfName = "AnyOf";
-  public static string NonNullAsRequired = "NonNullAsRequired";
 
   public  const string SchemaFile = "data-schema";
   private static readonly string HelperContent = $@"/* eslint-disable @typescript-eslint/no-explicit-any */
@@ -55,17 +54,6 @@ export type {OneOfName}<T extends any[]> = {{
 
 export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
 
-type NullKeys<T> = {{
-  [k in keyof T]: null extends T[k] ? k : never;
-}}[keyof T];
-
-export type {NonNullAsRequired}<T> = T extends (infer U)[]
-  ? NonNullAsRequired<U>[]
-  : T extends object
-  ? Pick<T, NullKeys<T>> & {{
-      [K in Exclude<keyof T, NullKeys<T>>]-?: NonNullAsRequired<T[K]>;
-    }}
-  : T;
 ";
 
   private const string HelperLocate = "helper";

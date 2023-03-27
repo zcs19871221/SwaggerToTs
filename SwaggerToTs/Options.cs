@@ -18,7 +18,6 @@ public class Options
     new IgnoreTags(),
     new MatchTags(),
     new PrintWidth(),
-    new NullableAsOptional(),
     new EnumUseEnum(),
     new Helper()
   };
@@ -161,12 +160,6 @@ class BoolHandler
   }
 
   public bool Value { get; set; }
-}
-class NullableAsOptional : BoolHandler,IOption
-{
-  public string CommandName => "nullableAsOptional";
-  public string ShortCommandName => "n";
-  public string Desc => "make nullable reference optional(both in request and response) - set this when the NullValueHandling.Ignore configuration in newtonsoft is added (default: false)";
 }
 
 class EnumUseEnum : BoolHandler, IOption

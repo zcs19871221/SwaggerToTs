@@ -4,7 +4,6 @@
  */
 
 import { Profile, RecordArray } from './data-schema';
-import { NonNullAsRequired } from './helper';
 
 export interface BusinessGetEP {
   Responses: {
@@ -13,21 +12,19 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': BusinessGet200ApplicationJson;
+        'application/json': {
+          readonly info?: {
+            readonly enumArrayItems?: readonly ('hello' | 'world' | null)[][];
+            readonly enums?: 1 | '2' | 4444444444.2344 | null;
+            readonly objectArrayItems?: readonly Profile[];
+            readonly profile?: Profile;
+            readonly recordArrayItems?: RecordArray;
+            readonly recordObject?: Record<string, unknown> | null;
+            readonly unknown?: unknown;
+            readonly unknownArrayItems?: readonly (unknown[] | null)[];
+          };
+        };
       };
     };
   };
 }
-
-export type BusinessGet200ApplicationJson = NonNullAsRequired<{
-  readonly info?: {
-    readonly enumArrayItems?: readonly ('hello' | 'world' | null)[][];
-    readonly enums?: 1 | '2' | 4444444444.2344 | null;
-    readonly objectArrayItems?: readonly Profile[];
-    readonly profile?: Profile;
-    readonly recordArrayItems?: RecordArray;
-    readonly recordObject?: Record<string, unknown> | null;
-    readonly unknown?: unknown;
-    readonly unknownArrayItems?: readonly (unknown[] | null)[];
-  };
-}>;

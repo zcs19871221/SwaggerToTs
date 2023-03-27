@@ -4,7 +4,7 @@
  */
 
 import { Cat, Dog } from './data-schema';
-import { AnyOf, NonNullAsRequired, OneOf } from './helper';
+import { AnyOf, OneOf } from './helper';
 
 export interface BusinessGetEP {
   Responses: {
@@ -13,32 +13,30 @@ export interface BusinessGetEP {
      */
     200: {
       Content: {
-        'application/json': BusinessGet200ApplicationJson;
+        'application/json': {
+          readonly allOf?: Dog & Cat;
+          readonly anyOf?: AnyOf<[Dog, Cat]>;
+          /**
+           * @Description name
+           *
+           * @Description age
+           *
+           * @Description city
+           *
+           * @Description salary
+           */
+          readonly mix?: OneOf<[AnyOf<[{
+            readonly name?: string;
+          }, {
+            readonly age?: number;
+          }, {
+            readonly city?: string;
+          } & {
+            readonly salary?: number | null;
+          }]>, Cat]>;
+          readonly oneOf?: OneOf<[Dog, Cat]>;
+        };
       };
     };
   };
 }
-
-export type BusinessGet200ApplicationJson = NonNullAsRequired<{
-  readonly allOf?: Dog & Cat;
-  readonly anyOf?: AnyOf<[Dog, Cat]>;
-  /**
-   * @Description name
-   *
-   * @Description age
-   *
-   * @Description city
-   *
-   * @Description salary
-   */
-  readonly mix?: OneOf<[AnyOf<[{
-    readonly name?: string;
-  }, {
-    readonly age?: number;
-  }, {
-    readonly city?: string;
-  } & {
-    readonly salary?: number | null;
-  }]>, Cat]>;
-  readonly oneOf?: OneOf<[Dog, Cat]>;
-}>;

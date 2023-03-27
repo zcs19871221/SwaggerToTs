@@ -116,25 +116,6 @@ public class Test:TestBase
   { 
     InvokeThenAssert("schemaComposeType");
   }  
-    
-  [Test]
-  public void ShouldNullValueIgnoreCorrectly()
-  { 
-    InvokeThenAssert(dir:"NullValueIgnore", new []{"-n"});
-  }
-
-  [Test]
-  public void ShouldResponsesBeExtractedAndNonNullAsRequiredAndCorrectly()
-  { 
-    InvokeThenAssert(dir:"ResponsesBeExtractedAndNonNullAsRequired");
-  }
-  
-    
-  [Test]
-  public void ShouldResponseNonNullAsRequiredCorrectly()
-  { 
-    InvokeThenAssert(dir:"ResponseNonNullAsRequired");
-  }
   
   [Test]
   public void ShouldEnumUseEnum()
