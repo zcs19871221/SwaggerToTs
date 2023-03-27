@@ -35,6 +35,13 @@ public class Test:TestBase
   
   
   [Test]
+  public void ShouldGenerateInlineParametersCorrectly()
+  { 
+    InvokeThenAssert("inlineParameter", new []{"-inlineRequest"});
+  }
+  
+  
+  [Test]
   public void ShouldGenerateRequestBodyCorrectly()
   { 
     InvokeThenAssert("requestBody");

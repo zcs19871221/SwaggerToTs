@@ -73,7 +73,7 @@ public abstract class TsCodeElement
   }
 
 
-  private static string WriteBrackets(string content)
+  public static string WriteBrackets(string content)
   {
     if (!string.IsNullOrWhiteSpace(content) && !content.StartsWith("{"))
     {
@@ -108,7 +108,6 @@ public abstract class TsCodeElement
     switch (mergeType)
     {
       case "Head-Head":
-        throw new Exception("not correct merge");
       case "Head-Body":
         if (code is SchemaObject { SchemaType: SchemaTypeEnums.Enum, ExportName: null } &&
             TsCodeWriter.Get().Options.Get<EnumUseEnum>().Value) code.ExtractTo(Name, TsCodeWriter.SchemaFile);
@@ -129,9 +128,9 @@ public abstract class TsCodeElement
     }
 
     mergeHandler ??= DefaultContentMerger;
-
+    
     mergeHandler(code);
-
+  
     return this;
   }
 

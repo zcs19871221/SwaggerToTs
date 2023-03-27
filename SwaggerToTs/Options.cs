@@ -1,3 +1,4 @@
+namespace SwaggerToTs;
 
 public interface IOption
 {
@@ -19,6 +20,7 @@ public class Options
     new MatchTags(),
     new PrintWidth(),
     new EnumUseEnum(),
+    new InlineRequest(),
     new Helper()
   };
   
@@ -170,6 +172,15 @@ class EnumUseEnum : BoolHandler, IOption
 
 }
 
+class InlineRequest : BoolHandler, IOption
+{
+  public string CommandName => "inlineRequest";
+  public string ShortCommandName => "inlineR";
+  public string Desc => "request parameter all in line";
+
+}
+
+
 class Helper : IOption
 {
   public string CommandName => "help";
@@ -182,8 +193,3 @@ class Helper : IOption
     Value = param;
   }
 }
-
-
-
-
-
