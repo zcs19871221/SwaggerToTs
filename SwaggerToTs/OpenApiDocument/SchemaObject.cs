@@ -5,17 +5,17 @@ public class SchemaObject : TsCodeElement
   public Boolean IsFromResponse = false;
   private static readonly List<ISchemaHandler> SchemaHandlers = new()
   {
-    new EnumSchemaHandler(),
+    new EnumHandler(),
     new OneOfHandler(),
     new AnyOfHandler(),
     new AllOfHandler(),
-    new StringSchemaHandler(),
-    new NumberSchemaHandler(),
-    new BoolSchemaHandler(),
-    new ArraySchemaHandler(),
-    new AnyObjectSchemaHandler(),
-    new ObjectSchemaHandler(),
-    new UnknownSchemaHandler()
+    new StringHandler(),
+    new NumberHandler(),
+    new BoolHandler(),
+    new ArrayHandler(),
+    new AnyObjectHandler(),
+    new ObjectHandler(),
+    new UnknownHandler()
   };
 
   public bool Nullable { get; set; }

@@ -75,24 +75,19 @@ public abstract class TsCodeElement
 
   public static string WriteBrackets(string content)
   {
-    if (!string.IsNullOrWhiteSpace(content) && !content.StartsWith("{"))
-    {
-      var contents = content.Split(NewLine).ToList();
-      for (var i = 0; i < contents.Count; i++) contents[i] = $"  {contents[i]}";
+    if (string.IsNullOrWhiteSpace(content) || content.StartsWith("{")) return content;
+    var contents = content.Split(NewLine).ToList();
+    for (var i = 0; i < contents.Count; i++) contents[i] = $"  {contents[i]}";
 
-      contents.Insert(0, "{");
-      contents.Add("}");
-      return string.Join(NewLine, contents);
-    }
+    contents.Insert(0, "{");
+    contents.Add("}");
+    return string.Join(NewLine, contents);
 
-    return content;
   }
 
   private bool IsEmpty()
   {
-    if (string.IsNullOrWhiteSpace(Contents) && string.IsNullOrWhiteSpace(ExportContent)) return true;
-
-    return false;
+    return string.IsNullOrWhiteSpace(Contents) && string.IsNullOrWhiteSpace(ExportContent) && Extends.Count == 0;
   }
 
   private void DefaultContentMerger(TsCodeElement code)
@@ -205,7 +200,15 @@ public abstract class TsCodeElement
         }
 
         name = $"export interface {exportName}";
-        content = WriteBrackets(content);
+
+        if (string.IsNullOrWhiteSpace(content) && Extends.Count > 0)
+        {
+          content = "{}";
+        }
+        else
+        {
+          content = WriteBrackets(content);
+        }
         connector = " ";
         break;
       case ExportType.Type:

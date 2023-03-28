@@ -1,0 +1,159 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "schemas": {
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uidNull": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "date-time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date-timeNull": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "bark": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "Big",
+              "small"
+            ]
+          },
+          "color": {
+            "enum": [
+              "red",
+              "green"
+            ],
+            "nullable": true
+          }
+        },
+        "required": [
+          "bark"
+        ]
+      },
+      "Cat": {
+        "type": "object",
+        "properties": {
+          "climb": {
+            "type": "boolean"
+          },
+          "catch": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "climb"
+        ]
+      },
+      "ExtendTwo": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/Cat"
+          }
+        ]
+      },
+      "ExtendOne": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ]
+      },
+      "ExtendTwoAndProperties": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/Cat"
+          }
+        ],
+        "properties": {
+          "prices": {
+            "type": "number",
+            "format": "money"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "inlineWithProperty": {
+                      "type": "object",
+                      "properties": {
+                        "prices": {
+                          "type": "number",
+                          "format": "money"
+                        }
+                      },
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/Dog"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    },
+                    "inline": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/Dog"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Cat"
+                        }
+                      ]
+                    },
+                    "one":{
+                      "$ref": "#/components/schemas/ExtendOne"
+                    },
+                    "two":{
+                      "$ref": "#/components/schemas/ExtendTwo"
+                    },
+                    "extends":{
+                      "$ref": "#/components/schemas/ExtendTwoAndProperties"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

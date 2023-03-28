@@ -128,5 +128,11 @@ public class Test:TestBase
   public void ShouldEnumUseEnum()
   { 
     InvokeThenAssert(dir:"enumUseEnum", new []{"-eUe"});
+  }  
+  
+  [Test]
+  public void ShouldAllof()
+  { 
+    InvokeThenAssert(dir:"allof");
   }
 }

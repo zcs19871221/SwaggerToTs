@@ -1,5 +1,3 @@
-using SwaggerToTs.OpenApiDocument;
-
 namespace SwaggerToTs.test;
 
 public class TestBase
@@ -50,13 +48,10 @@ public class TestBase
         {
           var expects = expect.Keys.ToList();
           var results = result.Keys.ToList();
-          foreach (var expectKey in expect.Keys)
+          foreach (var expectKey in expect.Keys.Where(expectKey => results.Contains(expectKey)))
           {
-            if (results.Contains(expectKey))
-            {
-              results.Remove(expectKey);
-              expects.Remove(expectKey);
-            }
+            results.Remove(expectKey);
+            expects.Remove(expectKey);
           }
         
           var message = "";
