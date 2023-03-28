@@ -1,4 +1,4 @@
-namespace SwaggerToTs.OpenApiDocument;
+namespace SwaggerToTs.OpenAPIElements;
 
 public class HeaderObject : ParameterObject
 {

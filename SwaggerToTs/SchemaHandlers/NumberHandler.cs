@@ -1,4 +1,6 @@
-namespace SwaggerToTs.OpenApiDocument;
+using SwaggerToTs.OpenAPIElements;
+
+namespace SwaggerToTs.SchemaHandlers;
 
 public class NumberHandler : ISchemaHandler
 {

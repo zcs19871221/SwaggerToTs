@@ -1,4 +1,7 @@
-namespace SwaggerToTs.OpenApiDocument;
+using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.TypeScriptGenerator;
+
+namespace SwaggerToTs.SchemaHandlers;
 
 public class ObjectHandler : ISchemaHandler
 {

@@ -1,24 +1,27 @@
-namespace SwaggerToTs.OpenApiDocument;
+using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.TypeScriptGenerator;
 
-public class AnyOfHandler : ISchemaHandler
+namespace SwaggerToTs.SchemaHandlers;
+
+public class OneOfHandler : ISchemaHandler
 {
   public bool IsMatch(SchemaObject schema)
   {
-    return schema.AnyOf.Any();
+    return schema.Oneof.Any();
   }
-
 
   public void CreateTsCode(SchemaObject schema)
   {
-    schema.SchemaType = SchemaTypeEnums.AnyOf;
+    schema.SchemaType = SchemaTypeEnums.OneOf;
     List<TsCodeElement> contents = new();
-    foreach (var schemaObject in schema.AnyOf)
+    foreach (var schemaObject in schema.Oneof)
     {
       var each = schemaObject.GenerateTsCode();
       schema.Merge(each, element => { contents.Add(element); });
     }
 
-    var name = TsCodeWriter.AnyOfName;
+
+    var name = TsCodeWriter.OneOfName;
 
     schema.Contents = name + Helper.CreateHelperGeneric(contents.Select(e => e.GenerateCodeBody()));
     schema.ImportedHelpers.Add(name);

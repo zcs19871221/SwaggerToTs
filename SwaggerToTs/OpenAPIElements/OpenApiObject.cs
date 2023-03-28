@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using SwaggerToTs.TypeScriptGenerator;
 
-namespace SwaggerToTs.OpenApiDocument;
+namespace SwaggerToTs.OpenAPIElements;
 
 public class OpenApiObject : TsCodeElement
 {

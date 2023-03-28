@@ -1,4 +1,6 @@
-namespace SwaggerToTs.OpenApiDocument;
+using SwaggerToTs.TypeScriptGenerator;
+
+namespace SwaggerToTs.OpenAPIElements;
 
 public class RequestBodyObject : TsCodeElement
 {

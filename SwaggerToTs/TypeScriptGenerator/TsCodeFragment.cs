@@ -1,4 +1,4 @@
-namespace SwaggerToTs.OpenApiDocument;
+namespace SwaggerToTs.TypeScriptGenerator;
 
 public class TsCodeFragment : TsCodeElement
 {

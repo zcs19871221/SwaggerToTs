@@ -1,4 +1,7 @@
-namespace SwaggerToTs.OpenApiDocument;
+using SwaggerToTs.SchemaHandlers;
+using SwaggerToTs.TypeScriptGenerator;
+
+namespace SwaggerToTs.OpenAPIElements;
 
 public class SchemaObject : TsCodeElement
 {
@@ -11,7 +14,7 @@ public class SchemaObject : TsCodeElement
     new AllOfHandler(),
     new StringHandler(),
     new NumberHandler(),
-    new BoolHandler(),
+    new SchemaHandlers.BoolHandler(),
     new ArrayHandler(),
     new AnyObjectHandler(),
     new ObjectHandler(),

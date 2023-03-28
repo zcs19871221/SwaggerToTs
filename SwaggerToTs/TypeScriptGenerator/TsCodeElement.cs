@@ -1,8 +1,9 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using SwaggerToTs.OpenAPIElements;
 
-namespace SwaggerToTs.OpenApiDocument;
+namespace SwaggerToTs.TypeScriptGenerator;
 
 public abstract class TsCodeElement
 {

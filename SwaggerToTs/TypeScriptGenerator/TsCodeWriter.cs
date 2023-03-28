@@ -1,7 +1,8 @@
 using System.Text;
 using Newtonsoft.Json;
+using SwaggerToTs.OpenAPIElements;
 
-namespace SwaggerToTs.OpenApiDocument;
+namespace SwaggerToTs.TypeScriptGenerator;
 
 public class TsCodeWriter
 {
