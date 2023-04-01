@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using SwaggerToTs.TypeScriptGenerator;
 
 namespace SwaggerToTs.OpenAPIElements;
 
@@ -106,42 +105,5 @@ public class ComponentsObject
     return target;
   }
 
-  public TsCodeElement? GetRefMaybe(string? reference)
-  {
-    if (string.IsNullOrWhiteSpace(reference)) return null;
-
-    return GetRef(reference);
-  }
-
-  public TsCodeElement GetRef(string reference)
-  {
-    var refPaths = reference.Split("/");
-    var location = refPaths[2];
-    var key = refPaths[3];
-    TsCodeElement element;
-    {
-      switch (location.ToLower())
-      {
-        case "schemas":
-          element = TryGet(Schemas, key);
-          break;
-        case "responses":
-          element = TryGet(Responses, key);
-          break;
-        case "parameters":
-          element = TryGet(Parameters, key);
-          break;
-        case "requestbodies":
-          element = TryGet(RequestBodies, key);
-          break;
-        case "headers":
-          element = TryGet(Headers, key);
-          break;
-        default:
-          throw new Exception("available key is Schemas,responses, parameters,requestBodies, headers");
-      }
-    }
-    element.FileLocate = TsCodeWriter.SchemaFile;
-    return element;
-  }
+  
 }

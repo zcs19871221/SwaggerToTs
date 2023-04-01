@@ -1,5 +1,4 @@
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.TypeScriptGenerator;
 
 namespace SwaggerToTs.SchemaHandlers;
 

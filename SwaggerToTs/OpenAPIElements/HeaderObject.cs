@@ -2,14 +2,7 @@ namespace SwaggerToTs.OpenAPIElements;
 
 public class HeaderObject : ParameterObject
 {
+  public new string? Name = null;
 
-  public HeaderObject(bool required = false):base(required)
-  {
-  }
-  protected override void ValidateOpenApiDocument()
-  {
-    if (!string.IsNullOrWhiteSpace(Name) || !string.IsNullOrWhiteSpace(In))
-      throw new Exception("header object should not be set name");
-    ValidContent();
-  }
+  public new string? In = null;
 }

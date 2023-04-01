@@ -1,9 +1,9 @@
 using SwaggerToTs.SchemaHandlers;
-using SwaggerToTs.TypeScriptGenerator;
+using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.OpenAPIElements;
 
-public class SchemaObject : TsCodeElement
+public class SchemaObject:ReferenceObject
 {
   public Boolean IsFromResponse = false;
   private static readonly List<ISchemaHandler> SchemaHandlers = new()
@@ -22,15 +22,9 @@ public class SchemaObject : TsCodeElement
   };
 
   public bool Nullable { get; set; }
-  public SchemaObject(bool nullable = false)
-  {
-    Nullable = nullable;
-    ExportTypeValue = ExportType.Type;
-    ReadOnly = true;
-  }
+
   public SchemaTypeEnums? SchemaType { get; set; }
-
-
+  
   protected override void ValidateOpenApiDocument()
   {
     if (Type == "array" && Items == null) throw new Exception("array type schema object should set Items");
@@ -48,12 +42,13 @@ public class SchemaObject : TsCodeElement
     foreach (var handler in SchemaHandlers)
       if (handler.IsMatch(this))
       {
-        handler.CreateTsCode(this);
-        if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
-        {
-          Contents += " | null";
-        }
-        return this;
+        return handler.Aggregate(this);
+        // handler.CreateTsCode(this);
+        // if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
+        // {
+        //   Contents += " | null";
+        // }
+        // return this;
       }
 
     throw new Exception($"not find handler for schema type :{Type}");
@@ -114,6 +109,23 @@ public class SchemaObject : TsCodeElement
   public int? MaxProperties { get; set; }
 
   #endregion
+
+  public Snippets.Snippets Aggregate(Controller controller)
+  {
+    var options = TsCodeWriter.Get().Options;
+    foreach (var handler in SchemaHandlers)
+      if (handler.IsMatch(this))
+      {
+        handler.CreateTsCode(this);
+        if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
+        {
+          Contents += " | null";
+        }
+        return this;
+      }
+
+    throw new Exception($"not find handler for schema type :{Type}");
+  }
 }
 
 public enum SchemaTypeEnums

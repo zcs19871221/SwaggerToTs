@@ -30,8 +30,10 @@ public class TestBase
         debugArgs.AddRange(inputArgs);
       }
 
-      var writer = SwaggerToTs.Create(args.ToArray());
-      var result = writer.Generate();
+      var options = new Options(args.ToArray());
+      var openApiObject = SwaggerToTs.Create(options);
+      var controller = new Controller(options);
+      var result = controller.Generate(openApiObject);
       var expect = new Dictionary<string, string>();
       foreach (string file in Directory.EnumerateFiles(dist, "*.ts", SearchOption.AllDirectories))
       {

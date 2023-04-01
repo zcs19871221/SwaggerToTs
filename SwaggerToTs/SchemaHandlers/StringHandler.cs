@@ -18,4 +18,9 @@ public class StringHandler : ISchemaHandler
     schema.AddComment(nameof(schema.MaxLength), schema.MaxLength.ToString());
     schema.Contents = "string";
   }
+
+  public override string ToString()
+  {
+    return "string";
+  }
 }

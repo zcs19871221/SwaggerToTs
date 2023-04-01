@@ -1,5 +1,5 @@
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.TypeScriptGenerator;
+using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaHandlers;
 
@@ -11,14 +11,18 @@ public class ObjectHandler : ISchemaHandler
   }
 
 
-  public static void Create(SchemaObject schema)
+  public Snippets.Snippets Aggregate(SchemaObject schema, Controller controller)
   {
     schema.AddComment(nameof(schema.MinProperties), schema.MinProperties.ToString())
       .AddComment(nameof(schema.MaxProperties), schema.MaxProperties.ToString());
-
-    schema.ExportTypeValue = ExportType.Interface;
+    
+    return new Snippets.Snippets(schema.Properties.Select(e =>
+    {
+      return new Snippets.Snippets(new KeySnippet(e.Key), e.Value.Aggregate(controller));
+    }));
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, (key, o) =>
     {
+      new Snippets.Snippets(key, o.Aggregate())
       var wrapper = new TsCodeFragment
       {
         Name = TsCodeElement.ToCamelCase(key),
@@ -29,6 +33,11 @@ public class ObjectHandler : ISchemaHandler
       wrapper.Optional = !schema.Required.Contains(key);
       return wrapper.Merge(item);
     }));
+  }
+
+  public override string ToString()
+  {
+    return base.ToString();
   }
 
   public void CreateTsCode(SchemaObject schema)

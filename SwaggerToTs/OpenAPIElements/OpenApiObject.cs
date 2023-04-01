@@ -1,26 +1,26 @@
 using System.Text.RegularExpressions;
-using SwaggerToTs.TypeScriptGenerator;
+using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.OpenAPIElements;
 
-public class OpenApiObject : TsCodeElement
+public class OpenApiObject
 {
-  public OpenApiObject(SortedDictionary<string, PathItem>? paths, Info? info, string? openApi)
+  public OpenApiObject(SortedDictionary<string, PathItemObject>? paths, Info? info, string? openApi)
   {
     if (paths == null || info == null || openApi == null) throw new Exception("should not to null");
-
+    ValidateOpenApiDocument();
     Paths = paths;
     Info = info;
     OpenApi = openApi;
   }
 
   public string OpenApi { get; set; }
-  public SortedDictionary<string, PathItem> Paths { get; set; }
+  public SortedDictionary<string, PathItemObject> Paths { get; set; }
   public Info Info { get; set; }
 
   public ComponentsObject? Components { get; set; }
 
-  protected override void ValidateOpenApiDocument()
+  private void ValidateOpenApiDocument()
   {
     List<string> checkDup = new();
     foreach (var (requestUrl, pathItem) in Paths)
@@ -35,16 +35,8 @@ public class OpenApiObject : TsCodeElement
     }
   }
 
-  protected override TsCodeElement CreateTsCode()
-  {
-    var exportName = "Routes";
-    AddComment(nameof(OpenApi), OpenApi)
-      .AddComment(nameof(Info.Description), Info.Description)
-      .AddComment(nameof(Info.Title), Info.Title)
-      .AddComment(nameof(Info.Version), Info.Version);
-    var content = CreateFragment(Paths);
-    return Merge(content).ExtractTo(exportName, exportName);
-  }
+
+
 }
 
 public class Info

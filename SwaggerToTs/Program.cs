@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using SwaggerToTs.TypeScriptGenerator;
+using Newtonsoft.Json;
+using SwaggerToTs.OpenAPIElements;
 
 namespace SwaggerToTs;
 
@@ -8,23 +9,34 @@ public static class SwaggerToTs
 {
   public static int Main(string[] args)
   {
-
-    var writer = Create(args);
-    if (!string.IsNullOrWhiteSpace(writer.Options.Get<Helper>().Value))
+    
+    var options = new Options(args);
+    if (!string.IsNullOrWhiteSpace(options.Get<Helper>().Value))
     {
-      Console.WriteLine(writer.Options.Get<Helper>().Value);
+      Console.WriteLine(options.Get<Helper>().Value);
       return 1;
     }
-    writer.Write(writer.Generate());
-    Console.WriteLine($"TypeScript files successfully generated to {writer.Options.Get<Dist>().Value} 👍");
+
+    var openApiObject = Create(options);
+    var controller = new Controller(options, openApiObject.Components);
+
+    controller.Write(controller.Generate(openApiObject));
+    Console.WriteLine($"TypeScript files successfully generated to {options.Get<Dist>().Value} 👍");
     return 0;
   }
   
-  public static TsCodeWriter Create(string[] args)
+  public static OpenApiObject Create(Options options)
   {
-    var options = new Options(args);
-    
-    return TsCodeWriter.Create(options);
+
+    var swaggerJson = File.ReadAllText(options.Get<Swagger>().Value);
+
+    var openApiObject = JsonConvert.DeserializeObject<OpenApiObject>(
+                          swaggerJson,
+                          new JsonSerializerSettings
+                            { MetadataPropertyHandling = MetadataPropertyHandling.Ignore }) ??
+                        throw new InvalidOperationException();
+
+    return openApiObject;
   }
 }
 

@@ -1,5 +1,5 @@
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.TypeScriptGenerator;
+using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaHandlers;
 
@@ -26,5 +26,12 @@ public class ArrayHandler : ISchemaHandler
       var content = Helper.AddBracketIfNeed(element);
       schema.Contents += content + "[]";
     });
+  }
+
+  public override string ToString()
+  {
+    var content =  aggreagete();
+      
+      .toString() + "[]";
   }
 }
