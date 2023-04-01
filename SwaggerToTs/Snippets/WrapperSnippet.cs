@@ -4,18 +4,19 @@ public enum SnippetType
 {
     KeyValue,
     KeyWrappers,
-    Wrappers
+    Wrappers,
+    Value,
 }
-public class Wrapper:CommonSnippet
+public class WrapperSnippet:CommonSnippet
 {
 
     public KeySnippet? Key { get; set; }
     public ValueSnippet? Value { get; set; }
-    public IEnumerable<Wrapper>? Wrappers { get; set; }
+    // public IEnumerable<WrapperSnippet>? Wrappers { get; set; }
 
     public SnippetType SnippetType { get; set; }
     
-    private Wrapper(SnippetType type, KeySnippet? key = null, ValueSnippet? value = null, IEnumerable<Wrapper>? wrappers = null)
+    private WrapperSnippet(SnippetType type, KeySnippet? key = null, ValueSnippet? value = null, IEnumerable<WrapperSnippet>? wrappers = null)
     {
         Key = key;
         Value = value;
@@ -24,9 +25,9 @@ public class Wrapper:CommonSnippet
     }
 
 
-    public static Wrapper Create(KeySnippet keySnippet, ValueSnippet valueSnippet)
+    public static WrapperSnippet Create(KeySnippet keySnippet, ValueSnippet valueSnippet)
     {
-        var wrapper = new Wrapper(type: SnippetType.KeyValue, key: keySnippet, value: valueSnippet)
+        var wrapper = new WrapperSnippet(type: SnippetType.KeyValue, key: keySnippet, value: valueSnippet)
         {
             Dependencies = keySnippet.Dependencies.Union(valueSnippet.Dependencies).ToList(),
             Comments = keySnippet.Comments.Union(valueSnippet.Comments).ToList()
@@ -35,33 +36,42 @@ public class Wrapper:CommonSnippet
     }
 
    
-    public static Wrapper Create(KeySnippet keySnippet, IEnumerable<Wrapper> wrappers)
+    public static WrapperSnippet Create(KeySnippet keySnippet, IEnumerable<WrapperSnippet> wrappers)
     {
         var w = wrappers.ToList();
-        var newWrapper = new Wrapper(type: SnippetType.KeyWrappers, key: keySnippet, wrappers: w) {
+        var newWrapper = new WrapperSnippet(type: SnippetType.KeyWrappers, key: keySnippet, wrappers: w) {
             Dependencies = keySnippet.Dependencies.Union(AggregateDependencies(w)).ToList(),
             Comments = keySnippet.Comments
         };
         return newWrapper;
     }
 
-    public static Wrapper Create(KeySnippet keySnippet, Wrapper wrapper)
+    public static WrapperSnippet Create(KeySnippet keySnippet, WrapperSnippet wrapperSnippet)
     {
-        return Create(keySnippet, new List<Wrapper>
+        return Create(keySnippet, new List<WrapperSnippet>
         {
-            wrapper
+            wrapperSnippet
         });
     }
-    public static Wrapper Create(IEnumerable<Wrapper> wrappers)
+    public static WrapperSnippet Create(IEnumerable<WrapperSnippet> wrappers)
     {
         var w = wrappers.ToList();
-        var wrapper = new Wrapper(type: SnippetType.Wrappers, wrappers:w)
+        var wrapper = new WrapperSnippet(type: SnippetType.Wrappers, wrappers:w)
         {
             Dependencies = AggregateDependencies(w),
         };
         return wrapper;
     }
 
+    public static WrapperSnippet Create(ValueSnippet value)
+    {
+        var wrapper = new WrapperSnippet(type: SnippetType.Value, value:value)
+        {
+            Dependencies = value.Dependencies,
+            Comments = value.Comments
+        };
+        return wrapper;
+    }
     public override string ToString()
     {
         switch (SnippetType)
@@ -72,6 +82,8 @@ public class Wrapper:CommonSnippet
                 return CreateComments()  + Key + AddBrackets(ValuesToString());
             case SnippetType.Wrappers:
                 return CreateComments() + ValuesToString();
+            case SnippetType.Value:
+                return Value.ToString();
             default:
                 throw new Exception(SnippetType.ToString());
         }
@@ -91,7 +103,7 @@ public class Wrapper:CommonSnippet
         return extractedSnippet;
     }
     
-    private static List<IsolateSnippet> AggregateDependencies(IEnumerable<Wrapper> wrappers)
+    private static List<IsolateSnippet> AggregateDependencies(IEnumerable<WrapperSnippet> wrappers)
     {
         return wrappers.Aggregate(new List<IsolateSnippet>(), (acc, wrapper) =>
         {

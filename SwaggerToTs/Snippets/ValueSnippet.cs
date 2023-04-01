@@ -1,28 +1,28 @@
 namespace SwaggerToTs.Snippets;
 
-public class Value:CommonSnippet
+public class ValueSnippet:CommonSnippet
+{
+  protected bool IsNullable { get; set; }
+  
+  protected bool IsReadOnly { get; set; }
+
+}
+
+public class ValuesSnippet:CommonSnippet
 {
   
   protected bool IsNullable { get; set; }
   
   protected bool IsReadOnly { get; set; }
 
-  public override string ToString()
-  {
-    throw new NotImplementedException();
-  }
-
-  public override (List<IsolateSnippet>, string) Generate()
-  {
-    throw new NotImplementedException();
-  }
 }
 
-public class ExtractedValue:Value
+
+public class ExtractedValueSnippet:ValueSnippet
 {
   public IsolateSnippet IsolateSnippet;
 
-  public ExtractedValue(IsolateSnippet isolateSnippet)
+  public ExtractedValueSnippet(IsolateSnippet isolateSnippet)
   {
     IsNullable = false;
     IsReadOnly = false;
@@ -30,9 +30,10 @@ public class ExtractedValue:Value
     Dependencies.Add(isolateSnippet);
   }
 
-  public override (List<IsolateSnippet>, string) Generate()
+  public override string ToString()
   {
-    return (Dependencies, IsolateSnippet.ExportName);
+    return IsolateSnippet.ExportName;
   }
+
 }
 

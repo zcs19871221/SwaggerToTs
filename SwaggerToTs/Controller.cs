@@ -107,7 +107,7 @@ public class Controller
         var (dependencies, content) = isolateSnippet.Generate();
         foreach (var codeDependency in dependencies)
         {
-          if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty value");
+          if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty valueSnippet");
 
           if (codeDependency.FileLocate != fileLocate) imports.GetOrCreate(codeDependency.FileLocate).Add(codeDependency.ExportName);
         }

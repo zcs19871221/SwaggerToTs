@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace SwaggerToTs.Snippets;
 
-public class Common
+public class CommonSnippet
 
 {
 
-  public List<Isolate> Dependencies = new();
+  public List<IsolateSnippet> Dependencies = new();
   
   public List<(string, string)> Comments = new();
   

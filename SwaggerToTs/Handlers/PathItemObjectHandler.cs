@@ -29,7 +29,7 @@ public class PathItemObjectHandler:Handler
   }
 
   
-  public Snippets.Snippets Generate(string url, PathItemObject pathItemObject)
+  public WrapperSnippet Generate(string url, PathItemObject pathItemObject)
   {
     var operations = new List<(string, OperationObject?)>
     {
@@ -58,14 +58,14 @@ public class PathItemObjectHandler:Handler
       var operation =_operationObjectHandler.Generate(operationObject);
       var extracted = operation.RefactorAndSave(exportName, fileLocate, Controller);
 
-      return new Snippets.Snippets(
+      return WrapperSnippet.Create(
         new KeySnippet(method),
-        extracted.Item2
+        extracted
       );
 
     }).ToList();
 
-    var snippet = new Snippets.Snippets(operations);
+    var snippet = WrapperSnippet.Create(operations);
     
     snippet.AddComments(new List<(string, string?)>
     {

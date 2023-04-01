@@ -19,16 +19,16 @@ public class ParameterObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public Snippets.Snippets Generate(ParameterObject parameterObject)
+  public WrapperSnippet Generate(ParameterObject parameterObject)
   {
     return Handle(parameterObject, p =>
     {
       var name = p.Name;
-      return CreateKeyValueSnippet(p, name);
+      return CreateWrapperSnippet(p, name);
     });
   }
 
-  public Snippets.Snippets CreateKeyValueSnippet(ParameterObject p, string name)
+  public WrapperSnippet CreateWrapperSnippet(ParameterObject p, string name)
   {
     var required = p.Required;
     var schema = p.Schema;
@@ -42,7 +42,7 @@ public class ParameterObjectHandler: ReferenceObjectHandler
     }
 
     var keySnippet = new KeySnippet(name ?? throw new InvalidOperationException(), required);
-    var snippet = new Snippets.Snippets(keySnippet,
+    var snippet = WrapperSnippet.Create(keySnippet,
       Controller.SchemaObjectHandler.Generate(schema ?? throw new InvalidOperationException()));
     snippet.AddComments(new List<(string, string?)>
     {

@@ -4,19 +4,21 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
 
-public class SchemaObjectHandler: ReferenceObjectHandler
+public abstract class SchemaObjectHandler: ReferenceObjectHandler
 {
   
+  abstract public bool IsMatch(SchemaObject schema);
+  abstract public ValueSnippet DoGenerate(SchemaObject schema);
 
   public SchemaObjectHandler(Controller controller) : base(controller)
   {
   }
 
-  public Snippets.Snippets Generate(SchemaObject schemaObject)
+  public ValueSnippet Generate(SchemaObject schemaObject)
   {
     return Handle(schemaObject, p =>
     {
- 
+      return WrapperSnippet.Create(DoGenerate(p));
     });
   }
 

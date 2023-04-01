@@ -12,11 +12,11 @@ public class HeaderObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public Snippets.Snippets Generate(HeaderObject headerObject, string key)
+  public WrapperSnippet Generate(HeaderObject headerObject, string key)
   {
     return Handle(headerObject, h =>
     {
-      return Controller.ParameterObjectHandler.CreateKeyValueSnippet(h, key);
+      return Controller.ParameterObjectHandler.CreateWrapperSnippet(h, key);
     });
   }
 

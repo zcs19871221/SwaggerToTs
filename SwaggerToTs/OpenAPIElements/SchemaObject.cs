@@ -1,58 +1,9 @@
-using SwaggerToTs.SchemaHandlers;
-using SwaggerToTs.Snippets;
-
 namespace SwaggerToTs.OpenAPIElements;
 
 public class SchemaObject:ReferenceObject
 {
-  public Boolean IsFromResponse = false;
-  private static readonly List<ISchemaHandler> SchemaHandlers = new()
-  {
-    new EnumHandler(),
-    new OneOfHandler(),
-    new AnyOfHandler(),
-    new AllOfHandler(),
-    new StringHandler(),
-    new NumberHandler(),
-    new SchemaHandlers.BoolHandler(),
-    new ArrayHandler(),
-    new AnyObjectHandler(),
-    new ObjectHandler(),
-    new UnknownHandler()
-  };
 
   public bool Nullable { get; set; }
-
-  public SchemaTypeEnums? SchemaType { get; set; }
-  
-  protected override void ValidateOpenApiDocument()
-  {
-    if (Type == "array" && Items == null) throw new Exception("array type schema object should set Items");
-
-    if (Type == "object")
-      foreach (var requiredKey in Required)
-        if (!Properties.ContainsKey(requiredKey))
-          throw new Exception($"not exists required Key:{requiredKey} in property field of schemaObject");
-  }
-
-  protected override TsCodeElement CreateTsCode()
-  {
-    AddComment(nameof(Title), Title).AddComment(nameof(Format), Format);
-    var options = TsCodeWriter.Get().Options;
-    foreach (var handler in SchemaHandlers)
-      if (handler.IsMatch(this))
-      {
-        return handler.Aggregate(this);
-        // handler.CreateTsCode(this);
-        // if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
-        // {
-        //   Contents += " | null";
-        // }
-        // return this;
-      }
-
-    throw new Exception($"not find handler for schema type :{Type}");
-  }
 
 
   #region commonProperties
@@ -109,23 +60,6 @@ public class SchemaObject:ReferenceObject
   public int? MaxProperties { get; set; }
 
   #endregion
-
-  public Snippets.Snippets Aggregate(Controller controller)
-  {
-    var options = TsCodeWriter.Get().Options;
-    foreach (var handler in SchemaHandlers)
-      if (handler.IsMatch(this))
-      {
-        handler.CreateTsCode(this);
-        if (Nullable && ExportName == null && !(SchemaType == SchemaTypeEnums.Enum && options.Get<EnumUseEnum>().Value))
-        {
-          Contents += " | null";
-        }
-        return this;
-      }
-
-    throw new Exception($"not find handler for schema type :{Type}");
-  }
 }
 
 public enum SchemaTypeEnums

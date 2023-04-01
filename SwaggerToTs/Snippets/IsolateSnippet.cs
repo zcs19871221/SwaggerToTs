@@ -1,21 +1,13 @@
 namespace SwaggerToTs.Snippets;
 
-public class Isolate:CommonSnippet
+public class IsolateSnippet:CommonSnippet
 {
 
-  public Isolate(string exportName, string fileLocate, Value value)
+  public IsolateSnippet(string exportName, string fileLocate, WrapperSnippet wrapperSnippet)
   {
     ExportName = exportName;
     FileLocate = fileLocate;
-    Value = value;
-
-  }
-  
-  public Isolate(string exportName, string fileLocate, Wrapper wrapper)
-  {
-    ExportName = exportName;
-    FileLocate = fileLocate;
-    Wrapper = wrapper;
+    WrapperSnippet = wrapperSnippet;
   }
 
   public int Priority { get; set; }
@@ -26,25 +18,17 @@ public class Isolate:CommonSnippet
 
   protected List<string> Extends = new();
 
-  public Wrapper? Wrapper;
-  public Value? Value;
+  public WrapperSnippet? WrapperSnippet;
 
-  public List<ExtractedValue> UsedBy = new();
+  public List<ExtractedValueSnippet> UsedBy = new();
 
 
   public override string ToString()
   {
     var content = "";
-    if (Value != null)
+    if (WrapperSnippet == null)
     {
-      content = Value.ToString();
-    } else if (Wrapper != null)
-    {
-      content = Wrapper.ToString();
-    }
-    else
-    {
-      throw new Exception("One of Value and Wrapper must be not null");
+      throw new Exception(" WrapperSnippet must be not null");
     }
     switch (ExportType)
     {

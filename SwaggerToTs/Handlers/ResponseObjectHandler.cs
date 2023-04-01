@@ -6,31 +6,31 @@ namespace SwaggerToTs.Handlers;
 public class ResponseObjectHandler: ReferenceObjectHandler
 {
   
-  public Snippets.Snippets Generate(ResponseObject responseObject)
+  public WrapperSnippet Generate(ResponseObject responseObject)
   {
     return Handle(responseObject, res =>
     {
-      var contents = new List<Snippets.Snippets>();
+      var contents = new List<WrapperSnippet>();
       if (res.Headers != null)
       {
-        var headerContent = new Snippets.Snippets(res.Headers.Select(e =>
+        var headerContent = WrapperSnippet.Create(res.Headers.Select(e =>
         {
           return Controller.HeaderObjectHandler.Generate(e.Value, e.Key);
         }));
-        contents.Add(new Snippets.Snippets(new KeySnippet("Headers"), headerContent));
+        contents.Add(WrapperSnippet.Create(new KeySnippet("Headers"), headerContent));
       }
 
       if (res.Content != null)
       {
-        var content = new Snippets.Snippets(res.Content.Where(e => e.Value.Schema != null).Select(e =>
+        var content =WrapperSnippet.Create(res.Content.Where(e => e.Value.Schema != null).Select(e =>
         {
-          return new Snippets.Snippets(new KeySnippet(e.Key),
+          return WrapperSnippet.Create(new KeySnippet(e.Key),
             Controller.SchemaObjectHandler.Generate(e.Value.Schema ?? throw new InvalidOperationException()));
         }));
-        contents.Add(new Snippets.Snippets(new KeySnippet("Content"), content));
+        contents.Add(WrapperSnippet.Create(new KeySnippet("Content"), content));
       }
 
-      var snippet = new Snippets.Snippets(contents);
+      var snippet = WrapperSnippet.Create(contents);
       snippet.AddComments(new List<(string, string?)>
       {
         (nameof(res.Description), res.Description)
