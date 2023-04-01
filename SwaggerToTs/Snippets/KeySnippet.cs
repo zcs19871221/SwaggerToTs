@@ -1,6 +1,6 @@
 namespace SwaggerToTs.Snippets;
 
-public class KeySnippet:CommonSnippet
+public class Key:CommonSnippet
 {
   
   protected string Name { get; set; }
@@ -9,7 +9,7 @@ public class KeySnippet:CommonSnippet
   
   protected bool IsReadOnly { get; set; }
 
-  public KeySnippet(string name, bool required = false, bool isReadonly = true)
+  public Key(string name, bool required = false, bool isReadonly = true)
   {
     Name = name;
     Required = required;

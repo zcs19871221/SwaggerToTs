@@ -3,13 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace SwaggerToTs.Snippets;
 
-public abstract class CommonSnippet
+public class Common
 
 {
 
-  public List<IsolateSnippet> Dependencies = new();
+  public List<Isolate> Dependencies = new();
   
-  public readonly List<(string, string)> Comments = new();
+  public List<(string, string)> Comments = new();
   
   public CodeLocate? CodeLocate { get; set; }
   
@@ -19,15 +19,10 @@ public abstract class CommonSnippet
   }
 
   public static string NewLine = "\n";
-  public string CreateComments(List<(string, string)>? commentsToMerge = null)
+  public string CreateComments()
   {
-    var comments = Comments;
-    if (commentsToMerge != null)
-    {
-      comments = comments.Union(commentsToMerge).ToList();
-    }
     StringBuilder sb = new();
-    foreach (var comment in comments)
+    foreach (var comment in Comments)
     {
       var commentBody = comment.Item2.Replace("*/", "*\\/");
       var lines = Regex.Split(commentBody, "\n|\r\n");
@@ -40,8 +35,17 @@ public abstract class CommonSnippet
     
     return sb.ToString();
   }
+  
+  public string AddBrackets(string content)
+  {
+    if (string.IsNullOrWhiteSpace(content) || content.StartsWith("{")) return content;
+    var contents = content.Split(NewLine).ToList();
+    for (var i = 0; i < contents.Count; i++) contents[i] = $"  {contents[i]}";
 
-  public abstract (List<IsolateSnippet>, string) Generate();
+    contents.Insert(0, "{");
+    contents.Add("}");
+    return string.Join(NewLine, contents);
+  }
   
 }
 

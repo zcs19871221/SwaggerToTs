@@ -1,9 +1,9 @@
 namespace SwaggerToTs.Snippets;
 
-public class IsolateSnippet:CommonSnippet
+public class Isolate:CommonSnippet
 {
 
-  public IsolateSnippet(string exportName, string fileLocate, ValueSnippet value)
+  public Isolate(string exportName, string fileLocate, Value value)
   {
     ExportName = exportName;
     FileLocate = fileLocate;
@@ -11,11 +11,11 @@ public class IsolateSnippet:CommonSnippet
 
   }
   
-  public IsolateSnippet(string exportName, string fileLocate, Snippets snippets)
+  public Isolate(string exportName, string fileLocate, Wrapper wrapper)
   {
     ExportName = exportName;
     FileLocate = fileLocate;
-    Snippets = snippets;
+    Wrapper = wrapper;
   }
 
   public int Priority { get; set; }
@@ -24,26 +24,50 @@ public class IsolateSnippet:CommonSnippet
   
   protected ExportType ExportType { get; set; }
 
-  protected HashSet<string> Extends = new();
+  protected List<string> Extends = new();
 
-  public Snippets? Snippets;
-  public ValueSnippet? Value;
+  public Wrapper? Wrapper;
+  public Value? Value;
 
-  public List<ExtractedValueSnippet> UsedBy = new();
+  public List<ExtractedValue> UsedBy = new();
 
 
-  public override (List<IsolateSnippet>, string) Generate()
+  public override string ToString()
   {
-      if (Value != null)
-      {
-        var (d, c) = Value.Generate();
-        return (Dependencies.Concat(d).ToList(), c);
-      }
-
-      var (d1, c1) = Snippets.Generate();
-
-      return (Dependencies.Concat(d1).ToList(), c1);
+    var content = "";
+    if (Value != null)
+    {
+      content = Value.ToString();
+    } else if (Wrapper != null)
+    {
+      content = Wrapper.ToString();
     }
+    else
+    {
+      throw new Exception("One of Value and Wrapper must be not null");
+    }
+    switch (ExportType)
+    {
+      case ExportType.Interface:
+        var exportName = ExportName;
+        if (Extends.Count > 0)
+        {
+          Extends.Sort((a, b) => string.Compare(a, b, StringComparison.Ordinal));
+          exportName += $" extends {string.Join(", ", Extends)}";
+        }
+
+        return $"export interface {exportName} {content}";
+      case ExportType.Type:
+        return $"export type {ExportName} = {content};";
+      case ExportType.Enum:
+        return $"export enum {ExportName} {content}";
+      default:
+        throw new Exception("To be exported code doesn't  have export type");
+    }
+
+  }  
+
+ 
 }
 
 
