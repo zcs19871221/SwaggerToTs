@@ -1,6 +1,7 @@
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.SchemaHandlers;
+namespace SwaggerToTs.SchemaSnippets;
 
 public class UnknownHandler : ISchemaHandler
 {
@@ -10,7 +11,7 @@ public class UnknownHandler : ISchemaHandler
   }
 
 
-  public void CreateTsCode(SchemaObject schema)
+  public ValueSnippet CreateTsCode(SchemaObject schema)
   {
     schema.SchemaType = SchemaTypeEnums.Any;
     schema.Nullable = false;

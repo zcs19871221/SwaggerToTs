@@ -1,6 +1,6 @@
 using SwaggerToTs.OpenAPIElements;
 
-namespace SwaggerToTs.SchemaHandlers;
+namespace SwaggerToTs.SchemaSnippets;
 
 public class AnyObjectHandler : ISchemaHandler
 {

@@ -1,7 +1,7 @@
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.SchemaHandlers;
+namespace SwaggerToTs.SchemaSnippets;
 
 public class ArrayHandler : ISchemaHandler
 {

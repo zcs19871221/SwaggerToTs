@@ -18,7 +18,7 @@ abstract public class CommonSnippet
   {
     Comments.AddRange(comments.Where(e => e.Item2 != null)!);
   }
-
+  
   public static string NewLine = "\n";
   public string CreateComments(IEnumerable<(string, string)>? commentsToMerge = null)
   {
