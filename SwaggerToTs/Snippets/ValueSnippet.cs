@@ -2,38 +2,29 @@ namespace SwaggerToTs.Snippets;
 
 public class ValueSnippet:CommonSnippet
 {
-  protected bool IsNullable { get; set; }
+  public bool IsNullable { get; set; }
   
-  protected bool IsReadOnly { get; set; }
+  public bool IsReadOnly { get; set; }
 
-}
-
-public class ValuesSnippet:CommonSnippet
-{
-  
-  protected bool IsNullable { get; set; }
-  
-  protected bool IsReadOnly { get; set; }
-
-}
-
-
-public class ExtractedValueSnippet:ValueSnippet
-{
-  public IsolateSnippet IsolateSnippet;
-
-  public ExtractedValueSnippet(IsolateSnippet isolateSnippet)
+  public ExtractedValueSnippet Export()
   {
-    IsNullable = false;
-    IsReadOnly = false;
-    IsolateSnippet = isolateSnippet;
-    Dependencies.Add(isolateSnippet);
+    
   }
-
-  public override string ToString()
-  {
-    return IsolateSnippet.ExportName;
-  }
-
+ 
+  //
+  // public string? Generic { get; set; }
+  //
+  // public override string ToString()
+  // {
+  //   var content = CreateContent();
+  //   if (!string.IsNullOrWhiteSpace(Generic))
+  //   {
+  //     content = $"{Generic}<{content}>";
+  //   }
+  //   return IsReadOnly ? "readonly " : "" + content ;
+  // }
+  //
+  // abstract protected string CreateContent();
 }
+
 
