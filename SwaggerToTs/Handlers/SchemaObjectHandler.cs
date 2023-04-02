@@ -18,7 +18,7 @@ public abstract class SchemaObjectHandler: ReferenceObjectHandler
   {
     return Handle(schemaObject, p =>
     {
-      return WrapperSnippet.Create(DoGenerate(p));
+      return KeyValueSnippet.Create(DoGenerate(p));
     });
   }
 

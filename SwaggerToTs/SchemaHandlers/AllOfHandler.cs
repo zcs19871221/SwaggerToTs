@@ -32,7 +32,7 @@ public class AllOfHandler : ISchemaHandler
     }
     // if (schema.Type == "object")
     // {
-    //   WrapperSnippet objectT;
+    //   KeyValueSnippet objectT;
     // }
     // foreach (var each in schema.Allof.Select(schemaObject => schemaObject.Aggregate()))
     // {

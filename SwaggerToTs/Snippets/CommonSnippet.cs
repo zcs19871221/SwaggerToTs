@@ -1,13 +1,14 @@
+using System.CodeDom.Compiler;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SwaggerToTs.Snippets;
 
-public class CommonSnippet
+abstract public class CommonSnippet
 
 {
 
-  public List<IsolateSnippet> Dependencies = new();
+  public List<ValueSnippet> Dependencies = new();
   
   public List<(string, string)> Comments = new();
   
@@ -19,10 +20,11 @@ public class CommonSnippet
   }
 
   public static string NewLine = "\n";
-  public string CreateComments()
+  public string CreateComments(IEnumerable<(string, string)>? commentsToMerge = null)
   {
+    var comments = Comments.Concat(commentsToMerge ?? Array.Empty<(string, string)>());
     StringBuilder sb = new();
-    foreach (var comment in Comments)
+    foreach (var comment in comments)
     {
       var commentBody = comment.Item2.Replace("*/", "*\\/");
       var lines = Regex.Split(commentBody, "\n|\r\n");
@@ -46,7 +48,10 @@ public class CommonSnippet
     contents.Add("}");
     return string.Join(NewLine, contents);
   }
-  
+
+  // abstract public string Generate(Options options, List<ValueSnippet> imports);
+
+
 }
 
 public enum CodeLocate {

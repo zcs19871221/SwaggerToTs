@@ -12,7 +12,7 @@ public class HeaderObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public WrapperSnippet Generate(HeaderObject headerObject, string key)
+  public KeyValueSnippet Generate(HeaderObject headerObject, string key)
   {
     return Handle(headerObject, h =>
     {

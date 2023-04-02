@@ -11,7 +11,7 @@ public abstract class ReferenceObjectHandler: Handler
     return GetRefMaybe(reference) ?? throw new InvalidOperationException();
   }
 
-  protected WrapperSnippet Handle<T>(T referenceObject, Func<T, WrapperSnippet> create)
+  protected KeyValueSnippet Handle<T>(T referenceObject, Func<T, KeyValueSnippet> create)
     where T : ReferenceObject
   {
     var reference = referenceObject.Reference;
@@ -19,14 +19,14 @@ public abstract class ReferenceObjectHandler: Handler
     Controller.RefMappingIsolate.TryGetValue(reference, out var isolate);
     if (isolate != null)
     {
-      return WrapperSnippet.Create(new ExtractedValueSnippet(isolate));
+      return KeyValueSnippet.Create(new ExportedValueSnippet(isolate));
     }
       
     var refObject = GetRef(referenceObject);
     var snippet = create(refObject);
     var extracted = snippet.RefactorAndSave(refObject.ExportName ?? throw new InvalidOperationException(), "data-schema", Controller);
     Controller.RefMappingIsolate.Add(reference, extracted.IsolateSnippet);
-    return WrapperSnippet.Create(new ExtractedValueSnippet(extracted.IsolateSnippet));
+    return KeyValueSnippet.Create(new ExportedValueSnippet(extracted.IsolateSnippet));
   }
   protected R Handle1<T,R>(T referenceObject, Func<T, R> create)
     where T : ReferenceObject
@@ -36,14 +36,14 @@ public abstract class ReferenceObjectHandler: Handler
     Controller.RefMappingIsolate.TryGetValue(reference, out var isolate);
     if (isolate != null)
     {
-      return WrapperSnippet.Create(new ExtractedValueSnippet(isolate));
+      return new ExportedValueSnippet(isolate);
     }
       
     var refObject = GetRef(referenceObject);
     var snippet = create(refObject);
     var extracted = snippet.RefactorAndSave(refObject.ExportName ?? throw new InvalidOperationException(), "data-schema", Controller);
     Controller.RefMappingIsolate.Add(reference, extracted.IsolateSnippet);
-    return WrapperSnippet.Create(new ExtractedValueSnippet(extracted.IsolateSnippet));
+    return KeyValueSnippet.Create(new ExportedValueSnippet(extracted.IsolateSnippet));
   }
 
   protected ValueSnippet HandleSchema(SchemaObject schema, Func<SchemaObject, ValueSnippet> create)
@@ -53,14 +53,14 @@ public abstract class ReferenceObjectHandler: Handler
     Controller.RefMappingIsolate.TryGetValue(reference, out var isolate);
     if (isolate != null)
     {
-      return new ExtractedValueSnippet(isolate);
+      return new ExportedValueSnippet(isolate);
     }
       
     var refObject = GetRef(schema);
     var snippet = create(refObject);
     var extracted = snippet.RefactorAndSave(refObject.ExportName ?? throw new InvalidOperationException(), "data-schema", Controller);
     Controller.RefMappingIsolate.Add(reference, extracted.IsolateSnippet);
-    return WrapperSnippet.Create(new ExtractedValueSnippet(extracted.IsolateSnippet));
+    return KeyValueSnippet.Create(new ExportedValueSnippet(extracted.IsolateSnippet));
   }
   
   public T? GetRefMaybe<T>(T reference) where T : ReferenceObject

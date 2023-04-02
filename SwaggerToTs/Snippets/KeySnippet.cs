@@ -3,11 +3,11 @@ namespace SwaggerToTs.Snippets;
 public class KeySnippet:CommonSnippet
 {
   
-  protected string Name { get; set; }
+  public string Name { get; set; }
   
-  protected bool Required { get; set; }
+  public bool Required { get; set; }
   
-  protected bool IsReadOnly { get; set; }
+  public bool IsReadOnly { get; set; }
 
   public KeySnippet(string name, bool required = false, bool isReadonly = true)
   {

@@ -9,8 +9,8 @@ public class OpenApiObjectHandler : Handler
   {
     const string name = "Route";
     var routes = 
-      WrapperSnippet.Create(openApiObject.Paths.Select(p =>
-        WrapperSnippet.Create(new KeySnippet(p.Key), Controller.PathItemObjectHandler.Generate(p.Key, p.Value))));
+      new KeyValueSnippets(openApiObject.Paths.Select(p =>
+        new KeyValueSnippet(new KeySnippet(p.Key), Controller.PathItemObjectHandler.Generate(p.Key, p.Value))));
     routes.AddComments(new List<(string, string?)>
     {
       (nameof(openApiObject.OpenApi), openApiObject.OpenApi),
@@ -18,7 +18,7 @@ public class OpenApiObjectHandler : Handler
       (nameof(openApiObject.Info.Title), openApiObject.Info.Title),
       (nameof(openApiObject.Info.Version), openApiObject.Info.Version),
     });
-    routes.RefactorAndSave(name, name, Controller);
+    routes.Export(name, name, Controller);
     return Controller;
   }
 

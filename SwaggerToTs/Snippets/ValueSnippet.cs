@@ -1,30 +1,40 @@
+
 namespace SwaggerToTs.Snippets;
 
-public class ValueSnippet:CommonSnippet
+public abstract class ValueSnippet:CommonSnippet
 {
   public bool IsNullable { get; set; }
   
   public bool IsReadOnly { get; set; }
+  
+  public ExportType ExportType { get; set; }
 
-  public ExtractedValueSnippet Export()
+  public string? ExportName { get; set; }
+  public string? FileLocate { get; set; }
+  public int Priority { get; set; }
+
+  public List<ExportedValueSnippet> UsedBy = new();
+  public abstract string GenerateExportedContent(Options options, List<ValueSnippet> imports);
+  public abstract string GenerateContent(Options options, List<ValueSnippet> imports);
+
+  public virtual string Generate(Options options, List<ValueSnippet> imports)
   {
-    
+    imports.AddRange(Dependencies);
+    return string.IsNullOrWhiteSpace(ExportName) ? GenerateContent(options, imports) : GenerateExportedContent(options, imports);
   }
- 
-  //
-  // public string? Generic { get; set; }
-  //
-  // public override string ToString()
-  // {
-  //   var content = CreateContent();
-  //   if (!string.IsNullOrWhiteSpace(Generic))
-  //   {
-  //     content = $"{Generic}<{content}>";
-  //   }
-  //   return IsReadOnly ? "readonly " : "" + content ;
-  // }
-  //
-  // abstract protected string CreateContent();
+  public virtual ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
+  {
+    ExportName = exportName;
+    FileLocate = fileLocate;
+    var extractedSnippet = new ExportedValueSnippet(this, controller);
+    return extractedSnippet;    
+  }
 }
 
+public enum ExportType
+{
+  Interface,
+  Type,
+  Enum
+}
 

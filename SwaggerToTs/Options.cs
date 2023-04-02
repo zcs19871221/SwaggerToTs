@@ -21,6 +21,8 @@ public class Options
     new PrintWidth(),
     new EnumUseEnum(),
     new InlineRequest(),
+    new NonNullAsRequired(),
+    new NullAsOptional(),
     new Helper()
   };
   
@@ -177,6 +179,23 @@ class InlineRequest : BoolHandler, IOption
   public string CommandName => "inlineRequest";
   public string ShortCommandName => "inlineR";
   public string Desc => "request parameter all in line";
+
+}
+
+class NonNullAsRequired : BoolHandler, IOption
+{
+  public string CommandName => "nonNullAsRequired";
+  public string ShortCommandName => "nnr";
+  public string Desc => "if Response field is not null then make it required";
+
+}
+
+
+class NullAsOptional : BoolHandler, IOption
+{
+  public string CommandName => "nullAsOptional";
+  public string ShortCommandName => "nao";
+  public string Desc => "make a field optional if value is nullable";
 
 }
 

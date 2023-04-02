@@ -7,7 +7,7 @@ using SwaggerToTs.Snippets;
 namespace SwaggerToTs;
 public class Controller
 {
-  public List<IsolateSnippet> IsolateSnippets = new();
+  public List<ValueSnippet> IsolateSnippets = new();
 
   public Dictionary<string, IsolateSnippet> RefMappingIsolate = new();
 
@@ -98,13 +98,29 @@ public class Controller
 
       foreach (var isolateSnippet in isolateSnippets)
       {
-        if (string.IsNullOrEmpty(isolateSnippet.ExportName)) throw new Exception("empty Export name");
+        if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
 
         if (dup.Contains(isolateSnippet.ExportName))
           throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
 
         dup.Add(isolateSnippet.ExportName);
-        var (dependencies, content) = isolateSnippet.Generate();
+        var dependencies = new List<ValueSnippet>();
+        if (Options.Get<NonNullAsRequired>().Value)
+        {
+          var responses = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response).ToList();
+          var requests = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response);
+          ;
+          if (responses.Any() && requests.Any())
+          {
+            imports.GetOrCreate("Helper").Add("NonNullAsRequired");
+            fileMappingText.TryAdd(GetFullPath("Helper"), HelperContent);            
+            foreach (var response in responses)
+            {
+              response.Generic = "NonNullAsRequired";
+            }
+          }
+        }
+        var content = isolateSnippet.Generate(Options, dependencies);
         foreach (var codeDependency in dependencies)
         {
           if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty valueSnippet");

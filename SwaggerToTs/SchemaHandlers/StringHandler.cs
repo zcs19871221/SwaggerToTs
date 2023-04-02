@@ -1,4 +1,6 @@
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.SchemaSnippets;
+using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaHandlers;
 
@@ -10,17 +12,17 @@ public class StringHandler : ISchemaHandler
   }
 
 
-  public void CreateTsCode(SchemaObject schema)
+  public ValueSnippet GenerateSnippet(SchemaObject schema)
   {
-    schema.SchemaType = SchemaTypeEnums.String;
-    schema.AddComment(nameof(schema.Pattern), schema.Pattern);
-    schema.AddComment(nameof(schema.MinLength), schema.MinLength.ToString());
-    schema.AddComment(nameof(schema.MaxLength), schema.MaxLength.ToString());
-    schema.Contents = "string";
-  }
 
-  public override string ToString()
-  {
-    return "string";
+    var snippet = new StringSnippet();
+    Helper.IniSchemaSnippet(snippet, schema);
+    snippet.AddComments(new []
+    {
+      (nameof(schema.Pattern), schema.Pattern),
+      (nameof(schema.MinLength), schema.MinLength.ToString()),
+      (nameof(schema.MaxLength), schema.MaxLength.ToString())
+    });
+    return snippet;
   }
 }

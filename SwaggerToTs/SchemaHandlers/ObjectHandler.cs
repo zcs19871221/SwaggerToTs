@@ -11,18 +11,18 @@ public class ObjectHandler : ISchemaHandler
   }
 
 
-  public Snippets.WrapperSnippet Aggregate(SchemaObject schema, Controller controller)
+  public Snippets.KeyValueSnippet Aggregate(SchemaObject schema, Controller controller)
   {
     schema.AddComment(nameof(schema.MinProperties), schema.MinProperties.ToString())
       .AddComment(nameof(schema.MaxProperties), schema.MaxProperties.ToString());
     
-    return new Snippets.WrapperSnippet(schema.Properties.Select(e =>
+    return new Snippets.KeyValueSnippet(schema.Properties.Select(e =>
     {
-      return new Snippets.WrapperSnippet(new KeySnippet(e.Key), e.Value.Aggregate(controller));
+      return new Snippets.KeyValueSnippet(new KeySnippet(e.Key), e.Value.Aggregate(controller));
     }));
     schema.Merge(TsCodeElement.CreateFragment(schema.Properties, (key, o) =>
     {
-      new Snippets.WrapperSnippet(key, o.Aggregate())
+      new Snippets.KeyValueSnippet(key, o.Aggregate())
       var wrapper = new TsCodeFragment
       {
         Name = TsCodeElement.ToCamelCase(key),

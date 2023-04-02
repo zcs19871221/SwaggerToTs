@@ -12,10 +12,15 @@ public class SchemaObject:ReferenceObject
 
 
   public string? Title { get; set; }
+  
+  public string? Description { get; set; }
+  
+  public bool Deprecated { get; set; }
   public List<object> Enum { get; set; } = new();
   public List<SchemaObject> Oneof { get; set; } = new();
   public List<SchemaObject> Allof { get; set; } = new();
   public List<SchemaObject> AnyOf { get; set; } = new();
+  
   public SchemaObject? Not { get; set; }
 
   public string? Format { get; set; }
