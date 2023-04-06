@@ -1,26 +1,24 @@
 using System.ComponentModel.Design;
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
 
-public abstract class SchemaObjectHandler: ReferenceObjectHandler
+abstract public class SchemaObjectHandler: ReferenceObjectHandler
 {
-  
-  abstract public bool IsMatch(SchemaObject schema);
-  abstract public ValueSnippet DoGenerate(SchemaObject schema);
 
+  private  static List<SchemaObjectHandler> _handlers = new List<SchemaObjectHandler>();
+  public abstract bool IsMatch(SchemaObject schema);
+
+  public abstract ValueSnippet Construct(SchemaObject schema);
+
+  public ValueSnippet SelectThenConstruct(SchemaObject schema)
+  {
+    var handler = _handlers.Find(h => h.IsMatch(schema));
+    return (handler ?? throw new Exception("fff")).Construct(schema);
+  }
   public SchemaObjectHandler(Controller controller) : base(controller)
   {
   }
-
-  public ValueSnippet Generate(SchemaObject schemaObject)
-  {
-    return Handle(schemaObject, p =>
-    {
-      return KeyValueSnippet.Create(DoGenerate(p));
-    });
-  }
-
-
 }

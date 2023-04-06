@@ -9,7 +9,8 @@ abstract public class CommonSnippet
 {
 
   public List<ValueSnippet> Dependencies = new();
-  
+
+  public List<string> HelperNames = new();
   public List<(string, string)> Comments = new();
   
   public CodeLocate? CodeLocate { get; set; }

@@ -3,7 +3,7 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
 
-public abstract class ReferenceObjectHandler: Handler
+public class ReferenceObjectHandler: Handler
 {
 
   protected T GetRef<T>(T reference) where T : ReferenceObject
@@ -53,14 +53,14 @@ public abstract class ReferenceObjectHandler: Handler
     Controller.RefMappingIsolate.TryGetValue(reference, out var isolate);
     if (isolate != null)
     {
-      return new ExportedValueSnippet(isolate);
+      return new ExportedValueSnippet(isolate,Controller);
     }
       
     var refObject = GetRef(schema);
     var snippet = create(refObject);
-    var extracted = snippet.RefactorAndSave(refObject.ExportName ?? throw new InvalidOperationException(), "data-schema", Controller);
+    var extracted = snippet.Export(refObject.ExportName ?? throw new InvalidOperationException(), "data-schema", Controller);
     Controller.RefMappingIsolate.Add(reference, extracted.IsolateSnippet);
-    return KeyValueSnippet.Create(new ExportedValueSnippet(extracted.IsolateSnippet));
+    return extracted;
   }
   
   public T? GetRefMaybe<T>(T reference) where T : ReferenceObject

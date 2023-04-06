@@ -7,9 +7,9 @@ using SwaggerToTs.Snippets;
 namespace SwaggerToTs;
 public class Controller
 {
-  public List<ValueSnippet> IsolateSnippets = new();
+  public List<ValueSnippet> IsolateSnippets = new List<ValueSnippet>();
 
-  public Dictionary<string, IsolateSnippet> RefMappingIsolate = new();
+  public Dictionary<string, ValueSnippet> RefMappingIsolate = new();
 
   public Options Options;
 
@@ -26,6 +26,7 @@ public class Controller
   
   public HeaderObjectHandler HeaderObjectHandler { get; set; }
   public SchemaObjectHandler SchemaObjectHandler { get; set; }
+  public  ObjectHandler ObjectHandler { get; set; }
 
   
   

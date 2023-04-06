@@ -1,3 +1,5 @@
+using SwaggerToTs.SchemaSnippets;
+
 namespace SwaggerToTs.Snippets;
 
 public class KeyValueSnippet:ValueSnippet
@@ -6,10 +8,17 @@ public class KeyValueSnippet:ValueSnippet
     public KeySnippet Key { get; set; }
     public ValueSnippet Value { get; set; }
     
-    public KeyValueSnippet(KeySnippet key, ValueSnippet value)
+    public KeyValueSnippet(KeySnippet key, ValueSnippet value, Controller controller)
     {
         Key = key;
         Value = value;
+        if (value is EnumSnippet && value.ExportType == ExportType.Enum)
+        {
+            Value = value.Export(key.Name, "data-schema", controller);
+        } else if (value is AllOfSnippet {Type: AllOfGenerateType.Interface})
+        {
+            Value = value.Export(key.Name, "data-schema", controller);
+        }
     }
     
     public override string GenerateContent(Options options, List<ValueSnippet> imports)
@@ -22,7 +31,7 @@ public class KeyValueSnippet:ValueSnippet
             case KeyValueSnippets:
                 content = AddBrackets(content);
                 break;
-                
+
 
         }
         return CreateComments(Key.Comments.Concat(Value.Comments)) + Key + (Value.IsReadOnly ? "readonly " : "") +  content + (Value.IsNullable ? " | null" : "");
