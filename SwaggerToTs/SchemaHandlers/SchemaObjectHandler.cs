@@ -1,14 +1,13 @@
-using System.ComponentModel.Design;
+using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.Handlers;
+namespace SwaggerToTs.SchemaHandlers;
 
 abstract public class SchemaObjectHandler: ReferenceObjectHandler
 {
 
-  private  static List<SchemaObjectHandler> _handlers = new List<SchemaObjectHandler>();
+  private static List<SchemaObjectHandler> _handlers = new List<SchemaObjectHandler>();
   public abstract bool IsMatch(SchemaObject schema);
 
   public abstract ValueSnippet Construct(SchemaObject schema);

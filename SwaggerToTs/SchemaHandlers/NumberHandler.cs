@@ -1,9 +1,8 @@
-using System.ComponentModel.Design;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.Handlers;
+namespace SwaggerToTs.SchemaHandlers;
 
 public class NumberHandler: SchemaObjectHandler
 {

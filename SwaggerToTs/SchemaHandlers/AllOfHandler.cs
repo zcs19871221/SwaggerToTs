@@ -1,24 +1,23 @@
-using System.ComponentModel.Design;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.Handlers;
+namespace SwaggerToTs.SchemaHandlers;
 
-public class UnknownHandler: SchemaObjectHandler
+public class AllOfHandler : SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return true;
+    return schema.Allof.Any();
   }
 
   public override ValueSnippet Construct(SchemaObject schema)
   {
-    return new UnknownSnippet(schema);
+    return new AllOfSnippet(schema, Controller);
   }
 
 
-  public UnknownHandler(Controller controller) : base(controller)
+  public AllOfHandler(Controller controller) : base(controller)
   {
   }
 }

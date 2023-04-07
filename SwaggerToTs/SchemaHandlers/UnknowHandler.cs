@@ -1,23 +1,23 @@
-using SwaggerToTs;
-using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
+namespace SwaggerToTs.SchemaHandlers;
 
-public class OneOfHandler : SchemaObjectHandler
+public class UnknownHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Oneof.Any();
+    return true;
   }
 
   public override ValueSnippet Construct(SchemaObject schema)
   {
-    return new OneOfSnippet(schema, Controller);
+    return new UnknownSnippet(schema);
   }
 
-  public OneOfHandler(Controller controller) : base(controller)
+
+  public UnknownHandler(Controller controller) : base(controller)
   {
   }
 }

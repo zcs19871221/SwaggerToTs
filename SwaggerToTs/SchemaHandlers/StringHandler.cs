@@ -2,22 +2,22 @@ using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.Handlers;
+namespace SwaggerToTs.SchemaHandlers;
 
-public class AllOfHandler : SchemaObjectHandler
+public class StringHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Allof.Any();
+    return schema.Type == "string";
   }
 
   public override ValueSnippet Construct(SchemaObject schema)
   {
-    return new AllOfSnippet(schema, Controller);
+    return new StringSnippet(schema);
   }
 
 
-  public AllOfHandler(Controller controller) : base(controller)
+  public StringHandler(Controller controller) : base(controller)
   {
   }
 }

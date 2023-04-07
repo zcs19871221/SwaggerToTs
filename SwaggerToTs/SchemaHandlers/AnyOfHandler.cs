@@ -1,8 +1,8 @@
-using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.SchemaSnippets;
+namespace SwaggerToTs.SchemaHandlers;
 
 public class AnyOfHandler : SchemaObjectHandler
 {

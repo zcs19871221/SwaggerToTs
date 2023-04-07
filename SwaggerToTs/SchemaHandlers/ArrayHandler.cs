@@ -2,22 +2,22 @@ using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
-namespace SwaggerToTs.Handlers;
+namespace SwaggerToTs.SchemaHandlers;
 
-public class AnyHandler : SchemaObjectHandler
+public class ArrayHandler : SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type == "object" && !schema.Properties.Any() && !schema.Allof.Any();
+    return schema.Type == "array";
   }
-  
+
+
   public override ValueSnippet Construct(SchemaObject schema)
   {
     return new ArraySnippet(schema, Controller);
   }
 
-
-  public AnyHandler(Controller controller) : base(controller)
+  public ArrayHandler(Controller controller) : base(controller)
   {
   }
 }
