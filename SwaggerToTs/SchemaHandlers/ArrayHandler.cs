@@ -8,7 +8,7 @@ public class ArrayHandler : SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type == "array";
+    return schema.Type?.ToLower() == "array";
   }
 
 

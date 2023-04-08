@@ -13,7 +13,7 @@ public class EnumHandler: SchemaObjectHandler
 
   public override ValueSnippet Construct(SchemaObject schema)
   {
-    return new EnumSnippet(schema);
+    return new EnumSnippet(schema, Controller);
   }
 
 

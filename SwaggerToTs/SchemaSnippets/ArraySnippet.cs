@@ -39,6 +39,6 @@ public class ArraySnippet : SchemaSnippet
       itemContent = $"({itemContent})";
     }
 
-    return itemContent;
+    return itemContent + "[]";
   }
 }

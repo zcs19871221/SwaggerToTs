@@ -8,7 +8,7 @@ public class BoolHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type == "boolean";
+    return schema.Type?.ToLower() == "boolean";
   }
 
   public override ValueSnippet Construct(SchemaObject schema)

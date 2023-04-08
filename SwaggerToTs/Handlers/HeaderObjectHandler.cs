@@ -15,7 +15,7 @@ public class HeaderObjectHandler: ReferenceObjectHandler
   {
     return Handle(headerObject, h =>
     {
-      return new KeyValueSnippet(new KeySnippet(key), Controller.ParameterObjectHandler.Generate(headerObject), Controller);
+      return new KeyValueSnippet(new KeySnippet(key), Controller.ParameterObjectHandler.Generate(h), Controller);
     });
   }
 

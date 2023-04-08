@@ -8,7 +8,8 @@ public class NumberHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type is "number" or "integer";  }
+    return schema.Type?.ToLower() is "number" or "integer";  
+  }
 
   public override ValueSnippet Construct(SchemaObject schema)
   {

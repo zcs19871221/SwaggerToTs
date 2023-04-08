@@ -8,9 +8,17 @@ public class EnumSnippet : SchemaSnippet
 
   private readonly IEnumerable<object> _enums;
 
-  public EnumSnippet(SchemaObject schema) : base(schema)
+  public EnumSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
     _enums = schema.Enum;
+    if (controller.Options.Get<EnumUseEnum>().Value)
+    {
+      ExportType = ExportType.Enum;
+    }
+    else
+    {
+      ExportType = ExportType.Type;
+    }
   }
 
   public override string GenerateExportedContent(Options options,  GeneratingInfo generatingInfo)

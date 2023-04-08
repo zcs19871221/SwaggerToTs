@@ -8,7 +8,7 @@ public class StringHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type == "string";
+    return schema.Type?.ToLower() == "string";
   }
 
   public override ValueSnippet Construct(SchemaObject schema)

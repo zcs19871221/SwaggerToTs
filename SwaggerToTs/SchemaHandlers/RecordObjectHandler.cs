@@ -8,7 +8,7 @@ public class RecordObjectHandler : SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type == "object" && !schema.Properties.Any() && !schema.Allof.Any();
+    return schema.Type?.ToLower() == "object" && !schema.Properties.Any() && !schema.Allof.Any();
   }
   
   public override ValueSnippet Construct(SchemaObject schema)

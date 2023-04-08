@@ -27,8 +27,8 @@ public class SchemaObjectHandlerWrapper: ReferenceObjectHandler
   {
     return Handle(schema, p =>
     {
-      var handler = SchemaHandlers.Find(h => h.IsMatch(schema));
-      return (handler ?? throw new Exception("cant find handler for schema")).Construct(schema);
+      var handler = SchemaHandlers.Find(h => h.IsMatch(p));
+      return (handler ?? throw new Exception("cant find handler for schema")).Construct(p);
     });
   }
 

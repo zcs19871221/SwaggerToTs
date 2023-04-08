@@ -8,7 +8,7 @@ using SwaggerToTs.Snippets;
 namespace SwaggerToTs;
 public class Controller
 {
-  public List<ValueSnippet> IsolateSnippets = new List<ValueSnippet>();
+  public HashSet<ValueSnippet> IsolateSnippets = new ();
 
   public Dictionary<string, ValueSnippet> RefMappingIsolate = new();
 
@@ -129,16 +129,15 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
       SortedDictionary<string, HashSet<string>> fileMappingExportNames = new();
       StringBuilder contents = new();
       StringBuilder importBlock = new();
-      HashSet<string> dup = new();
       var generatingInfo = new GeneratingInfo();
       foreach (var isolateSnippet in isolateSnippets)
       {
         if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
+        //
+        // if (dup.Contains(isolateSnippet.ExportName))
+        //   throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
 
-        if (dup.Contains(isolateSnippet.ExportName))
-          throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
-
-        dup.Add(isolateSnippet.ExportName);
+        // dup.Add(isolateSnippet.ExportName);
         if (Options.Get<NonNullAsRequired>().Value)
         {
           var responses = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response).ToList();

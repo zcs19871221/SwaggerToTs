@@ -44,20 +44,22 @@ public class KeyValueSnippet:ValueSnippet
         }
         
         var content = Value.Generate(options, generatingInfo);
+        var isReadOnly = Value.IsReadOnly;
         switch (Value)
         {
             case KeyValueSnippet:
             case ValuesSnippet:
+            case ObjectSnippet:
                 content = AddBrackets(content);
                 break;
             case UnknownSnippet:
             case ExportedValueSnippet:
-                Key.IsReadOnly = false;
+                isReadOnly = false;
                 break;
         }
 
         var showNull = !options.Get<NullAsOptional>().Value && Value.IsNullable;
-        return Key + (Value.IsReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "");
+        return Key + (isReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "") + ";";
     }
     public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
     { 
