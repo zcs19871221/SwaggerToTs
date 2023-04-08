@@ -49,10 +49,6 @@ abstract public class CommonSnippet
     contents.Add("}");
     return string.Join(NewLine, contents);
   }
-
-  // abstract public string Construct(Options options, List<ValueSnippet> imports);
-
-
 }
 
 public enum CodeLocate {

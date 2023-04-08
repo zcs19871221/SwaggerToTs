@@ -47,16 +47,6 @@ public class Controller
     return (handler ?? throw new Exception("cant find handler for schema")).Construct(schema);
   }
   
-  public static string ToCamelCase(string name)
-  {
-    return char.ToLowerInvariant(name[0]) + name.Substring(1);
-  }
-
-  protected static string ToPascalCase(string name)
-  {
-    return char.ToUpperInvariant(name[0]) + name.Substring(1);
-  }
-
   public Controller(Options options)
   {
     Options = options;

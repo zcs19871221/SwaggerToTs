@@ -5,11 +5,11 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class AnyOfSnippet : SchemaSnippet
 {
-  private IEnumerable<ValueSnippet> _anyOfs;
+  private List<ValueSnippet> _anyOfs;
 
   public AnyOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _anyOfs = schema.AnyOf.Select(controller.SelectThenConstruct);
+    _anyOfs = schema.AnyOf.Select(controller.SelectThenConstruct).ToList();
 
     HelperNames.Add("AnyOf");
   }

@@ -10,6 +10,8 @@ public class OperationObjectHandler : Handler
     var parameterObjectHandler = Controller.ParameterObjectHandler;
     var requestBodyObjectHandler = Controller.RequestBodyObjectHandler;
     var responseObjectHandler = Controller.ResponseObjectHandler;
+    operationObject.Parameters =
+      operationObject.Parameters.Where(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).Schema != null).ToList();
     var groupedParameters = operationObject.Parameters.GroupBy(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).In, (key, g) => (key, g));
     var requestContent = groupedParameters.Where(e => e.g.Any()).Select(group =>
     {

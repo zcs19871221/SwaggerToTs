@@ -19,12 +19,12 @@ public abstract class ValueSnippet:CommonSnippet
   public abstract string GenerateExportedContent(Options options, List<ValueSnippet> imports);
   public abstract string GenerateContent(Options options, List<ValueSnippet> imports);
 
-  public virtual string Generate(Options options, List<ValueSnippet> imports)
+  public string Generate(Options options, List<ValueSnippet> imports)
   {
     imports.AddRange(Dependencies);
     return string.IsNullOrWhiteSpace(ExportName) ? GenerateContent(options, imports) : CreateComments() + GenerateExportedContent(options, imports);
   }
-  public virtual ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
+  public ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
   {
     ExportName = exportName;
     FileLocate = fileLocate;

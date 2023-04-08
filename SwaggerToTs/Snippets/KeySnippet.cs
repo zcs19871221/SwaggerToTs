@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace SwaggerToTs.Snippets;
 
 public class KeySnippet:CommonSnippet
@@ -9,6 +11,22 @@ public class KeySnippet:CommonSnippet
   
   public bool IsReadOnly { get; set; }
 
+  public static string ToCamelCase(string name)
+  {
+    return char.ToLowerInvariant(name[0]) + name.Substring(1);
+  }
+
+  protected static string ToPascalCase(string name)
+  {
+    return char.ToUpperInvariant(name[0]) + name.Substring(1);
+  }
+
+  
+  private string FormatName()
+  {
+    var name = ToCamelCase(Name);
+    return Regex.IsMatch(Name, @"^[a-zA-Z_\d$.]+$") ? name : $"'{name}'";
+  }
   public KeySnippet(string name, bool required = true, bool isReadonly = true)
   {
     Name = name;
@@ -18,7 +36,7 @@ public class KeySnippet:CommonSnippet
 
   public override string ToString()
   {
-    return $"{(IsReadOnly ? "readonly " : "")}{Name}{(Required ? "" : "?")}:";
+    return $"{(IsReadOnly ? "readonly " : "")}{FormatName()}{(Required ? "" : "?")}:";
   }
 }
 

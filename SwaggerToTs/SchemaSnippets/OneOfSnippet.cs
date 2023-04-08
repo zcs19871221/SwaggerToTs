@@ -6,11 +6,11 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class OneOfSnippet : SchemaSnippet
 {
-  private IEnumerable<ValueSnippet> _oneOfs;
+  private List<ValueSnippet> _oneOfs;
 
   public OneOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _oneOfs = schema.Oneof.Select(controller.SelectThenConstruct);
+    _oneOfs = schema.Oneof.Select(controller.SelectThenConstruct).ToList();
 
     HelperNames.Add("OneOf");
   }

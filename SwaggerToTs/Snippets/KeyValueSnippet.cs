@@ -12,13 +12,15 @@ public class KeyValueSnippet:ValueSnippet
     {
         Key = key;
         Value = value;
-        if (value is EnumSnippet && value.ExportType == ExportType.Enum)
+        switch (value)
         {
-            Value = value.Export(key.Name, "data-schema", controller);
-        } else if (value is AllOfSnippet {Type: AllOfGenerateType.Interface})
-        {
-            Value = value.Export(key.Name, "data-schema", controller);
+            case EnumSnippet when value.ExportType == ExportType.Enum:
+            case AllOfSnippet {Type: AllOfGenerateType.Interface}:
+                Value = value.Export(key.Name, "data-schema", controller);
+                break;
         }
+
+        Comments = key.Comments.Concat(value.Comments).ToList();
     }
 
     public override string GenerateContent(Options options, List<ValueSnippet> imports)
@@ -31,10 +33,9 @@ public class KeyValueSnippet:ValueSnippet
             case KeyValueSnippets:
                 content = AddBrackets(content);
                 break;
-
-
         }
-        return CreateComments(Key.Comments.Concat(Value.Comments)) + Key + (Value.IsReadOnly ? "readonly " : "") +  content + (Value.IsNullable ? " | null" : "");
+        
+        return CreateComments() + Key + (Value.IsReadOnly ? "readonly " : "") +  content + (Value.IsNullable ? " | null" : "");
     }
 
     private void HandleKeyRequired(Options options)
@@ -56,6 +57,6 @@ public class KeyValueSnippet:ValueSnippet
     {
         HandleKeyRequired(options);
 
-        return CreateComments(Key.Comments.Concat(Value.Comments)) + "export interface " + AddBrackets(Key + (Value.IsReadOnly ? "readonly " : "") + Value.Generate(options, imports) + (Value.IsNullable ? " | null" : ""));
+        return "export interface " + AddBrackets(Key + (Value.IsReadOnly ? "readonly " : "") + Value.Generate(options, imports) + (Value.IsNullable ? " | null" : ""));
     }
 }

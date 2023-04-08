@@ -20,7 +20,7 @@ public class NumberSnippet : SchemaSnippet
 
   public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
   {
-    return CreateComments() + $"export type {ExportName} = {GenerateContent(options, imports)}";
+    return $"export type {ExportName} = {GenerateContent(options, imports)}";
   }
 
   public override string GenerateContent(Options options, List<ValueSnippet> imports)

@@ -10,7 +10,7 @@ public enum AllOfGenerateType
 }
 public class AllOfSnippet : SchemaSnippet
 {
-  private IEnumerable<ValueSnippet> _allOfs;
+  private List<ValueSnippet> _allOfs;
 
   private List<string>? _extends;
 

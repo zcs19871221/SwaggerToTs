@@ -12,7 +12,7 @@ public class BoolSnippet : SchemaSnippet
 
   public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
   {
-    return CreateComments() + $"export type = {GenerateContent(options, imports)};";
+    return $"export type = {GenerateContent(options, imports)};";
   }
 
   public override string GenerateContent(Options options, List<ValueSnippet> imports)
