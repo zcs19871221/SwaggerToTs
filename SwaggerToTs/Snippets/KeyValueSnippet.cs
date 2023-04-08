@@ -25,20 +25,11 @@ public class KeyValueSnippet:ValueSnippet
 
     public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
     {
-        HandleKeyRequired(options);
-        var content = Value.Generate(options, generatingInfo);
-        switch (Value)
-        {
-            case KeyValueSnippet:
-            case KeyValueSnippets:
-                content = AddBrackets(content);
-                break;
-        }
-        
-        return CreateComments() + Key + (Value.IsReadOnly ? "readonly " : "") +  content + (Value.IsNullable ? " | null" : "");
+        var content = CreateContent(options, generatingInfo);
+        return CreateComments() + content;
     }
 
-    private void HandleKeyRequired(Options options)
+    private string CreateContent(Options options, GeneratingInfo generatingInfo)
     {
         var nullAsOptional = options.Get<NullAsOptional>().Value;
         var nonNullAsRequired = options.Get<NonNullAsRequired>().Value;
@@ -51,12 +42,24 @@ public class KeyValueSnippet:ValueSnippet
         {
             Key.Required = true;
         }
+        
+        var content = Value.Generate(options, generatingInfo);
+        switch (Value)
+        {
+            case KeyValueSnippet:
+            case KeyValueSnippets:
+                content = AddBrackets(content);
+                break;
+            case UnknownSnippet:
+                Key.IsReadOnly = false;
+                break;
+        }
+
+        var showNull = !options.Get<NullAsOptional>().Value && Value.IsNullable;
+        return Key + (Value.IsReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "");
     }
-
     public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
-    {
-        HandleKeyRequired(options);
-
-        return "export interface " + AddBrackets(Key + (Value.IsReadOnly ? "readonly " : "") + Value.Generate(options, generatingInfo) + (Value.IsNullable ? " | null" : ""));
+    { 
+        return "export interface " + AddBrackets(CreateContent(options, generatingInfo));
     }
 }

@@ -3,9 +3,9 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class AnySnippet : SchemaSnippet
+public class RecordObjectSnippet : SchemaSnippet
 {
-  public AnySnippet(SchemaObject schema) : base(schema)
+  public RecordObjectSnippet(SchemaObject schema) : base(schema)
   {
     AddComments(new []
     {

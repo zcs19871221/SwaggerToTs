@@ -25,7 +25,7 @@ public class Controller
   
   public HeaderObjectHandler HeaderObjectHandler { get; set; }
   public AllOfHandler AllOfHandler { get; set; }
-  public AnyHandler AnyHandler { get; set; }
+  public RecordObjectHandler RecordObjectHandler { get; set; }
   public AnyOfHandler AnyOfHandler { get; set; }
   public ArrayHandler ArrayHandler { get; set; }
   public BoolHandler BoolHandler { get; set; }
@@ -59,7 +59,7 @@ public class Controller
     ResponseObjectHandler = new ResponseObjectHandler(this);
     HeaderObjectHandler = new HeaderObjectHandler(this);
     AllOfHandler = new AllOfHandler(this);
-    AnyHandler = new AnyHandler(this);
+    RecordObjectHandler = new RecordObjectHandler(this);
     AnyOfHandler = new AnyOfHandler(this);
     ArrayHandler = new ArrayHandler(this);
     BoolHandler = new BoolHandler(this);
@@ -71,17 +71,17 @@ public class Controller
     StringHandler = new StringHandler(this);
     SchemaHandlers = new List<SchemaObjectHandler>()
     {
-      AllOfHandler,
-      AnyHandler,
-      AnyOfHandler,
-      ArrayHandler,
-      BoolHandler,
       EnumHandler,
-      NumberHandler,
-      ObjectHandler,
       OneOfHandler,
+      AnyOfHandler,
+      AllOfHandler,
+      StringHandler,
+      NumberHandler,
+      BoolHandler,
+      ArrayHandler,
+      RecordObjectHandler,
+      ObjectHandler,
       UnknownHandler,
-      StringHandler
     };
   }
 

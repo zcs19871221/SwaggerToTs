@@ -9,7 +9,8 @@ public abstract class SchemaObjectHandler: ReferenceObjectHandler
   public abstract bool IsMatch(SchemaObject schema);
 
   public abstract ValueSnippet Construct(SchemaObject schema);
-  public SchemaObjectHandler(Controller controller) : base(controller)
+
+  protected SchemaObjectHandler(Controller controller) : base(controller)
   {
   }
 }

@@ -4,7 +4,7 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaHandlers;
 
-public class AnyHandler : SchemaObjectHandler
+public class RecordObjectHandler : SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
@@ -17,7 +17,7 @@ public class AnyHandler : SchemaObjectHandler
   }
 
 
-  public AnyHandler(Controller controller) : base(controller)
+  public RecordObjectHandler(Controller controller) : base(controller)
   {
   }
 }
