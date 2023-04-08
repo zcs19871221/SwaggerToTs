@@ -11,16 +11,15 @@ public class OneOfSnippet : SchemaSnippet
   public OneOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
     _oneOfs = schema.Oneof.Select(controller.SelectThenConstruct).ToList();
-
-    HelperNames.Add("OneOf");
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, imports)}";
+    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"OneOf<{string.Join(NewLine, _oneOfs.Select(e => e.Generate(options, imports)))}>";  }
+    generatingInfo.AddHelper(Controller.OneOfName);
+    return $"{Controller.OneOfName}<{string.Join(NewLine, _oneOfs.Select(e => e.Generate(options, generatingInfo)))}>";  }
 }

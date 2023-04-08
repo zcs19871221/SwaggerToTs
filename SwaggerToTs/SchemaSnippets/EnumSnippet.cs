@@ -6,18 +6,28 @@ namespace SwaggerToTs.SchemaSnippets;
 public class EnumSnippet : SchemaSnippet
 {
 
-  private string contents = "";
-  public EnumSnippet(SchemaObject schema, Options options) : base(schema)
+  private readonly IEnumerable<object> _enums;
+
+  public EnumSnippet(SchemaObject schema) : base(schema)
   {
-    if (options.Get<EnumUseEnum>().Value)
+    _enums = schema.Enum;
+  }
+
+  public override string GenerateExportedContent(Options options,  GeneratingInfo generatingInfo)
+  {
+    var contents = GenerateContent(options, generatingInfo);
+    return ExportType == ExportType.Enum ? $"export const enum {ExportName} = {contents}" : $"export type {ExportName} = {contents};";
+  }
+
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  {
+    if (ExportType == ExportType.Enum)
     {
-      contents =  "{\n  " + string.Join(",\n  ", schema.Enum.Select(e =>  e + $" = '{e}'")) + "\n}";
-      ExportType = ExportType.Enum;
+      return  "{\n  " + string.Join(",\n  ", _enums.Select(e =>  e + $" = '{e}'")) + "\n}";
     }
-    else
+    if (ExportType == ExportType.Type)
     {
-      ExportType = ExportType.Type;
-      contents = string.Join(" | ", schema.Enum.Select(e =>
+      return string.Join(" | ", _enums.Select(e =>
       {
         switch (e)
         {
@@ -38,20 +48,7 @@ public class EnumSnippet : SchemaSnippet
         }
       }));
     }
-  }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
-  {
-    if (ExportType == ExportType.Enum)
-    {
-      return $"export const enum {ExportName} = {contents}";
-    }
-
-    return $"export type {ExportName} = {contents};";
-  }
-
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
-  {
-    return contents;
+    throw new Exception($"enum can't handle export type: {ExportType.ToString()}");
   }
 }

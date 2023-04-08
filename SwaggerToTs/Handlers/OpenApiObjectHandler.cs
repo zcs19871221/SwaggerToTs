@@ -5,7 +5,7 @@ namespace SwaggerToTs.Handlers;
 
 public class OpenApiObjectHandler : Handler
 {
-  public  ValueSnippet Construct(OpenApiObject openApiObject)
+  public void Construct(OpenApiObject openApiObject)
   {
     const string name = "Route";
     var routes =
@@ -19,7 +19,7 @@ public class OpenApiObjectHandler : Handler
       (nameof(openApiObject.Info.Title), openApiObject.Info.Title),
       (nameof(openApiObject.Info.Version), openApiObject.Info.Version),
     });
-    return routes.Export(name, name, Controller);
+    routes.Export(name, name, Controller);
   }
 
 

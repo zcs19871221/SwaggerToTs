@@ -85,6 +85,8 @@ public class Controller
     };
   }
 
+  public static string Helper = "Helper";
+
   public static string OneOfName = "OneOf";
   public static string AnyOfName = "AnyOf";
   public static string NonNullAsRequired = "NonNullAsRequired";
@@ -151,21 +153,25 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
     Components = openApiObject.Components;
     ReferenceMappingShortName = ComponentsObjectHandler.Construct(openApiObject.Components);
     OpenApiObjectHandler.Construct(openApiObject);
-    Dictionary<string, string> fileMappingText = new();
+    Dictionary<string, string> fileMappingText = new()
+    {
+      {GetFullPath(Helper), HelperContent}
+    };
     foreach (var (fileLocate, isolateSnippets) in IsolateSnippets.GroupBy(e => e.FileLocate, (s, snippets) => (s, snippets.ToList())))
     {
-      
+      if (fileLocate == null)
+      {
+        throw new Exception("fileLocate should not null");
+      }
       isolateSnippets.Sort((x, y) =>
       {
-        if (x.Priority != y.Priority) return x.Priority.CompareTo(y.Priority);
-
-        return string.Compare(x.ExportName, y.ExportName, StringComparison.Ordinal);
+        return x.Priority != y.Priority ? x.Priority.CompareTo(y.Priority) : string.Compare(x.ExportName, y.ExportName, StringComparison.Ordinal);
       });
-      SortedDictionary<string, HashSet<string>> imports = new();
+      SortedDictionary<string, HashSet<string>> fileMappingExportNames = new();
       StringBuilder contents = new();
       StringBuilder importBlock = new();
       HashSet<string> dup = new();
-
+      var generatingInfo = new GeneratingInfo();
       foreach (var isolateSnippet in isolateSnippets)
       {
         if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
@@ -174,7 +180,6 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
           throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
 
         dup.Add(isolateSnippet.ExportName);
-        var dependencies = new List<ValueSnippet>();
         if (Options.Get<NonNullAsRequired>().Value)
         {
           var responses = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response).ToList();
@@ -182,28 +187,20 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
           ;
           if (responses.Any() && requests.Any())
           {
-            imports.GetOrCreate("Helper").Add("NonNullAsRequired");
-            fileMappingText.TryAdd(GetFullPath("Helper"), HelperContent);            
+            fileMappingExportNames.GetOrCreate("Helper").Add(NonNullAsRequired);
             foreach (var response in responses)
             {
-              response.Generic = "NonNullAsRequired";
+              response.Generic = NonNullAsRequired;
             }
           }
         }
-        var content = isolateSnippet.Generate(Options, dependencies);
-        foreach (var codeDependency in dependencies)
-        {
-          if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty valueSnippet");
 
-          if (codeDependency.FileLocate != fileLocate) imports.GetOrCreate(codeDependency.FileLocate).Add(codeDependency.ExportName);
-        }
-
+        var content = isolateSnippet.Generate(Options, generatingInfo);
         if (contents.Length > 0) contents.AppendLine();
-
         contents.AppendLine(content);
       }
-
-      foreach (var (fileToImport, importName) in imports)
+      generatingInfo.AggregateImports(fileMappingExportNames, fileLocate);
+      foreach (var (fileToImport, importName) in fileMappingExportNames)
       {
         var x = importName.ToList();
         x.Sort((s, s1) => string.Compare(s, s1, StringComparison.Ordinal));
@@ -233,4 +230,41 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
  * Do not make direct changes to the file.
  */";
   
+}
+
+public class GeneratingInfo
+{
+  public HashSet<ValueSnippet> Imports = new();
+  public HashSet<string> Helpers = new();
+
+
+  public void AddImports(List<ValueSnippet> imports)
+  {
+    foreach (var import in imports)
+    {
+      Imports.Add(import);
+    }
+  }
+  
+  public void AddHelper(string helperName)
+  {
+    Helpers.Add(helperName);
+  }
+  
+  public void AggregateImports(SortedDictionary<string, HashSet<string>> fileMappingExportNames, string fileLocate)
+  {
+      
+    foreach (var codeDependency in Imports)
+    {
+      if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty valueSnippet");
+
+      if (codeDependency.FileLocate != fileLocate) fileMappingExportNames.GetOrCreate(codeDependency.FileLocate).Add(codeDependency.ExportName);
+    }
+
+
+    foreach (var helperName in Helpers)
+    {      
+      fileMappingExportNames.GetOrCreate(Controller.Helper).Add(helperName);
+    }
+  }
 }

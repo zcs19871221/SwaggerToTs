@@ -26,9 +26,9 @@ public class AllOfSnippet : SchemaSnippet
     _allOfs = schema.Allof.Select(controller.SelectThenConstruct).ToList();
 
     var exportNames = _allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
-    if (exportNames.Count == _allOfs.Count() && (_objectSnippet == null || _objectSnippet is ExportedValueSnippet))
+    if (exportNames.Count == _allOfs.Count && (_objectSnippet == null || _objectSnippet is ExportedValueSnippet))
     {
-      _extends = exportNames;
+      _extends = exportNames!;
       Type = AllOfGenerateType.Interface;
       ExportType = ExportType.Interface;
     }
@@ -40,18 +40,18 @@ public class AllOfSnippet : SchemaSnippet
 
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
     if (ExportType == ExportType.Interface)
     {
       return
-        $"export interface {ExportName} {(_extends != null ? " extends" + string.Join(", ", _extends) : "")}{AddBrackets(_objectSnippet == null ? "" : _objectSnippet.Generate(options, imports))}";
+        $"export interface {ExportName} {(_extends != null ? " extends" + string.Join(", ", _extends) : "")}{AddBrackets(_objectSnippet == null ? "" : _objectSnippet.Generate(options, generatingInfo))}";
     }
     
-    return $"export type {ExportName} = {GenerateContent(options, imports)}";
+    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
 
     if (Type == AllOfGenerateType.Interface)
@@ -65,5 +65,7 @@ public class AllOfSnippet : SchemaSnippet
     {
       items.Add(_objectSnippet);
     }
-    return $"AllOfSnippet<{string.Join(NewLine, items.Select(e => e.Generate(options, imports)))}>";  }
+
+    return string.Join("&", items.Select(e => e.Generate(options, generatingInfo)));
+  }
 }

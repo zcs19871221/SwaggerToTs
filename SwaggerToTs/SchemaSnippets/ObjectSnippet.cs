@@ -25,13 +25,13 @@ public class ObjectSnippet:SchemaSnippet
     });
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export interface {ExportName} {AddBrackets(GenerateContent(options, imports))}";
+    return $"export interface {ExportName} {AddBrackets(GenerateContent(options, generatingInfo))}";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    return propertiesObject.Generate(options, imports);
+    return propertiesObject.Generate(options, generatingInfo);
   }
 }

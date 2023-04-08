@@ -22,14 +22,14 @@ public class ArraySnippet : SchemaSnippet
 
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, imports)}";
+    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    var itemContent = _item.Generate(options, imports);
+    var itemContent = _item.Generate(options, generatingInfo);
     if (_item.IsNullable)
     {
       itemContent += " | null";

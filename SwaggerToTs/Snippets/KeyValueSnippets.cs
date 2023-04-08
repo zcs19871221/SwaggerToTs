@@ -9,20 +9,15 @@ public class KeyValueSnippets: ValueSnippet
     Values = values.ToList();
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    return AddBrackets(GetContent(options, imports));
+    return Values.Aggregate("", (s, snippet) => s + NewLine + snippet.Generate(options, generatingInfo));
   }
-
-  private string GetContent(Options options, List<ValueSnippet> imports)
+  
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return Values.Aggregate("", (s, snippet) => s + NewLine + snippet.Generate(options, imports));
-  }
-
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
-  {
-    return CreateComments() + $"export interface {ExportName}" + 
-           AddBrackets(GetContent(options, imports));
+    return $"export interface {ExportName}" + 
+           AddBrackets(GenerateContent(options, generatingInfo));
   }
 
 }

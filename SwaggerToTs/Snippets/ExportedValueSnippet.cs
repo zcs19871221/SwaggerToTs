@@ -13,17 +13,18 @@ public class ExportedValueSnippet: ValueSnippet
       IsNullable = true;
     }
     IsolateSnippet.UsedBy.Add(this);
+    Dependencies.Add(isolateSnippet);
     controller.IsolateSnippets.Add(isolateSnippet);
   }
 
   public string? Generic { get; set; }
   
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
     throw new Exception("extracted snippet should not export again");
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
     return (string.IsNullOrWhiteSpace(Generic) ? IsolateSnippet.ExportName : $"{Generic}<{IsolateSnippet.ExportName}>") ?? throw new InvalidOperationException();  }
 }

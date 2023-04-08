@@ -23,10 +23,10 @@ public class KeyValueSnippet:ValueSnippet
         Comments = key.Comments.Concat(value.Comments).ToList();
     }
 
-    public override string GenerateContent(Options options, List<ValueSnippet> imports)
+    public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
     {
         HandleKeyRequired(options);
-        var content = Value.Generate(options, imports);
+        var content = Value.Generate(options, generatingInfo);
         switch (Value)
         {
             case KeyValueSnippet:
@@ -53,10 +53,10 @@ public class KeyValueSnippet:ValueSnippet
         }
     }
 
-    public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+    public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
     {
         HandleKeyRequired(options);
 
-        return "export interface " + AddBrackets(Key + (Value.IsReadOnly ? "readonly " : "") + Value.Generate(options, imports) + (Value.IsNullable ? " | null" : ""));
+        return "export interface " + AddBrackets(Key + (Value.IsReadOnly ? "readonly " : "") + Value.Generate(options, generatingInfo) + (Value.IsNullable ? " | null" : ""));
     }
 }

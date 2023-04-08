@@ -10,16 +10,15 @@ public class AnyOfSnippet : SchemaSnippet
   public AnyOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
     _anyOfs = schema.AnyOf.Select(controller.SelectThenConstruct).ToList();
-
-    HelperNames.Add("AnyOf");
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, imports)}";
+    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"AnyOf<{string.Join(NewLine, _anyOfs.Select(e => e.Generate(options, imports)))}>";  }
+    generatingInfo.AddHelper(Controller.AnyOfName);
+    return $"{Controller.AnyOfName}<{string.Join(NewLine, _anyOfs.Select(e => e.Generate(options, generatingInfo)))}>";  }
 }

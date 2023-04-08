@@ -1,23 +1,21 @@
-using System.CodeDom.Compiler;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SwaggerToTs.Snippets;
 
-abstract public class CommonSnippet
+public abstract class CommonSnippet
 
 {
 
   public List<ValueSnippet> Dependencies = new();
 
-  public List<string> HelperNames = new();
   public List<(string, string)> Comments = new();
   
   public CodeLocate? CodeLocate { get; set; }
   
   public void AddComments(IEnumerable<(string, string?)> comments)
   {
-    Comments.AddRange(comments.Where(e => e.Item2 != null)!);
+    Comments.AddRange(comments.Where(e => !string.IsNullOrWhiteSpace(e.Item2))!);
   }
   
   public static string NewLine = "\n";

@@ -10,12 +10,12 @@ public class BoolSnippet : SchemaSnippet
     ExportType = ExportType.Type;
   }
 
-  public override string GenerateExportedContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export type = {GenerateContent(options, imports)};";
+    return $"export type = {GenerateContent(options, generatingInfo)};";
   }
 
-  public override string GenerateContent(Options options, List<ValueSnippet> imports)
+  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
     return "boolean";
   }
