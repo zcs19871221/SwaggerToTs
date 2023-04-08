@@ -13,7 +13,7 @@ public class AnyHandler : SchemaObjectHandler
   
   public override ValueSnippet Construct(SchemaObject schema)
   {
-    return new ArraySnippet(schema, Controller);
+    return new RecordObjectSnippet(schema);
   }
 
 
