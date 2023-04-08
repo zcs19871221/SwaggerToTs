@@ -5,11 +5,11 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class AnyOfSnippet : SchemaSnippet
 {
-  private List<ValueSnippet> _anyOfs;
+  private readonly List<ValueSnippet> _anyOfs;
 
   public AnyOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _anyOfs = schema.AnyOf.Select(controller.SelectThenConstruct).ToList();
+    _anyOfs = schema.AnyOf.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
   }
 
   public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)

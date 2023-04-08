@@ -24,28 +24,11 @@ public class Controller
   public ResponseObjectHandler ResponseObjectHandler { get; set; }
   
   public HeaderObjectHandler HeaderObjectHandler { get; set; }
-  public AllOfHandler AllOfHandler { get; set; }
-  public RecordObjectHandler RecordObjectHandler { get; set; }
-  public AnyOfHandler AnyOfHandler { get; set; }
-  public ArrayHandler ArrayHandler { get; set; }
-  public BoolHandler BoolHandler { get; set; }
-  public EnumHandler EnumHandler { get; set; }
   
-  public NumberHandler NumberHandler { get; set; }
-  public ObjectHandler ObjectHandler { get; set; }
-  public OneOfHandler OneOfHandler { get; set; }
-  
-  public StringHandler StringHandler { get; set; }
-  public UnknownHandler UnknownHandler { get; set; }
   public Dictionary<string, string> ReferenceMappingShortName { get; set; }
 
-  public List<SchemaObjectHandler> SchemaHandlers;
-  
-  public ValueSnippet SelectThenConstruct(SchemaObject schema)
-  {
-    var handler = SchemaHandlers.Find(h => h.IsMatch(schema));
-    return (handler ?? throw new Exception("cant find handler for schema")).Construct(schema);
-  }
+  public SchemaObjectHandlerWrapper SchemaObjectHandlerWrapper { get;  }
+ 
   
   public Controller(Options options)
   {
@@ -58,31 +41,7 @@ public class Controller
     RequestBodyObjectHandler = new RequestBodyObjectHandler(this);
     ResponseObjectHandler = new ResponseObjectHandler(this);
     HeaderObjectHandler = new HeaderObjectHandler(this);
-    AllOfHandler = new AllOfHandler(this);
-    RecordObjectHandler = new RecordObjectHandler(this);
-    AnyOfHandler = new AnyOfHandler(this);
-    ArrayHandler = new ArrayHandler(this);
-    BoolHandler = new BoolHandler(this);
-    EnumHandler = new EnumHandler(this);
-    NumberHandler = new NumberHandler(this);
-    ObjectHandler = new ObjectHandler(this);
-    OneOfHandler = new OneOfHandler(this);
-    UnknownHandler = new UnknownHandler(this);
-    StringHandler = new StringHandler(this);
-    SchemaHandlers = new List<SchemaObjectHandler>()
-    {
-      EnumHandler,
-      OneOfHandler,
-      AnyOfHandler,
-      AllOfHandler,
-      StringHandler,
-      NumberHandler,
-      BoolHandler,
-      ArrayHandler,
-      RecordObjectHandler,
-      ObjectHandler,
-      UnknownHandler,
-    };
+    SchemaObjectHandlerWrapper = new SchemaObjectHandlerWrapper(this);
   }
 
   public static string Helper = "Helper";

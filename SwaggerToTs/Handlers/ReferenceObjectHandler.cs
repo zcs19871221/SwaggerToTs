@@ -28,7 +28,7 @@ public class ReferenceObjectHandler: Handler
     var snippet = create(refObject);
     snippet.ReferenceUrl = reference;
     Controller.RefMappingIsolate.Add(reference, snippet);
-    return  snippet.Export(Controller.ReferenceMappingShortName.GetValueOrDefault(reference) ?? throw new InvalidOperationException(), "data-schema", Controller);
+    return  snippet.Export(Controller.ReferenceMappingShortName.GetValueOrDefault(GetKey(reference)) ?? throw new InvalidOperationException(), "data-schema", Controller);
   }
   
   public T? GetRefMaybe<T>(T reference) where T : ReferenceObject
@@ -41,24 +41,29 @@ public class ReferenceObjectHandler: Handler
     }
 
     var refLink = reference.Reference ?? "";
-    switch (reference)
+    if (string.IsNullOrWhiteSpace(refLink) || !refLink.Contains('/'))
     {
-      case HeaderObject:
-        return components.Headers?.GetValueOrDefault(refLink) as T;
-      case ParameterObject: 
-        return components.Parameters?.GetValueOrDefault(refLink) as T;
-      case RequestBodyObject:
-        return components.RequestBodies?.GetValueOrDefault(refLink) as T;
-      case ResponseObject:
-        return components.Responses?.GetValueOrDefault(refLink) as T;
-      case SchemaObject:
-        return components.Schemas?.GetValueOrDefault(refLink) as T;
-      default:
-        throw new Exception($"can't handle type:{reference.GetType()}");
+      return null;
     }
+
+    var key = GetKey(refLink);
+
+    return reference switch
+    {
+      HeaderObject => components.Headers?.GetValueOrDefault(key) as T,
+      ParameterObject => components.Parameters?.GetValueOrDefault(key) as T,
+      RequestBodyObject => components.RequestBodies?.GetValueOrDefault(key) as T,
+      ResponseObject => components.Responses?.GetValueOrDefault(key) as T,
+      SchemaObject => components.Schemas?.GetValueOrDefault(key) as T,
+      _ => throw new Exception($"can't handle type:{reference.GetType()}")
+    };
   }
 
-  public ReferenceObjectHandler(Controller controller) : base(controller)
+  private string GetKey(string reference)
+  {
+    return reference[(reference.LastIndexOf("/", StringComparison.Ordinal) + 1)..];
+  }
+    public ReferenceObjectHandler(Controller controller) : base(controller)
   {
   }
 }

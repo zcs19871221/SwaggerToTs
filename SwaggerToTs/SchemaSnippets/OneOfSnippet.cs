@@ -1,4 +1,3 @@
-using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
@@ -10,7 +9,7 @@ public class OneOfSnippet : SchemaSnippet
 
   public OneOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _oneOfs = schema.Oneof.Select(controller.SelectThenConstruct).ToList();
+    _oneOfs = schema.Oneof.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
   }
 
   public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)

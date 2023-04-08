@@ -13,7 +13,7 @@ public class ResponseObjectHandler: ReferenceObjectHandler
       var contents = new List<KeyValueSnippet>();
       if (res.Headers != null)
       {
-        var headerContent = new KeyValueSnippets(res.Headers.Select(e =>
+        var headerContent = new ValuesSnippet(res.Headers.Select(e =>
         {
           return Controller.HeaderObjectHandler.Generate(e.Value, e.Key);
         }));
@@ -22,15 +22,15 @@ public class ResponseObjectHandler: ReferenceObjectHandler
 
       if (res.Content != null)
       {
-        var content = new KeyValueSnippets(res.Content.Where(e => e.Value.Schema != null).Select(e =>
+        var content = new ValuesSnippet(res.Content.Where(e => e.Value.Schema != null).Select(e =>
         {
           return new KeyValueSnippet(new KeySnippet(e.Key),
-            Controller.SelectThenConstruct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
+            Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
         }));
         contents.Add(new KeyValueSnippet(new KeySnippet("Content"), content, Controller));
       }
 
-      var snippet = new KeyValueSnippets(contents);
+      var snippet = new ValuesSnippet(contents);
       snippet.AddComments(new List<(string, string?)>
       {
         (nameof(res.Description), res.Description)

@@ -7,12 +7,12 @@ namespace SwaggerToTs.SchemaSnippets;
 public class ObjectSnippet:SchemaSnippet
 {
 
-  private KeyValueSnippets propertiesObject;
+  private ValuesSnippet propertiesObject;
   public ObjectSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    propertiesObject = new KeyValueSnippets(schema.Properties.Select(e =>
+    propertiesObject = new ValuesSnippet(schema.Properties.Select(e =>
     {
-      return new KeyValueSnippet(new KeySnippet(e.Key), controller.SelectThenConstruct(e.Value),
+      return new KeyValueSnippet(new KeySnippet(e.Key), controller.SchemaObjectHandlerWrapper.Construct(e.Value),
         controller);
     }).ToList())
     {

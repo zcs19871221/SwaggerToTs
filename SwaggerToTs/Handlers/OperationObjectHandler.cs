@@ -16,7 +16,7 @@ public class OperationObjectHandler : Handler
     var requestContent = groupedParameters.Where(e => e.g.Any()).Select(group =>
     {
       var parameterType = new KeySnippet(group.key ?? throw new InvalidOperationException());
-      var parameters = new KeyValueSnippets(group.g.Select(p => parameterObjectHandler.Generate(p)));
+      var parameters = new ValuesSnippet(group.g.Select(p => parameterObjectHandler.Generate(p)));
 
       return new KeyValueSnippet(parameterType, parameters, Controller) as ValueSnippet;
     }).ToList();
@@ -26,15 +26,15 @@ public class OperationObjectHandler : Handler
       requestContent.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
 
 
-    var request = new KeyValueSnippet(new KeySnippet("Request"), new KeyValueSnippets(requestContent), Controller);
+    var request = new KeyValueSnippet(new KeySnippet("Request"), new ValuesSnippet(requestContent), Controller);
     var responseContent =
       new List<KeyValueSnippet>(operationObject.Responses
         .Select(e => new KeyValueSnippet(new KeySnippet(e.Key), responseObjectHandler.Generate(e.Value), Controller)));
 
 
-    var response = new KeyValueSnippet(new KeySnippet("Response"),new KeyValueSnippets(responseContent), Controller);
+    var response = new KeyValueSnippet(new KeySnippet("Response"),new ValuesSnippet(responseContent), Controller);
 
-    var snippet = new KeyValueSnippets(new List<KeyValueSnippet>
+    var snippet = new ValuesSnippet(new List<KeyValueSnippet>
     {
       request,
       response

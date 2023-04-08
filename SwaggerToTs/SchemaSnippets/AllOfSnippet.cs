@@ -19,11 +19,11 @@ public class AllOfSnippet : SchemaSnippet
   public AllOfGenerateType Type;
   public AllOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    if (controller.ObjectHandler.IsMatch(schema))
+    if (controller.SchemaObjectHandlerWrapper.ObjectHandler.IsMatch(schema))
     {
-      _objectSnippet = controller.ObjectHandler.Construct(schema);
+      _objectSnippet = controller.SchemaObjectHandlerWrapper.ObjectHandler.Construct(schema);
     }
-    _allOfs = schema.Allof.Select(controller.SelectThenConstruct).ToList();
+    _allOfs = schema.Allof.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
 
     var exportNames = _allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
     if (exportNames.Count == _allOfs.Count && (_objectSnippet == null || _objectSnippet is ExportedValueSnippet))

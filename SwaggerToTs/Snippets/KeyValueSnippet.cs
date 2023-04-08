@@ -47,10 +47,11 @@ public class KeyValueSnippet:ValueSnippet
         switch (Value)
         {
             case KeyValueSnippet:
-            case KeyValueSnippets:
+            case ValuesSnippet:
                 content = AddBrackets(content);
                 break;
             case UnknownSnippet:
+            case ExportedValueSnippet:
                 Key.IsReadOnly = false;
                 break;
         }

@@ -11,13 +11,13 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
   {
     return Handle(requestBodyObject, r =>
     {
-      var responseContent = new KeyValueSnippets(r.Content.Where(e =>
+      var responseContent = new ValuesSnippet(r.Content.Where(e =>
       {
         return e.Value.Schema != null;
       }).Select(e =>
       {
         return new KeyValueSnippet(new KeySnippet(e.Key),
-          Controller.SelectThenConstruct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
+          Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
       }));
       var response = new KeyValueSnippet(new KeySnippet("Request", r.Required), responseContent, Controller);
       response.AddComments(new List<(string, string?)>

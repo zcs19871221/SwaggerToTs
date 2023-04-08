@@ -65,7 +65,7 @@ public class PathItemObjectHandler:Handler
 
     }).ToList();
 
-    var snippet = new KeyValueSnippets(operations);
+    var snippet = new ValuesSnippet(operations);
     
     snippet.AddComments(new List<(string, string?)>
     {

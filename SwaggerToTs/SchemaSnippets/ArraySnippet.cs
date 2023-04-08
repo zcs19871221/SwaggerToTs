@@ -17,8 +17,8 @@ public class ArraySnippet : SchemaSnippet
       (nameof(schema.UniqueItems), schema.UniqueItems?.ToString())
     });
       IsReadOnly = true;
-      _item = controller.SelectThenConstruct(schema.Items ??
-                                             throw new InvalidOperationException());
+      _item = controller.SchemaObjectHandlerWrapper.Construct(schema.Items ??
+                                                                       throw new InvalidOperationException());
 
   }
 

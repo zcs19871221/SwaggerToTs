@@ -1,12 +1,21 @@
 namespace SwaggerToTs.Snippets;
 
 
-public class KeyValueSnippets: ValueSnippet
+public class ValuesSnippet: ValueSnippet
 {
   public List<ValueSnippet> Values;
-  public KeyValueSnippets(IEnumerable<ValueSnippet> values)
+  public ValuesSnippet(IEnumerable<ValueSnippet> values)
   {
     Values = values.ToList();
+    Values.Sort((a, b) =>
+    {
+      if (a is KeyValueSnippet aa && b is KeyValueSnippet bb)
+      {
+        return string.CompareOrdinal(aa.Key.Name, bb.Key.Name);
+      }
+
+      return 0;
+    });
   }
 
   public override string GenerateContent(Options options, GeneratingInfo generatingInfo)

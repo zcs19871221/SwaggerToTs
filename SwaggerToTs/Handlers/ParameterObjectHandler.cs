@@ -37,7 +37,7 @@ public class ParameterObjectHandler: ReferenceObjectHandler
 
       var keyName = new KeySnippet(name ?? throw new InvalidOperationException(), required);
       var parameter = new KeyValueSnippet(keyName,
-        Controller.SelectThenConstruct(schema ?? throw new InvalidOperationException()), Controller);
+        Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
       parameter.AddComments(new List<(string, string?)>
       {
         (nameof(p.Description), p.Description),

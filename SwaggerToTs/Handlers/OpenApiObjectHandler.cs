@@ -9,7 +9,7 @@ public class OpenApiObjectHandler : Handler
   {
     const string name = "Route";
     var routes =
-      new KeyValueSnippets(openApiObject.Paths.Select(p =>
+      new ValuesSnippet(openApiObject.Paths.Select(p =>
         new KeyValueSnippet(new KeySnippet(p.Key), Controller.PathItemObjectHandler.Generate(p.Key, p.Value),
           Controller)));
     routes.AddComments(new List<(string, string?)>
