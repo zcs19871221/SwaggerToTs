@@ -20,7 +20,7 @@ public class KeyValueSnippet:ValueSnippet
             Value = value.Export(key.Name, "data-schema", controller);
         }
     }
-    
+
     public override string GenerateContent(Options options, List<ValueSnippet> imports)
     {
         HandleKeyRequired(options);

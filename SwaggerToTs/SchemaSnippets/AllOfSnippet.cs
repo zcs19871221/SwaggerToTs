@@ -23,7 +23,7 @@ public class AllOfSnippet : SchemaSnippet
     {
       _objectSnippet = controller.ObjectHandler.Construct(schema);
     }
-    _allOfs = schema.Allof.Select(controller.SchemaObjectHandler.SelectThenConstruct).ToList();
+    _allOfs = schema.Allof.Select(controller.SelectThenConstruct).ToList();
 
     var exportNames = _allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
     if (exportNames.Count == _allOfs.Count() && (_objectSnippet == null || _objectSnippet is ExportedValueSnippet))

@@ -7,29 +7,27 @@ namespace SwaggerToTs.Handlers;
 public class PathItemObjectHandler:Handler
 {
   
-  private bool MatchTags(OperationObject operationObject, List<string> tags)
+  private static bool MatchTags(OperationObject operationObject, List<string> tags)
   {
     return tags.Any(tag =>
       operationObject.Tags.Exists(e => string.Equals(e, tag, StringComparison.CurrentCultureIgnoreCase)));
   }
-  
-  public bool Match(OperationObject operationObject)
+
+  private bool Match(OperationObject operationObject)
   {
     var tagsToMatch = Controller.Options.Get<MatchTags>().Value;
-    if (tagsToMatch.Count == 0) return true;
-    return MatchTags(operationObject, tagsToMatch);
+    return tagsToMatch.Count == 0 || MatchTags(operationObject, tagsToMatch);
   }
 
-  public bool Ignore(OperationObject operationObject)
+  private bool Ignore(OperationObject operationObject)
   {
     var skipTags = Controller.Options.Get<IgnoreTags>().Value;
 
-    if (skipTags.Count == 0) return false;
-    return MatchTags(operationObject, skipTags);
+    return skipTags.Count != 0 && MatchTags(operationObject, skipTags);
   }
 
   
-  public KeyValueSnippet Generate(string url, PathItemObject pathItemObject)
+  public ValueSnippet Generate(string url, PathItemObject pathItemObject)
   {
     var operations = new List<(string, OperationObject?)>
     {
@@ -50,22 +48,24 @@ public class PathItemObjectHandler:Handler
         throw new Exception("should not null");
       }
 
+      var parameterObjectHandler = Controller.ParameterObjectHandler;
       var parameterKeys = operationObject.Parameters.Select(p =>
-        _parameterObjectHandler.GetKey(p));
+        parameterObjectHandler.GetKey(p));
       operationObject.Parameters.AddRange(pathItemObject.Parameters.Where(p =>
-        !parameterKeys.Contains(_parameterObjectHandler.GetKey(p))));
+        !parameterKeys.Contains(parameterObjectHandler.GetKey(p))));
       var (exportName, fileLocate) = DecideOperationExtractInfo(url, method, operationObject);
-      var operation =_operationObjectHandler.Generate(operationObject);
-      var extracted = operation.RefactorAndSave(exportName, fileLocate, Controller);
+      var operation =Controller.OperationObjectHandler.Generate(operationObject);
+      var extracted = operation.Export(exportName, fileLocate, Controller);
 
-      return KeyValueSnippet.Create(
+      return new KeyValueSnippet(
         new KeySnippet(method),
-        extracted
+        extracted,
+        Controller
       );
 
     }).ToList();
 
-    var snippet = KeyValueSnippet.Create(operations);
+    var snippet = new KeyValueSnippets(operations);
     
     snippet.AddComments(new List<(string, string?)>
     {
@@ -78,7 +78,7 @@ public class PathItemObjectHandler:Handler
   public (string,string) DecideOperationExtractInfo(string url, string method, OperationObject operationObject)
   {
     var fileName = operationObject.Tags.FirstOrDefault() ?? url.Split("/").ToList()
-      .Find(e => !string.IsNullOrWhiteSpace(e) && !e.Contains("{") && !e.Contains("api"));
+      .Find(tag => !string.IsNullOrWhiteSpace(tag) && !tag.Contains("{") && !tag.Contains("api"));
     if (string.IsNullOrWhiteSpace(fileName)) throw new Exception("operation FileName should not be empty");
     var exportName = !string.IsNullOrWhiteSpace(operationObject.OperationId)
       ? operationObject.OperationId
@@ -98,17 +98,13 @@ public class PathItemObjectHandler:Handler
     return (exportName, fileName);
   }
 
-  private OperationObjectHandler _operationObjectHandler;
   
   public string OperationEndsWith = "EP";
 
   private HashSet<string> OperationExportNames { get; set; } = new();
 
-  private readonly ParameterObjectHandler _parameterObjectHandler;
 
   public PathItemObjectHandler(Controller controller) : base(controller)
   {
-    _operationObjectHandler = new OperationObjectHandler(controller);
-    _parameterObjectHandler = new ParameterObjectHandler(controller);
   }
 }

@@ -156,7 +156,7 @@ class MatchTags : IOption
   public string DefaultValue => "will include all tags";
 }
 
-class BoolHandler
+internal class BoolOptionHandler
 {
   public void SetValue(string args)
   {
@@ -166,7 +166,7 @@ class BoolHandler
   public bool Value { get; set; }
 }
 
-class EnumUseEnum : BoolHandler, IOption
+class EnumUseEnum : BoolOptionHandler, IOption
 {
   public string CommandName => "enumUseEnum";
   public string ShortCommandName => "eUe";
@@ -174,7 +174,7 @@ class EnumUseEnum : BoolHandler, IOption
 
 }
 
-class InlineRequest : BoolHandler, IOption
+class InlineRequest : BoolOptionHandler, IOption
 {
   public string CommandName => "inlineRequest";
   public string ShortCommandName => "inlineR";
@@ -182,7 +182,7 @@ class InlineRequest : BoolHandler, IOption
 
 }
 
-class NonNullAsRequired : BoolHandler, IOption
+class NonNullAsRequired : BoolOptionHandler, IOption
 {
   public string CommandName => "nonNullAsRequired";
   public string ShortCommandName => "nnr";
@@ -191,7 +191,7 @@ class NonNullAsRequired : BoolHandler, IOption
 }
 
 
-class NullAsOptional : BoolHandler, IOption
+class NullAsOptional : BoolOptionHandler, IOption
 {
   public string CommandName => "nullAsOptional";
   public string ShortCommandName => "nao";

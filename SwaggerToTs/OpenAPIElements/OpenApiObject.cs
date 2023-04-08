@@ -7,8 +7,6 @@ public class OpenApiObject
 {
   public OpenApiObject(SortedDictionary<string, PathItemObject>? paths, Info? info, string? openApi)
   {
-    if (paths == null || info == null || openApi == null) throw new Exception("should not to null");
-    ValidateOpenApiDocument();
     Paths = paths;
     Info = info;
     OpenApi = openApi;
@@ -19,23 +17,6 @@ public class OpenApiObject
   public Info Info { get; set; }
 
   public ComponentsObject? Components { get; set; }
-
-  private void ValidateOpenApiDocument()
-  {
-    List<string> checkDup = new();
-    foreach (var (requestUrl, pathItem) in Paths)
-    {
-      if (!requestUrl.StartsWith('/')) throw new Exception("not correct path:" + requestUrl);
-
-      var unifiedKey = Regex.Replace(requestUrl, "{[^}]+}", "{_key}");
-      if (checkDup.Contains(unifiedKey)) throw new Exception("paths contains dup path:" + unifiedKey);
-
-      pathItem.Url = requestUrl;
-      checkDup.Add(unifiedKey);
-    }
-  }
-
-
 
 }
 

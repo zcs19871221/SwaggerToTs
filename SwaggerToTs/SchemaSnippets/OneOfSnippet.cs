@@ -10,7 +10,7 @@ public class OneOfSnippet : SchemaSnippet
 
   public OneOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _oneOfs = schema.Oneof.Select(controller.SchemaObjectHandler.SelectThenConstruct);
+    _oneOfs = schema.Oneof.Select(controller.SelectThenConstruct);
 
     HelperNames.Add("OneOf");
   }

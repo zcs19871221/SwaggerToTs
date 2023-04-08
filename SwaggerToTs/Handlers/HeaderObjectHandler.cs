@@ -1,4 +1,3 @@
-using System.ComponentModel.Design;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
@@ -12,11 +11,11 @@ public class HeaderObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public KeyValueSnippet Generate(HeaderObject headerObject, string key)
+  public ValueSnippet Generate(HeaderObject headerObject, string key)
   {
     return Handle(headerObject, h =>
     {
-      return Controller.ParameterObjectHandler.CreateWrapperSnippet(h, key);
+      return new KeyValueSnippet(new KeySnippet(key), Controller.ParameterObjectHandler.Generate(headerObject), Controller);
     });
   }
 

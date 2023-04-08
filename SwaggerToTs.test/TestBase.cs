@@ -33,7 +33,7 @@ public class TestBase
       var options = new Options(args.ToArray());
       var openApiObject = SwaggerToTs.Create(options);
       var controller = new Controller(options);
-      var result = controller.Generate(openApiObject);
+      var result = controller.Construct(openApiObject);
       var expect = new Dictionary<string, string>();
       foreach (string file in Directory.EnumerateFiles(dist, "*.ts", SearchOption.AllDirectories))
       {

@@ -12,7 +12,7 @@ public class ObjectSnippet:SchemaSnippet
   {
     propertiesObject = new KeyValueSnippets(schema.Properties.Select(e =>
     {
-      return new KeyValueSnippet(new KeySnippet(e.Key), controller.SchemaObjectHandler.SelectThenConstruct(e.Value),
+      return new KeyValueSnippet(new KeySnippet(e.Key), controller.SelectThenConstruct(e.Value),
         controller);
     }).ToList())
     {

@@ -5,29 +5,34 @@ namespace SwaggerToTs.Handlers;
 
 public class OperationObjectHandler : Handler
 {
-  public KeyValueSnippet Generate(OperationObject operationObject)
+  public ValueSnippet Generate(OperationObject operationObject)
   {
     var parameterObjectHandler = Controller.ParameterObjectHandler;
     var requestBodyObjectHandler = Controller.RequestBodyObjectHandler;
     var responseObjectHandler = Controller.ResponseObjectHandler;
     var groupedParameters = operationObject.Parameters.GroupBy(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).In, (key, g) => (key, g));
     var requestContent = groupedParameters.Where(e => e.g.Any()).Select(group =>
-      KeyValueSnippet.Create(new KeySnippet(group.key ?? throw new InvalidOperationException()),
-        KeyValueSnippet.Create(group.g.Select(p => parameterObjectHandler.Generate(p))))).ToList();
+    {
+      var parameterType = new KeySnippet(group.key ?? throw new InvalidOperationException());
+      var parameters = new KeyValueSnippets(group.g.Select(p => parameterObjectHandler.Generate(p)));
+
+      return new KeyValueSnippet(parameterType, parameters, Controller) as ValueSnippet;
+    }).ToList();
+      
 
     if (operationObject.RequestBody != null)
       requestContent.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
 
 
-    var request = KeyValueSnippet.Create(new KeySnippet("Request"), KeyValueSnippet.Create(requestContent));
+    var request = new KeyValueSnippet(new KeySnippet("Request"), new KeyValueSnippets(requestContent), Controller);
     var responseContent =
       new List<KeyValueSnippet>(operationObject.Responses
-        .Select(e => KeyValueSnippet.Create(new KeySnippet(e.Key), responseObjectHandler.Generate(e.Value))));
+        .Select(e => new KeyValueSnippet(new KeySnippet(e.Key), responseObjectHandler.Generate(e.Value), Controller)));
 
 
-    var response = KeyValueSnippet.Create(new KeySnippet("Response"),responseContent);
+    var response = new KeyValueSnippet(new KeySnippet("Response"),new KeyValueSnippets(responseContent), Controller);
 
-    var snippet = KeyValueSnippet.Create(new List<KeyValueSnippet>
+    var snippet = new KeyValueSnippets(new List<KeyValueSnippet>
     {
       request,
       response

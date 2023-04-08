@@ -9,7 +9,7 @@ public class KeySnippet:CommonSnippet
   
   public bool IsReadOnly { get; set; }
 
-  public KeySnippet(string name, bool required = false, bool isReadonly = true)
+  public KeySnippet(string name, bool required = true, bool isReadonly = true)
   {
     Name = name;
     Required = required;

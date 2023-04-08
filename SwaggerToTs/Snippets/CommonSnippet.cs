@@ -50,7 +50,7 @@ abstract public class CommonSnippet
     return string.Join(NewLine, contents);
   }
 
-  // abstract public string Generate(Options options, List<ValueSnippet> imports);
+  // abstract public string Construct(Options options, List<ValueSnippet> imports);
 
 
 }

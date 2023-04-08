@@ -9,7 +9,7 @@ public class AnyOfSnippet : SchemaSnippet
 
   public AnyOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
-    _anyOfs = schema.AnyOf.Select(controller.SchemaObjectHandler.SelectThenConstruct);
+    _anyOfs = schema.AnyOf.Select(controller.SelectThenConstruct);
 
     HelperNames.Add("AnyOf");
   }

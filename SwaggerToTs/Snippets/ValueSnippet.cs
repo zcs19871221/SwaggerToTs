@@ -8,6 +8,8 @@ public abstract class ValueSnippet:CommonSnippet
   public bool IsReadOnly { get; set; }
   
   public ExportType ExportType { get; set; }
+  
+  public string? ReferenceUrl { get; set; }
 
   public string? ExportName { get; set; }
   public string? FileLocate { get; set; }

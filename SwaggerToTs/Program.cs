@@ -18,9 +18,9 @@ public static class SwaggerToTs
     }
 
     var openApiObject = Create(options);
-    var controller = new Controller(options, openApiObject.Components);
+    var controller = new Controller(options);
 
-    controller.Write(controller.Generate(openApiObject));
+    controller.Write(controller.Construct(openApiObject));
     Console.WriteLine($"TypeScript files successfully generated to {options.Get<Dist>().Value} 👍");
     return 0;
   }

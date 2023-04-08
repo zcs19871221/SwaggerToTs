@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.SchemaHandlers;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs;
@@ -14,10 +15,8 @@ public class Controller
   public Options Options;
 
   public ComponentsObject? Components;
-
-  public HashSet<string> OperationIds { get; set; } = new();
-  
   public OpenApiObjectHandler OpenApiObjectHandler { get; }
+  public ComponentsObjectHandler ComponentsObjectHandler { get; }
   public PathItemObjectHandler PathItemObjectHandler { get; set; }
   public OperationObjectHandler OperationObjectHandler { get; set; }
   public ParameterObjectHandler ParameterObjectHandler { get; set; }
@@ -25,10 +24,28 @@ public class Controller
   public ResponseObjectHandler ResponseObjectHandler { get; set; }
   
   public HeaderObjectHandler HeaderObjectHandler { get; set; }
-  public SchemaObjectHandler SchemaObjectHandler { get; set; }
-  public  ObjectHandler ObjectHandler { get; set; }
-
+  public AllOfHandler AllOfHandler { get; set; }
+  public AnyHandler AnyHandler { get; set; }
+  public AnyOfHandler AnyOfHandler { get; set; }
+  public ArrayHandler ArrayHandler { get; set; }
+  public BoolHandler BoolHandler { get; set; }
+  public EnumHandler EnumHandler { get; set; }
   
+  public NumberHandler NumberHandler { get; set; }
+  public ObjectHandler ObjectHandler { get; set; }
+  public OneOfHandler OneOfHandler { get; set; }
+  
+  public StringHandler StringHandler { get; set; }
+  public UnknownHandler UnknownHandler { get; set; }
+  public Dictionary<string, string> ReferenceMappingShortName { get; set; }
+
+  public List<SchemaObjectHandler> SchemaHandlers;
+  
+  public ValueSnippet SelectThenConstruct(SchemaObject schema)
+  {
+    var handler = SchemaHandlers.Find(h => h.IsMatch(schema));
+    return (handler ?? throw new Exception("cant find handler for schema")).Construct(schema);
+  }
   
   public static string ToCamelCase(string name)
   {
@@ -40,21 +57,81 @@ public class Controller
     return char.ToUpperInvariant(name[0]) + name.Substring(1);
   }
 
-  public Controller(Options options, ComponentsObject? components)
+  public Controller(Options options)
   {
     Options = options;
-    Components = components;
     OpenApiObjectHandler = new OpenApiObjectHandler(this);
+    ComponentsObjectHandler = new ComponentsObjectHandler(this);
     PathItemObjectHandler = new PathItemObjectHandler(this);
     OperationObjectHandler = new OperationObjectHandler(this);
     ParameterObjectHandler = new ParameterObjectHandler(this);
     RequestBodyObjectHandler = new RequestBodyObjectHandler(this);
     ResponseObjectHandler = new ResponseObjectHandler(this);
-    SchemaObjectHandler = new SchemaObjectHandler(this);
     HeaderObjectHandler = new HeaderObjectHandler(this);
-
+    AllOfHandler = new AllOfHandler(this);
+    AnyHandler = new AnyHandler(this);
+    AnyOfHandler = new AnyOfHandler(this);
+    ArrayHandler = new ArrayHandler(this);
+    BoolHandler = new BoolHandler(this);
+    EnumHandler = new EnumHandler(this);
+    NumberHandler = new NumberHandler(this);
+    ObjectHandler = new ObjectHandler(this);
+    OneOfHandler = new OneOfHandler(this);
+    UnknownHandler = new UnknownHandler(this);
+    StringHandler = new StringHandler(this);
+    SchemaHandlers = new List<SchemaObjectHandler>()
+    {
+      AllOfHandler,
+      AnyHandler,
+      AnyOfHandler,
+      ArrayHandler,
+      BoolHandler,
+      EnumHandler,
+      NumberHandler,
+      ObjectHandler,
+      OneOfHandler,
+      UnknownHandler,
+      StringHandler
+    };
   }
-  
+
+  public static string OneOfName = "OneOf";
+  public static string AnyOfName = "AnyOf";
+  public static string NonNullAsRequired = "NonNullAsRequired";
+  private static readonly string HelperContent = $@"/* eslint-disable @typescript-eslint/no-explicit-any */
+type IntersectionTuple<S, T extends any[]> = T extends [infer F, ...infer R]
+  ? [S & F, ...IntersectionTuple<S, R>]
+  : T;
+
+type Permutations<T extends readonly unknown[]> = T['length'] extends 0 | 1
+  ? T
+  : T extends [infer F, ...infer R]
+  ? [F, ...IntersectionTuple<F, Permutations<R>>, ...Permutations<R>]
+  : T;
+
+type AllKeysOf<T> = T extends any ? keyof T : never;
+
+type ProhibitKeys<K extends keyof any> = {{ [P in K]?: never }};
+
+export type {OneOfName}<T extends any[]> = {{
+  [K in keyof T]: T[K] &
+    ProhibitKeys<Exclude<AllKeysOf<T[number]>, keyof T[K]>>;
+}}[number];
+
+export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
+
+type NullKeys<T> = {{
+    [k in keyof T]: null extends T[k] ? k : never;
+}}[keyof T];
+
+export type {NonNullAsRequired}<T> = T extends (infer U)[]
+  ? NonNullAsRequired<U>[]
+  : T extends object
+  ? Pick<T, NullKeys<T>> & {{
+  [K in Exclude<keyof T, NullKeys<T>>]-?: NonNullAsRequired<T[K]>;
+    }}
+  : T;
+";
 
   private string CreateImport(List<string> imports, string fileToImport,
     bool exclusiveRow = false)
@@ -79,9 +156,11 @@ public class Controller
     }
   }
 
-  public Dictionary<string, string> Generate(OpenApiObject openApiObject)
+  public Dictionary<string, string> Construct(OpenApiObject openApiObject)
   {
-    OpenApiObjectHandler.Generate(openApiObject);
+    Components = openApiObject.Components;
+    ReferenceMappingShortName = ComponentsObjectHandler.Construct(openApiObject.Components);
+    OpenApiObjectHandler.Construct(openApiObject);
     Dictionary<string, string> fileMappingText = new();
     foreach (var (fileLocate, isolateSnippets) in IsolateSnippets.GroupBy(e => e.FileLocate, (s, snippets) => (s, snippets.ToList())))
     {

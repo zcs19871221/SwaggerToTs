@@ -19,40 +19,37 @@ public class ParameterObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public KeyValueSnippet Generate(ParameterObject parameterObject)
+  public ValueSnippet Generate(ParameterObject parameterObject)
   {
     return Handle(parameterObject, p =>
     {
       var name = p.Name;
-      return CreateWrapperSnippet(p, name);
+      var required = p.Required;
+      var schema = p.Schema;
+      var content = p.Content;
+      var serializeFormat = p.Style;
+      if (schema == null && content?.Count == 1)
+      {
+        var (mediaType, contentSchema) = content.FirstOrDefault();
+        serializeFormat = mediaType;
+        schema = contentSchema.Schema;
+      }
+
+      var keyName = new KeySnippet(name ?? throw new InvalidOperationException(), required);
+      var parameter = new KeyValueSnippet(keyName,
+        Controller.SelectThenConstruct(schema ?? throw new InvalidOperationException()), Controller);
+      parameter.AddComments(new List<(string, string?)>
+      {
+        (nameof(p.Description), p.Description),
+        (nameof(p.Deprecated), p.Deprecated ? "true" : ""),
+        (nameof(p.AllowEmptyValue), p.AllowEmptyValue ? "true" : ""),
+        ("SerializeFormat", serializeFormat),
+        (nameof(p.Explode), p.Explode ? "true" : ""),
+        (nameof(p.AllowReserved), p.AllowReserved ? "true" : ""),
+      });
+      return parameter;
     });
   }
 
-  public KeyValueSnippet CreateWrapperSnippet(ParameterObject p, string name)
-  {
-    var required = p.Required;
-    var schema = p.Schema;
-    var content = p.Content;
-    var serializeFormat = p.Style;
-    if (schema == null && content?.Count == 1)
-    {
-      var (mediaType, contentSchema) = content.FirstOrDefault();
-      serializeFormat = mediaType;
-      schema = contentSchema.Schema;
-    }
 
-    var keySnippet = new KeySnippet(name ?? throw new InvalidOperationException(), required);
-    var snippet = KeyValueSnippet.Create(keySnippet,
-      Controller.SchemaObjectHandler.Generate(schema ?? throw new InvalidOperationException()));
-    snippet.AddComments(new List<(string, string?)>
-    {
-      (nameof(p.Description), p.Description),
-      (nameof(p.Deprecated), p.Deprecated ? "true" : ""),
-      (nameof(p.AllowEmptyValue), p.AllowEmptyValue ? "true" : ""),
-      ("SerializeFormat", serializeFormat),
-      (nameof(p.Explode), p.Explode ? "true" : ""),
-      (nameof(p.AllowReserved), p.AllowReserved ? "true" : ""),
-    });
-    return snippet;
-  }
 }
