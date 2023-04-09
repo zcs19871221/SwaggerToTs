@@ -20,12 +20,12 @@ public class ValuesSnippet: ValueSnippet
 
   public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
-    return Values.Aggregate("", (s, snippet) => s + NewLine + snippet.Generate(options, generatingInfo));
+    return string.Join(NewLine, Values.Select(snippet => snippet.Generate(options, generatingInfo)));
   }
   
   public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
   {
-    return $"export interface {ExportName}" + 
+    return $"export interface {ExportName} " + 
            AddBrackets(GenerateContent(options, generatingInfo));
   }
 

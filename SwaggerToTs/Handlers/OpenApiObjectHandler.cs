@@ -7,10 +7,10 @@ public class OpenApiObjectHandler : Handler
 {
   public void Construct(OpenApiObject openApiObject)
   {
-    const string name = "Route";
+    const string name = "Routes";
     var routes =
-      new ValuesSnippet(openApiObject.Paths.Select(p =>
-        new KeyValueSnippet(new KeySnippet(p.Key), Controller.PathItemObjectHandler.Generate(p.Key, p.Value),
+      new ValuesSnippet(openApiObject.Paths.Select(pathItem =>
+        new KeyValueSnippet(new KeySnippet(pathItem.Key), Controller.PathItemObjectHandler.Generate(pathItem.Key, pathItem.Value),
           Controller)));
     routes.AddComments(new List<(string, string?)>
     {

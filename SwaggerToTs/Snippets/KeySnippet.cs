@@ -27,16 +27,20 @@ public class KeySnippet:CommonSnippet
     var name = ToCamelCase(Name);
     return Regex.IsMatch(Name, @"^[a-zA-Z_\d$.]+$") ? name : $"'{name}'";
   }
-  public KeySnippet(string name, bool required = true, bool isReadonly = true)
+  public KeySnippet(string name, bool required = true, bool isReadonly = false, bool isFormat = true)
   {
     Name = name;
     Required = required;
     IsReadOnly = isReadonly;
+    IsFormat = isFormat;
   }
+
+  public bool IsFormat { get; set; }
 
   public override string ToString()
   {
-    return $"{(IsReadOnly ? "readonly " : "")}{FormatName()}{(Required ? "" : "?")}:";
+    var outputName = IsFormat ? FormatName() : Name;
+    return $"{(IsReadOnly ? "readonly " : "")}{outputName}{(Required ? "" : "?")}: ";
   }
 }
 

@@ -35,7 +35,7 @@ public class ParameterObjectHandler: ReferenceObjectHandler
         schema = contentSchema.Schema;
       }
 
-      var keyName = new KeySnippet(name ?? throw new InvalidOperationException(), required);
+      var keyName = new KeySnippet(name ?? throw new InvalidOperationException(), required, isReadonly:true);
       var parameter = new KeyValueSnippet(keyName,
         Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
       parameter.AddComments(new List<(string, string?)>

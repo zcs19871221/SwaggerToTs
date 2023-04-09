@@ -7,7 +7,7 @@ namespace SwaggerToTs.Handlers;
 public class PathItemObjectHandler:Handler
 {
   
-  private static bool MatchTags(OperationObject operationObject, List<string> tags)
+  private static bool MatchTags(OperationObject operationObject, IEnumerable<string> tags)
   {
     return tags.Any(tag =>
       operationObject.Tags.Exists(e => string.Equals(e, tag, StringComparison.CurrentCultureIgnoreCase)));
@@ -58,7 +58,7 @@ public class PathItemObjectHandler:Handler
       var extracted = operation.Export(exportName, fileLocate, Controller);
 
       return new KeyValueSnippet(
-        new KeySnippet(method),
+        new KeySnippet(method.ToUpper(), isFormat:false),
         extracted,
         Controller
       );
@@ -69,8 +69,8 @@ public class PathItemObjectHandler:Handler
     
     snippet.AddComments(new List<(string, string?)>
     {
+      (nameof(pathItemObject.Summary), pathItemObject.Summary),
       (nameof(pathItemObject.Description), pathItemObject.Description),
-      (nameof(pathItemObject.Summary), pathItemObject.Summary)
     });
     return snippet;
   }

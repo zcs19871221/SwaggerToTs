@@ -27,7 +27,11 @@ public class ResponseObjectHandler: ReferenceObjectHandler
           return new KeyValueSnippet(new KeySnippet(e.Key),
             Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
         }));
-        contents.Add(new KeyValueSnippet(new KeySnippet("Content"), content, Controller));
+        contents.Add(new KeyValueSnippet(new KeySnippet("Content", isFormat:false), content, Controller));
+      }
+      else
+      {
+        contents.Add(new KeyValueSnippet(new KeySnippet("Content",isFormat:false), new NullSnippet(), Controller));
       }
 
       var snippet = new ValuesSnippet(contents);
