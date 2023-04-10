@@ -13,9 +13,9 @@ import { Age } from './data-schema';
 export interface BusinessGetEP {
   Request: {
     Cookie: BusinessGetCookie;
-    Header: BusinessGetHeader;
+    Header?: BusinessGetHeader;
     Path: BusinessGetPath;
-    Query: BusinessGetQuery;
+    Query?: BusinessGetQuery;
   };
   Responses: {
     /**
@@ -41,13 +41,9 @@ export interface BusinessGetPath {
   /**
    * @Description id in path
    *
-   * @Deprecated False
-   *
-   * @AllowEmptyValue False
+   * @AllowReserved True
    *
    * @Explode True
-   *
-   * @AllowReserved True
    *
    * @SerializeFormat form
    */

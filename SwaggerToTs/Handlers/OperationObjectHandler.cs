@@ -30,7 +30,7 @@ public class OperationObjectHandler : Handler
     }).ToList();
       
 
-    if (operationObject.RequestBody != null)
+    if (operationObject.RequestBody != null && operationObject.RequestBody.Content.Count > 0)
       parameterContents.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
 
     var contents = new List<KeyValueSnippet>();

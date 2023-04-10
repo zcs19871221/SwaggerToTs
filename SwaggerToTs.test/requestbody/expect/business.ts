@@ -8,7 +8,7 @@ export interface BusinessGetEP {
     /**
      * @Description request body
      */
-    Body: {
+    Body?: {
       'application/json': string;
     };
   };

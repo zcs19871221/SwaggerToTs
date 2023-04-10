@@ -7,7 +7,7 @@ import { Name } from './data-schema';
 
 export interface BusinessGetEP {
   Request: {
-    Query: Name;
+    Query?: Name;
   };
   Responses: {
     /**

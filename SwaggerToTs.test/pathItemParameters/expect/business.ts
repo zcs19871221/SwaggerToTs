@@ -5,7 +5,7 @@
 
 export interface BusinessGetEP {
   Request: {
-    Query: BusinessGetQuery;
+    Query?: BusinessGetQuery;
   };
   Responses: {
     /**
