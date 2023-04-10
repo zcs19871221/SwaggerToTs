@@ -11,7 +11,7 @@ public class BoolHandler: SchemaObjectHandler
     return schema.Type?.ToLower() == "boolean";
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     return new BoolSnippet();
   }

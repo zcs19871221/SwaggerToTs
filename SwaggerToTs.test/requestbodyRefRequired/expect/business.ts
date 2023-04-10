@@ -7,7 +7,7 @@ import { UserPayload } from './data-schema';
 
 export interface BusinessGetEP {
   Request: {
-    Body?: UserPayload;
+    Body: UserPayload;
   };
   Responses: {
     /**

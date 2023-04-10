@@ -6,14 +6,26 @@ namespace SwaggerToTs.Handlers;
 public class ResponseObjectHandler: ReferenceObjectHandler
 {
   
-  public ValueSnippet Generate(ResponseObject responseObject)
+  public KeyValueSnippet Generate(Dictionary<string,ResponseObject> responses)
   {
-    return Handle(responseObject, res =>
+    
+    var responseContent =
+      new List<KeyValueSnippet>(responses
+        .Select(e => new KeyValueSnippet(new KeySnippet(e.Key, isFormat:false), GenerateResponseItem(e.Value), Controller)));
+    
+    var response = new KeyValueSnippet(new KeySnippet("Responses", isFormat:false),new KeyValuesSnippet(responseContent), Controller);
+
+    return response;
+  }
+
+  private ValueSnippet GenerateResponseItem(ResponseObject responseObject)
+  {
+    return GetOrCreateThenSaveValue(responseObject, res =>
     {
       var contents = new List<KeyValueSnippet>();
       if (res.Headers != null)
       {
-        var headerContent = new ValuesSnippet(res.Headers.Select(e =>
+        var headerContent = new KeyValuesSnippet(res.Headers.Select(e =>
         {
           return Controller.HeaderObjectHandler.Generate(e.Value, e.Key);
         }));
@@ -22,19 +34,20 @@ public class ResponseObjectHandler: ReferenceObjectHandler
 
       if (res.Content != null)
       {
-        var content = new ValuesSnippet(res.Content.Where(e => e.Value.Schema != null).Select(e =>
+        var content = new KeyValuesSnippet(res.Content.Where(e => e.Value.Schema != null).Select(e =>
         {
           return new KeyValueSnippet(new KeySnippet(e.Key),
-            Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
+            Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()),
+            Controller);
         }));
-        contents.Add(new KeyValueSnippet(new KeySnippet("Content", isFormat:false), content, Controller));
+        contents.Add(new KeyValueSnippet(new KeySnippet("Content", isFormat: false), content, Controller));
       }
       else
       {
-        contents.Add(new KeyValueSnippet(new KeySnippet("Content",isFormat:false), new NullSnippet(), Controller));
+        contents.Add(new KeyValueSnippet(new KeySnippet("Content", isFormat: false), new NullSnippet(), Controller));
       }
 
-      var snippet = new ValuesSnippet(contents);
+      var snippet = new KeyValuesSnippet(contents);
       snippet.AddComments(new List<(string, string?)>
       {
         (nameof(res.Description), res.Description)

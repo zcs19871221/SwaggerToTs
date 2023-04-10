@@ -7,29 +7,19 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
 {
   
   
-  public ValueSnippet? Generate(RequestBodyObject requestBodyObject)
+  public KeyValueSnippet? Generate(RequestBodyObject requestBodyObject)
   {
+    var element = GetRefOrSelf(requestBodyObject);
 
-    var content = GetRefOrSelf(requestBodyObject).Content.Where(e =>
-    {
-      return e.Value.Schema != null;
-    });
-    var keyValuePairs = content.ToList();
-    if (!keyValuePairs.Any())
+    var content = element.Content.Where(e => e.Value.Schema != null).ToDictionary(e => e.Key, e=>e.Value);
+    if (!content.Any())
     {
       return null;
     }
-    requestBodyObject.Content = keyValuePairs.ToDictionary(e => e.Key, e=>e.Value);
-    return Handle(requestBodyObject, r =>
+    var value = GetOrCreateThenSaveValue(requestBodyObject, r =>
     {
-      var requestBody = new ValuesSnippet(r.Content.Where(e =>
-      {
-        return e.Value.Schema != null;
-      }).Select(e =>
-      {
-        return new KeyValueSnippet(new KeySnippet(e.Key),
-          Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
-      }));
+      var requestBody = new KeyValuesSnippet(content.Select(e => new KeyValueSnippet(new KeySnippet(e.Key),
+        Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller)));
  
       requestBody.AddComments(new List<(string, string?)>
       {
@@ -37,6 +27,7 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
       });
       return requestBody;
     });
+    return new KeyValueSnippet(new KeySnippet("Body", element.Required, isFormat:false), value, Controller);
   }
 
 

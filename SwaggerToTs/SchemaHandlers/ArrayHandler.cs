@@ -11,7 +11,7 @@ public class ArrayHandler : SchemaObjectHandler
     return schema.Type?.ToLower() == "array";
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     var item = Controller.SchemaObjectHandlerWrapper.Construct(schema.Items ??
                                                                        throw new InvalidOperationException());

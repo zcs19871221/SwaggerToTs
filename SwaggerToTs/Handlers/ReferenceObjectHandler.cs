@@ -13,7 +13,7 @@ public class ReferenceObjectHandler: Handler
   }
 
   
-  protected ValueSnippet Handle<T>(T referenceObject, Func<T, ValueSnippet> create)
+  protected ValueSnippet GetOrCreateThenSaveValue<T>(T referenceObject, Func<T, ValueSnippet> create)
     where T : ReferenceObject
   {
     var reference = referenceObject.Reference;

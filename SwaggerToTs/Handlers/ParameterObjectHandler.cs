@@ -26,24 +26,20 @@ public class ParameterObjectHandler: ReferenceObjectHandler
   }
   public ValueSnippet Generate(ParameterObject parameterObject)
   {
-    return Handle(parameterObject, p =>
+    return GetOrCreateThenSaveValue(parameterObject, p =>
     {
-      var name = p.Name;
-      var required = p.Required;
       var schema = p.Schema;
       var content = p.Content;
       var serializeFormat = p.Style;
       if (schema == null && content?.Count == 1)
       {
-        var (mediaType, contentSchema) = content.FirstOrDefault();
-        serializeFormat = mediaType;
-        schema = contentSchema.Schema;
+        schema = content.FirstOrDefault().Value.Schema;
+        serializeFormat ??= content.FirstOrDefault().Key;
       }
 
-      var keyName = new KeySnippet(name ?? throw new InvalidOperationException(), required, isReadonly:true);
-      var parameter = new KeyValueSnippet(keyName,
+      var snippet = new KeyValueSnippet(new KeySnippet(p.Name, p.Required, true),
         Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
-      parameter.AddComments(new List<(string, string?)>
+      snippet.AddComments(new List<(string, string?)>
       {
         (nameof(p.Description), p.Description),
         (nameof(p.Deprecated), p.Deprecated ? "True" : ""),
@@ -52,7 +48,7 @@ public class ParameterObjectHandler: ReferenceObjectHandler
         (nameof(p.Explode), p.Explode ? "True" : ""),
         (nameof(p.AllowReserved), p.AllowReserved ? "True" : ""),
       });
-      return parameter;
+      return snippet;
     });
   }
 

@@ -16,7 +16,7 @@ public class UnknownHandler: SchemaObjectHandler
     snippet.IsNullable = false;
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     return new UnknownSnippet();
   }

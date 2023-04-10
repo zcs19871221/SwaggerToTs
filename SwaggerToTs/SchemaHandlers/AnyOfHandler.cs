@@ -11,7 +11,7 @@ public class AnyOfHandler : SchemaObjectHandler
     return schema.AnyOf.Any();
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     return new AnyOfSnippet(schema.AnyOf.Select(Controller.SchemaObjectHandlerWrapper.Construct).ToList());
   }

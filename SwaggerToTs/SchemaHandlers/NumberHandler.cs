@@ -11,7 +11,7 @@ public class NumberHandler: SchemaObjectHandler
     return schema.Type?.ToLower() is "number" or "integer";  
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     var snippet =  new NumberSnippet(schema);
     snippet.AddComments(new []

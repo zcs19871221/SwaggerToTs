@@ -11,9 +11,9 @@ public class ObjectHandler: SchemaObjectHandler
     return schema.Type?.ToLower() == "object";
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    var snippet = new ValuesSnippet(schema.Properties.Select(e =>
+    var snippet = new KeyValuesSnippet(schema.Properties.Select(e =>
     {
       var isRequired = schema.Required.Contains(e.Key);
       return new KeyValueSnippet(new KeySnippet(e.Key, required:isRequired, isReadonly: true),

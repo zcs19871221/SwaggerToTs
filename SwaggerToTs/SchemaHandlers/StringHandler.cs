@@ -11,7 +11,7 @@ public class StringHandler: SchemaObjectHandler
     return schema.Type?.ToLower() == "string";
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     var snippet = new StringSnippet();
     snippet.AddComments(new []

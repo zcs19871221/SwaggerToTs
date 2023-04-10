@@ -12,14 +12,12 @@ public class KeyValueSnippet:ValueSnippet
     public KeyValueSnippet(KeySnippet key, ValueSnippet value, Controller controller)
     {
         Key = key;
-        Value = value;
-        switch (value)
+        Value = value switch
         {
-            case EnumSnippet when value.ExportType == ExportType.Enum:
-            // case AllOfSnippet {ExportType:ExportType.Interface}:
-                Value = value.Export(Handler.ToPascalCase(key.Name), "data-schema", controller);
-                break;
-        }
+            EnumSnippet when value.ExportType == ExportType.Enum => value.Export(Handler.ToPascalCase(key.Name),
+                "data-schema", controller),
+            _ => value
+        };
 
         Comments = key.Comments.Concat(value.Comments).ToList();
     }
@@ -50,8 +48,7 @@ public class KeyValueSnippet:ValueSnippet
         switch (Value)
         {
             case KeyValueSnippet:
-            case ValuesSnippet:
-            case ObjectSnippet:
+            case KeyValuesSnippet:
                 content = AddBrackets(content);
                 break;
             case UnknownSnippet:

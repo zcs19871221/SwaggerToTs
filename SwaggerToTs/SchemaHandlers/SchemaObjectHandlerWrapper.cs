@@ -25,7 +25,7 @@ public class SchemaObjectHandlerWrapper: ReferenceObjectHandler
 
   public ValueSnippet Construct(SchemaObject schema)
   {
-    return Handle(schema, p =>
+    return GetOrCreateThenSaveValue(schema, p =>
     {
       var handler = SchemaHandlers.Find(h => h.IsMatch(p));
       return (handler ?? throw new Exception("cant find handler for schema")).Construct(p);

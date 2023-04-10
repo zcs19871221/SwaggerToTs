@@ -5,7 +5,7 @@ namespace SwaggerToTs.SchemaHandlers;
 
 public abstract class SchemaObjectHandler
 {
-  protected Controller Controller;
+  protected readonly Controller Controller;
 
   protected void AddCommonComments(ValueSnippet snippet, SchemaObject schema)
   {
@@ -18,13 +18,9 @@ public abstract class SchemaObjectHandler
     });
   }
   
-  protected void SetNullValue(ValueSnippet snippet, SchemaObject schema)
-  {
-    snippet.IsNullable = schema.Nullable;
-  }
-  abstract public bool IsMatch(SchemaObject schema);
+  public abstract bool IsMatch(SchemaObject schema);
 
-  abstract public ValueSnippet DoConstruct(SchemaObject schema);
+  protected abstract ValueSnippet DoConstruct(SchemaObject schema);
 
   protected virtual void SetNullable(ValueSnippet snippet, SchemaObject schema)
   {
@@ -45,7 +41,7 @@ public abstract class SchemaObjectHandler
     return snippet;
   }
 
-  public SchemaObjectHandler(Controller controller)
+  protected SchemaObjectHandler(Controller controller)
   {
     Controller = controller;
   }

@@ -11,7 +11,7 @@ public class OneOfHandler : SchemaObjectHandler
     return schema.Oneof.Any();
   }
 
-  public override ValueSnippet DoConstruct(SchemaObject schema)
+  protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
     var oneOfs = schema.Oneof.Select(Controller.SchemaObjectHandlerWrapper.Construct).ToList();
     return new OneOfSnippet(oneOfs);

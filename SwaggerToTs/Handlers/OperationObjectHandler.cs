@@ -1,5 +1,5 @@
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.SchemaHandlers;
+using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
@@ -20,40 +20,36 @@ public class OperationObjectHandler : Handler
       var parameterTypeName = ToPascalCase(group.key ?? throw new InvalidOperationException());
       var groupedParametersRequired = group.g.Any(p => parameterObjectHandler.GetRefOrSelf(p).Required);
       var parameterFields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
-      var parameterSet = parameterFields.Count == 1 ? parameterFields.First() : AllOfHandler.CreateAllOfSnippet(parameterFields);
+      ValueSnippet parameterSet = parameterFields.Count == 1 ? parameterFields.First() : new AllOfSnippet(parameterFields);
  
       if (!Controller.Options.Get<InlineRequest>().Value)
       {
         parameterSet = parameterSet.Export(exportName + parameterTypeName, fileLocate, Controller);
       }
-      return new KeyValueSnippet(new KeySnippet(parameterTypeName, required:groupedParametersRequired, isFormat:false), parameterSet, Controller) as ValueSnippet;
+      return new KeyValueSnippet(new KeySnippet(parameterTypeName, required:groupedParametersRequired, isFormat:false), parameterSet, Controller);
     }).ToList();
-
 
     if (operationObject.RequestBody != null)
     {
       var body = requestBodyObjectHandler.Generate(operationObject.RequestBody);
       if (body != null)
       {
-        parameterContents.Add(new KeyValueSnippet(new KeySnippet("Body",operationObject.RequestBody.Required , isFormat:false), body, Controller));
+        parameterContents.Add(body);
       }
     }
+
+   
 
     var contents = new List<KeyValueSnippet>();
     if (parameterContents.Count > 0)
     {
-      contents.Add(new KeyValueSnippet(new KeySnippet("Request", isFormat:false), new ValuesSnippet(parameterContents), Controller));
-      
+      contents.Add(new KeyValueSnippet(new KeySnippet("Request", isFormat:false), new KeyValuesSnippet(parameterContents), Controller));
     }
 
-    var responseContent =
-      new List<KeyValueSnippet>(operationObject.Responses
-        .Select(e => new KeyValueSnippet(new KeySnippet(e.Key, isFormat:false), responseObjectHandler.Generate(e.Value), Controller)));
-    
-    var response = new KeyValueSnippet(new KeySnippet("Responses", isFormat:false),new ValuesSnippet(responseContent), Controller);
+    var response = responseObjectHandler.Generate(operationObject.Responses);
     contents.Add(response);
 
-    var snippet = new ValuesSnippet(contents);
+    var snippet = new KeyValuesSnippet(contents);
     snippet.AddComments(new List<(string, string?)>
     {
       (nameof(operationObject.Summary), operationObject.Summary),

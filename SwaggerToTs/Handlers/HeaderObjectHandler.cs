@@ -11,12 +11,10 @@ public class HeaderObjectHandler: ReferenceObjectHandler
   {
   }
 
-  public ValueSnippet Generate(HeaderObject headerObject, string key)
+  public KeyValueSnippet Generate(HeaderObject headerObject, string key)
   {
-    return Handle(headerObject, h =>
-    {
-      return new KeyValueSnippet(new KeySnippet(key), Controller.ParameterObjectHandler.Generate(h), Controller);
-    });
+    var value = GetOrCreateThenSaveValue(headerObject, h => Controller.ParameterObjectHandler.Generate(h));
+    return new KeyValueSnippet(new KeySnippet(key),value , Controller);
   }
 
 
