@@ -13,7 +13,7 @@ public abstract class SchemaSnippet: ValueSnippet
       (nameof(schema.Description), schema.Description),
       (nameof(schema.Title), schema.Title),
       (nameof(schema.Deprecated), schema.Deprecated ? "True": ""),
-      (nameof(schema.Format), schema.Format),
+      (nameof(schema.Format), schema.Format)
     });
   }
   
@@ -22,6 +22,10 @@ public abstract class SchemaSnippet: ValueSnippet
   {
     _init(schema);
     IsNullable = isNull ?? schema.Nullable;
+  }
+  
+  public SchemaSnippet()
+  {
   }
 
 }

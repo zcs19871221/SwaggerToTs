@@ -16,28 +16,40 @@ public class AllOfSnippet : SchemaSnippet
 
   private ValueSnippet? _objectSnippet;
 
-  public AllOfGenerateType Type;
+
   public AllOfSnippet(SchemaObject schema, Controller controller) : base(schema)
   {
+    
+    var allof = schema.Allof.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
     if (controller.SchemaObjectHandlerWrapper.ObjectHandler.IsMatch(schema))
     {
-      _objectSnippet = controller.SchemaObjectHandlerWrapper.ObjectHandler.Construct(schema);
+      allof.Add(controller.SchemaObjectHandlerWrapper.ObjectHandler.Construct(schema));
     }
-    _allOfs = schema.Allof.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
 
-    var exportNames = _allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
-    if (exportNames.Count == _allOfs.Count && (_objectSnippet == null || _objectSnippet is ExportedValueSnippet))
+    CreateAllOfSnippet(allof);
+  }
+  
+  public AllOfSnippet(List<ValueSnippet> allOfs)
+  {
+    
+    CreateAllOfSnippet(allOfs);
+  }
+  
+  private void CreateAllOfSnippet(List<ValueSnippet> allOfs)
+  {
+    var exportNames = allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
+    var keyValues = allOfs.Where(e => e is KeyValueSnippet or ValuesSnippet).ToList();
+
+    if (exportNames.Count + keyValues.Count == allOfs.Count)
     {
       _extends = exportNames!;
-      Type = AllOfGenerateType.Interface;
-      ExportType = ExportType.Interface;
-    }
-    else
+      ExportType = ExportType.Interface;    
+    } else
     {
-      Type = AllOfGenerateType.Join;
       ExportType = ExportType.Type;
     }
 
+    _allOfs = allOfs;
   }
 
   public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
@@ -54,18 +66,11 @@ public class AllOfSnippet : SchemaSnippet
   public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
   {
 
-    if (Type == AllOfGenerateType.Interface)
+    if (ExportType == ExportType.Interface)
     {
-      throw new Exception("should extract");
+      return string.Join(NewLine, _allOfs.Select(snippet => snippet.Generate(options, generatingInfo)));    
     }
 
-    var items = new List<ValueSnippet>();
-    items.AddRange(_allOfs);
-    if (_objectSnippet != null)
-    {
-      items.Add(_objectSnippet);
-    }
-
-    return string.Join("&", items.Select(e => e.Generate(options, generatingInfo)));
+    return string.Join("&", _allOfs.Select(e => e.Generate(options, generatingInfo)));
   }
 }

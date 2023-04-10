@@ -10,47 +10,38 @@ public class OperationObjectHandler : Handler
     var parameterObjectHandler = Controller.ParameterObjectHandler;
     var requestBodyObjectHandler = Controller.RequestBodyObjectHandler;
     var responseObjectHandler = Controller.ResponseObjectHandler;
-    operationObject.Parameters =
-      operationObject.Parameters.Where(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).Schema != null).ToList();
-    var groupedParameters = operationObject.Parameters.GroupBy(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).In, (key, g) => (key, g));
-    var requestContent = groupedParameters.Where(e => e.g.Any()).Select(group =>
+    // operationObject.Parameters =
+    //   operationObject.Parameters.Where(e => parameterObjectHandler.GetRefOrSelf(e).Schema != null).ToList();
+    var parametersGroupedByType = operationObject.Parameters.GroupBy(e => parameterObjectHandler.GetRefOrSelf(e).In, (key, g) => (key, g));
+    var parameterContents = parametersGroupedByType.Where(e => e.g.Any()).Select(group =>
     {
       var parameterTypeName = ToPascalCase(group.key ?? throw new InvalidOperationException());
-      var parameterType = new KeySnippet(parameterTypeName, isFormat:false);
-      var fields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
-      ValueSnippet parameterToUse;
-      if (fields.Count == 1)
-      {
-        parameterToUse = fields.First();
-      }
-      else
-      {
-        parameterToUse = new ValuesSnippet(fields);
-      }
-      
+      var groupedParametersRequired = group.g.Any(p => parameterObjectHandler.GetRefOrSelf(p).Required);
+      var parameterFields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
+      var parameterSet = parameterFields.Count == 1 ? parameterFields.First() : new ValuesSnippet(parameterFields);
+ 
       if (!Controller.Options.Get<InlineRequest>().Value)
       {
-        parameterToUse = parameterToUse.Export(exportName + parameterTypeName, fileLocate, Controller);
+        parameterSet = parameterSet.Export(exportName + parameterTypeName, fileLocate, Controller);
       }
-      return new KeyValueSnippet(parameterType, parameterToUse, Controller) as ValueSnippet;
+      return new KeyValueSnippet(new KeySnippet(parameterTypeName, required:groupedParametersRequired, isFormat:false), parameterSet, Controller) as ValueSnippet;
     }).ToList();
       
 
     if (operationObject.RequestBody != null)
-      requestContent.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
+      parameterContents.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
 
     var contents = new List<KeyValueSnippet>();
-    if (requestContent.Count > 0)
+    if (parameterContents.Count > 0)
     {
-      contents.Add(new KeyValueSnippet(new KeySnippet("Request", isFormat:false), new ValuesSnippet(requestContent), Controller));
+      contents.Add(new KeyValueSnippet(new KeySnippet("Request", isFormat:false), new ValuesSnippet(parameterContents), Controller));
       
     }
 
     var responseContent =
       new List<KeyValueSnippet>(operationObject.Responses
         .Select(e => new KeyValueSnippet(new KeySnippet(e.Key, isFormat:false), responseObjectHandler.Generate(e.Value), Controller)));
-
-
+    
     var response = new KeyValueSnippet(new KeySnippet("Responses", isFormat:false),new ValuesSnippet(responseContent), Controller);
     contents.Add(response);
 

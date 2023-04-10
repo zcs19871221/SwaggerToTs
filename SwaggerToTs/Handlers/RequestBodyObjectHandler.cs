@@ -19,7 +19,7 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
         return new KeyValueSnippet(new KeySnippet(e.Key),
           Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
       }));
-      var response = new KeyValueSnippet(new KeySnippet("Request", r.Required, isFormat:false), responseContent, Controller);
+      var response = new KeyValueSnippet(new KeySnippet("Body", r.Required, isFormat:false), responseContent, Controller);
       response.AddComments(new List<(string, string?)>
       {
         (nameof(r.Description), r.Description),

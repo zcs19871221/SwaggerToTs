@@ -30,6 +30,11 @@ public class ReferenceObjectHandler: Handler
     Controller.RefMappingIsolate.Add(reference, snippet);
     return  snippet.Export(Controller.ReferenceMappingShortName.GetValueOrDefault(GetKey(reference)) ?? throw new InvalidOperationException(), "data-schema", Controller);
   }
+
+  public T GetRefOrSelf<T>(T obj) where T : ReferenceObject
+  {
+    return GetRefMaybe(obj) ?? obj;
+  }
   
   public T? GetRefMaybe<T>(T reference) where T : ReferenceObject
   {
@@ -59,6 +64,7 @@ public class ReferenceObjectHandler: Handler
     };
   }
 
+  
   private string GetKey(string reference)
   {
     return reference[(reference.LastIndexOf("/", StringComparison.Ordinal) + 1)..];

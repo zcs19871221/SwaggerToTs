@@ -7,7 +7,7 @@ import { City, Color } from './data-schema';
 
 export interface BusinessGetEP {
   Request: {
-    Query: BusinessGetQuery;
+    Query?: BusinessGetQuery;
   };
   Responses: {
     /**
