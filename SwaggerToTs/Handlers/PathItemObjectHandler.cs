@@ -56,7 +56,7 @@ public class PathItemObjectHandler:Handler
       var (exportName, fileLocate) = DecideOperationExtractInfo(url, method, operationObject);
       var operation = Controller.OperationObjectHandler.Generate(operationObject, Regex.Replace(exportName, $"{OperationEndsWith}(\\d*)$", "$1"), fileLocate);
       var extracted = operation.Export(exportName, fileLocate, Controller);
-      extracted.Priority = -1;
+      operation.Priority = -1;
       return new KeyValueSnippet(
         new KeySnippet(method.ToUpper(), isFormat:false),
         extracted,
