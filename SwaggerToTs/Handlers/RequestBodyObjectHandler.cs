@@ -7,11 +7,22 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
 {
   
   
-  public ValueSnippet Generate(RequestBodyObject requestBodyObject)
+  public ValueSnippet? Generate(RequestBodyObject requestBodyObject)
   {
+
+    var content = GetRefOrSelf(requestBodyObject).Content.Where(e =>
+    {
+      return e.Value.Schema != null;
+    });
+    var keyValuePairs = content.ToList();
+    if (!keyValuePairs.Any())
+    {
+      return null;
+    }
+    requestBodyObject.Content = keyValuePairs.ToDictionary(e => e.Key, e=>e.Value);
     return Handle(requestBodyObject, r =>
     {
-      var responseContent = new ValuesSnippet(r.Content.Where(e =>
+      var requestBody = new ValuesSnippet(r.Content.Where(e =>
       {
         return e.Value.Schema != null;
       }).Select(e =>
@@ -19,12 +30,12 @@ public class RequestBodyObjectHandler: ReferenceObjectHandler
         return new KeyValueSnippet(new KeySnippet(e.Key),
           Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()), Controller);
       }));
-      var response = new KeyValueSnippet(new KeySnippet("Body", r.Required, isFormat:false), responseContent, Controller);
-      response.AddComments(new List<(string, string?)>
+ 
+      requestBody.AddComments(new List<(string, string?)>
       {
         (nameof(r.Description), r.Description),
       });
-      return response;
+      return requestBody;
     });
   }
 

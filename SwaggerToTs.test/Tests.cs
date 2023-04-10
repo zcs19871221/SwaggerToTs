@@ -129,6 +129,12 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"enumUseEnum", new []{"-eUe"});
   }  
+
+    [Test]
+  public void ShouldParameterAllof()
+  { 
+    InvokeThenAssert(dir:"parameterAllOf");
+  }  
   
   [Test]
   public void ShouldAllof()

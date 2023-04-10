@@ -9,9 +9,9 @@ import { BusinessGetEP } from './business';
 /**
  * @OpenApi 3.0.1
  *
- * @Description test openapi doc
- *
  * @Title Swagger To Ts
+ *
+ * @Description test openapi doc
  *
  * @Version V1
  */

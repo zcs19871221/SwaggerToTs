@@ -11,6 +11,8 @@ public class ArraySnippet : ValueSnippet
     ExportType = ExportType.Type;
     IsReadOnly = true;
     _item = item;
+    AddComments(item.Comments!);
+    item.Comments.Clear();
   }
 
   public override string GenerateExportedContent(GeneratingInfo generatingInfo)

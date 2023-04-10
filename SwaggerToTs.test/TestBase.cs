@@ -7,7 +7,7 @@ public class TestBase
 
   private const string Input = "input.json";
   private const string Expect = "expect";
-  private const string DebugPath = "dist";
+  private const string DebugPath = "expect";
   
   protected void InvokeThenAssert(string dir, string[]? inputArgs = null)
   {

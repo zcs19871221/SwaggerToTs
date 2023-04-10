@@ -28,10 +28,16 @@ public class OperationObjectHandler : Handler
       }
       return new KeyValueSnippet(new KeySnippet(parameterTypeName, required:groupedParametersRequired, isFormat:false), parameterSet, Controller) as ValueSnippet;
     }).ToList();
-      
 
-    if (operationObject.RequestBody != null && operationObject.RequestBody.Content.Count > 0)
-      parameterContents.Add(requestBodyObjectHandler.Generate(operationObject.RequestBody));
+
+    if (operationObject.RequestBody != null)
+    {
+      var body = requestBodyObjectHandler.Generate(operationObject.RequestBody);
+      if (body != null)
+      {
+        parameterContents.Add(new KeyValueSnippet(new KeySnippet("Body",operationObject.RequestBody.Required , isFormat:false), body, Controller));
+      }
+    }
 
     var contents = new List<KeyValueSnippet>();
     if (parameterContents.Count > 0)

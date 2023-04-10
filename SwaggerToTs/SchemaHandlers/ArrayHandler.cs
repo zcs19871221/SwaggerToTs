@@ -20,9 +20,9 @@ public class ArrayHandler : SchemaObjectHandler
     {
       (nameof(schema.MaxItems), schema.MaxItems.ToString()),
       (nameof(schema.MinItems), schema.MinItems.ToString()),
-      (nameof(schema.UniqueItems), schema.UniqueItems?.ToString())
+      (nameof(schema.UniqueItems), schema.UniqueItems.ToString())
     });
-    return new ArraySnippet(item);
+    return arraySnippet;
   }
 
   public ArrayHandler(Controller controller) : base(controller)
