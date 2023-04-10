@@ -8,7 +8,7 @@ public class Handler
     Controller = controller;
   }
 
-  protected static string ToPascalCase(string name)
+  public static string ToPascalCase(string name)
   {
     return char.ToUpperInvariant(name[0]) + name.Substring(1);
   }

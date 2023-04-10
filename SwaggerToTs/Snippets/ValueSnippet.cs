@@ -26,6 +26,10 @@ public abstract class ValueSnippet:CommonSnippet
   }
   public ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
   {
+    if (this is ExportedValueSnippet alreadyExport)
+    {
+      return alreadyExport;
+    }
     ExportName = exportName;
     FileLocate = fileLocate;
     var extractedSnippet = new ExportedValueSnippet(this, controller);

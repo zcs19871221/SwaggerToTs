@@ -24,7 +24,7 @@ public class EnumSnippet : SchemaSnippet
   public override string GenerateExportedContent(Options options,  GeneratingInfo generatingInfo)
   {
     var contents = GenerateContent(options, generatingInfo);
-    return ExportType == ExportType.Enum ? $"export const enum {ExportName} = {contents}" : $"export type {ExportName} = {contents};";
+    return ExportType == ExportType.Enum ? $"export const enum {ExportName} {AddBrackets(contents)}" : $"export type {ExportName} = {contents};";
   }
 
   public override string GenerateContent(Options options, GeneratingInfo generatingInfo)

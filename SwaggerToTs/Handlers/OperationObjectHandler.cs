@@ -5,7 +5,7 @@ namespace SwaggerToTs.Handlers;
 
 public class OperationObjectHandler : Handler
 {
-  public ValueSnippet Generate(OperationObject operationObject)
+  public ValueSnippet Generate(OperationObject operationObject, string exportName, string fileLocate)
   {
     var parameterObjectHandler = Controller.ParameterObjectHandler;
     var requestBodyObjectHandler = Controller.RequestBodyObjectHandler;
@@ -15,10 +15,24 @@ public class OperationObjectHandler : Handler
     var groupedParameters = operationObject.Parameters.GroupBy(e => (parameterObjectHandler.GetRefMaybe(e) ?? e).In, (key, g) => (key, g));
     var requestContent = groupedParameters.Where(e => e.g.Any()).Select(group =>
     {
-      var parameterType = new KeySnippet(ToPascalCase(group.key ?? throw new InvalidOperationException()), isFormat:false);
-      var parameters = new ValuesSnippet(group.g.Select(p => parameterObjectHandler.Generate(p)));
-
-      return new KeyValueSnippet(parameterType, parameters, Controller) as ValueSnippet;
+      var parameterTypeName = ToPascalCase(group.key ?? throw new InvalidOperationException());
+      var parameterType = new KeySnippet(parameterTypeName, isFormat:false);
+      var fields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
+      ValueSnippet parameterToUse;
+      if (fields.Count == 1)
+      {
+        parameterToUse = fields.First();
+      }
+      else
+      {
+        parameterToUse = new ValuesSnippet(fields);
+      }
+      
+      if (!Controller.Options.Get<InlineRequest>().Value)
+      {
+        parameterToUse = parameterToUse.Export(exportName + parameterTypeName, fileLocate, Controller);
+      }
+      return new KeyValueSnippet(parameterType, parameterToUse, Controller) as ValueSnippet;
     }).ToList();
       
 

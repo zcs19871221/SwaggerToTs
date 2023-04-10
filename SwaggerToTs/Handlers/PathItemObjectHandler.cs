@@ -54,9 +54,9 @@ public class PathItemObjectHandler:Handler
       operationObject.Parameters.AddRange(pathItemObject.Parameters.Where(p =>
         !parameterKeys.Contains(parameterObjectHandler.GetKey(p))));
       var (exportName, fileLocate) = DecideOperationExtractInfo(url, method, operationObject);
-      var operation =Controller.OperationObjectHandler.Generate(operationObject);
+      var operation = Controller.OperationObjectHandler.Generate(operationObject, Regex.Replace(exportName, $"{OperationEndsWith}(\\d*)$", "$1"), fileLocate);
       var extracted = operation.Export(exportName, fileLocate, Controller);
-
+      extracted.Priority = -1;
       return new KeyValueSnippet(
         new KeySnippet(method.ToUpper(), isFormat:false),
         extracted,

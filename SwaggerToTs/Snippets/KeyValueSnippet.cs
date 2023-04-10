@@ -1,3 +1,4 @@
+using SwaggerToTs.Handlers;
 using SwaggerToTs.SchemaSnippets;
 
 namespace SwaggerToTs.Snippets;
@@ -16,7 +17,7 @@ public class KeyValueSnippet:ValueSnippet
         {
             case EnumSnippet when value.ExportType == ExportType.Enum:
             case AllOfSnippet {Type: AllOfGenerateType.Interface}:
-                Value = value.Export(key.Name, "data-schema", controller);
+                Value = value.Export(Handler.ToPascalCase(key.Name), "data-schema", controller);
                 break;
         }
 
@@ -63,6 +64,6 @@ public class KeyValueSnippet:ValueSnippet
     }
     public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
     { 
-        return "export interface " + AddBrackets(CreateContent(options, generatingInfo));
+        return $"export interface {ExportName} " + AddBrackets(CreateContent(options, generatingInfo));
     }
 }
