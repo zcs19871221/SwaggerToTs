@@ -1,21 +1,20 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class BoolSnippet : SchemaSnippet
+public class BoolSnippet : ValueSnippet
 {
-  public BoolSnippet(SchemaObject schema) : base(schema)
+  public BoolSnippet()
   {
     ExportType = ExportType.Type;
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type = {GenerateContent(options, generatingInfo)};";
+    return $"export type = {GenerateContent(generatingInfo)};";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "boolean";
   }

@@ -1,37 +1,22 @@
-using SwaggerToTs.Handlers;
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class ObjectSnippet:SchemaSnippet
+public class ObjectSnippet:ValueSnippet
 {
-
-  private ValuesSnippet propertiesObject;
-  public ObjectSnippet(SchemaObject schema, Controller controller) : base(schema)
+  private readonly ValuesSnippet _propertySnippet;
+  public ObjectSnippet(ValuesSnippet propertySnippet)
   {
-    propertiesObject = new ValuesSnippet(schema.Properties.Select(e =>
-    {
-      return new KeyValueSnippet(new KeySnippet(e.Key, isReadonly:true), controller.SchemaObjectHandlerWrapper.Construct(e.Value),
-        controller);
-    }).ToList())
-    {
-      ExportType = ExportType.Interface
-    };
-    propertiesObject.AddComments(new []
-    {
-      (nameof(schema.MinProperties), schema.MinProperties.ToString()),
-      (nameof(schema.MaxProperties), schema.MaxProperties.ToString())
-    });
+    _propertySnippet = propertySnippet;
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent( GeneratingInfo generatingInfo)
   {
-    return $"export interface {ExportName} {AddBrackets(GenerateContent(options, generatingInfo))}";
+    return $"export interface {ExportName} {AddBrackets(GenerateContent( generatingInfo))}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    return propertiesObject.Generate(options, generatingInfo);
+    return _propertySnippet.Generate(generatingInfo);
   }
 }

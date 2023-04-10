@@ -11,9 +11,16 @@ public class RecordObjectHandler : SchemaObjectHandler
     return schema.Type?.ToLower() == "object" && !schema.Properties.Any() && !schema.Allof.Any();
   }
   
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new RecordObjectSnippet(schema);
+
+    var snippet = new RecordObjectSnippet();
+    snippet.AddComments(new []
+    {
+      (nameof(schema.MinProperties), schema.MinProperties.ToString()),
+      (nameof(schema.MaxProperties), schema.MaxProperties.ToString())
+    });
+    return snippet;
   }
 
 

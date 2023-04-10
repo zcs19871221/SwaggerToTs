@@ -1,33 +1,25 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class EnumSnippet : SchemaSnippet
+public class EnumSnippet : ValueSnippet
 {
 
   private readonly IEnumerable<object> _enums;
 
-  public EnumSnippet(SchemaObject schema, Controller controller) : base(schema)
+  public EnumSnippet(IEnumerable<object> enums, ExportType exportType) 
   {
-    _enums = schema.Enum;
-    if (controller.Options.Get<EnumUseEnum>().Value)
-    {
-      ExportType = ExportType.Enum;
-    }
-    else
-    {
-      ExportType = ExportType.Type;
-    }
+    _enums = enums;
+    ExportType = exportType;
   }
 
-  public override string GenerateExportedContent(Options options,  GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent( GeneratingInfo generatingInfo)
   {
-    var contents = GenerateContent(options, generatingInfo);
+    var contents = GenerateContent(generatingInfo);
     return ExportType == ExportType.Enum ? $"export const enum {ExportName} {AddBrackets(contents)}" : $"export type {ExportName} = {contents};";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     if (ExportType == ExportType.Enum)
     {

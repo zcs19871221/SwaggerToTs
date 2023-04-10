@@ -3,12 +3,12 @@ namespace SwaggerToTs.Snippets;
 
 public class NullSnippet: ValueSnippet
 {
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     throw new NotImplementedException();
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "null";
   }

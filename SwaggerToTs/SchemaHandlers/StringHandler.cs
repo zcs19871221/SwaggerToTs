@@ -11,9 +11,16 @@ public class StringHandler: SchemaObjectHandler
     return schema.Type?.ToLower() == "string";
   }
 
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new StringSnippet(schema);
+    var snippet = new StringSnippet();
+    snippet.AddComments(new []
+    {
+      (nameof(schema.Pattern), schema.Pattern),
+      (nameof(schema.MinLength), schema.MinLength.ToString()),
+      (nameof(schema.MaxLength), schema.MaxLength.ToString())
+    });
+    return snippet;
   }
 
 

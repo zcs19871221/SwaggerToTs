@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.RegularExpressions;
 using SwaggerToTs.Handlers;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.SchemaHandlers;
@@ -126,7 +125,7 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
       SortedDictionary<string, HashSet<string>> fileMappingExportNames = new();
       StringBuilder contents = new();
       StringBuilder importBlock = new();
-      var generatingInfo = new GeneratingInfo();
+      var generatingInfo = new GeneratingInfo(this, fileLocate);
       foreach (var isolateSnippet in isolateSnippets)
       {
         if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
@@ -150,7 +149,7 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
           }
         }
 
-        var content = isolateSnippet.Generate(Options, generatingInfo);
+        var content = isolateSnippet.Generate(generatingInfo);
         if (contents.Length > 0) contents.AppendLine();
         contents.AppendLine(content);
       }
@@ -195,6 +194,14 @@ public class GeneratingInfo
 {
   public HashSet<ValueSnippet> Imports = new();
   public HashSet<string> Helpers = new();
+  public Controller Controller;
+  public string FileLocate;
+
+  public GeneratingInfo(Controller controller, string fileLocate)
+  {
+    Controller = controller;
+    FileLocate = fileLocate;
+  }
 
 
   public void AddImports(List<ValueSnippet> imports)

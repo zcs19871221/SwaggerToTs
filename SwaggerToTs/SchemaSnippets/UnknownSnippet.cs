@@ -3,20 +3,16 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class UnknownSnippet : SchemaSnippet
+public class UnknownSnippet : ValueSnippet
 {
 
-  public UnknownSnippet(SchemaObject schema) : base(schema, false)
+
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    
+    throw new Exception("should not export unknown type");
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
-  {
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
-  }
-
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "unknown";
   }

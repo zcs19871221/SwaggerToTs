@@ -1,26 +1,21 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class RecordObjectSnippet : SchemaSnippet
+public class RecordObjectSnippet : ValueSnippet
 {
-  public RecordObjectSnippet(SchemaObject schema) : base(schema)
+  public RecordObjectSnippet() 
   {
-    AddComments(new []
-    {
-      (nameof(schema.MinProperties), schema.MinProperties.ToString()),
-      (nameof(schema.MaxProperties), schema.MaxProperties.ToString())
-    });
+
     ExportType = ExportType.Type;
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
+    return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return @"Record<string, unknown>";  
   }

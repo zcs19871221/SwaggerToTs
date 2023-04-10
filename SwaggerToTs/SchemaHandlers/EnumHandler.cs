@@ -11,9 +11,15 @@ public class EnumHandler: SchemaObjectHandler
     return schema.Enum.Any();
   }
 
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new EnumSnippet(schema, Controller);
+    var enums = schema.Enum;
+    var exportType = ExportType.Type;
+    if (Controller.Options.Get<EnumUseEnum>().Value)
+    {
+      exportType = ExportType.Enum;
+    }
+    return new EnumSnippet(enums, exportType);
   }
 
 

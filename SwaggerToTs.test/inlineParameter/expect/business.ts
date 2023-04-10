@@ -16,7 +16,7 @@ export interface BusinessGetEP {
       readonly secretId?: string;
       readonly sessionId: string;
     };
-    Header: {
+    Header?: {
       readonly accept?: string;
       readonly gzip?: boolean | null;
     };
@@ -24,20 +24,21 @@ export interface BusinessGetEP {
       /**
        * @Description id in path
        *
-       * @Deprecated False
-       *
-       * @AllowEmptyValue False
+       * @AllowReserved True
        *
        * @Explode True
-       *
-       * @AllowReserved True
        *
        * @SerializeFormat form
        */
       readonly id: number;
       readonly name: string;
     };
-    Query: BusinessGetQuery;
+    Query?: Age & {
+      /**
+       * @SerializeFormat application/json
+       */
+      readonly bu?: string;
+    };
   };
   Responses: {
     /**
@@ -47,11 +48,4 @@ export interface BusinessGetEP {
       Content: null;
     };
   };
-}
-
-export interface BusinessGetQuery extends Age {
-  /**
-   * @SerializeFormat application/json
-   */
-  readonly bu?: string;
 }

@@ -11,9 +11,17 @@ public class NumberHandler: SchemaObjectHandler
     return schema.Type?.ToLower() is "number" or "integer";  
   }
 
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new NumberSnippet(schema);
+    var snippet =  new NumberSnippet(schema);
+    snippet.AddComments(new []
+    {
+      (nameof(schema.Maximum), schema.Maximum.ToString()),
+      (nameof(schema.Maximum), schema.Maximum.ToString()),
+      (nameof(schema.ExclusiveMaximum), schema.ExclusiveMaximum.ToString()),
+      (nameof(schema.MultipleOf), schema.MultipleOf.ToString())
+    });
+    return snippet;
   }
 
 

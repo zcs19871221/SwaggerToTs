@@ -68,6 +68,10 @@ public abstract class CommonSnippet
   public string AddBrackets(string content)
   {
     if (content.StartsWith("{")) return content;
+    if (string.IsNullOrWhiteSpace(content))
+    {
+      return "{}";
+    }
     var contents = content.Split(NewLine).ToList();
     for (var i = 0; i < contents.Count; i++) contents[i] = $"  {contents[i]}";
 

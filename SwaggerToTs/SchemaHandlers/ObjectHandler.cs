@@ -11,9 +11,21 @@ public class ObjectHandler: SchemaObjectHandler
     return schema.Type?.ToLower() == "object";
   }
 
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new ObjectSnippet(schema, Controller);
+    var snippet = new ValuesSnippet(schema.Properties.Select(e =>
+    {
+      var isRequired = schema.Required.Contains(e.Key);
+      return new KeyValueSnippet(new KeySnippet(e.Key, required:isRequired, isReadonly: true),
+        Controller.SchemaObjectHandlerWrapper.Construct(e.Value),
+        Controller);
+    }).ToList());
+    snippet.AddComments(new []
+    {
+      (nameof(schema.MinProperties), schema.MinProperties.ToString()),
+      (nameof(schema.MaxProperties), schema.MaxProperties.ToString())
+    });
+    return snippet;
   }
 
 

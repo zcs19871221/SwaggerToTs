@@ -3,27 +3,20 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class NumberSnippet : SchemaSnippet
+public class NumberSnippet : ValueSnippet
 {
 
-  public NumberSnippet(SchemaObject schema) : base(schema)
+  public NumberSnippet(SchemaObject schema) 
   {
     ExportType = ExportType.Type;
-    AddComments(new []
-    {
-      (nameof(schema.Maximum), schema.Maximum.ToString()),
-      (nameof(schema.Maximum), schema.Maximum.ToString()),
-      (nameof(schema.ExclusiveMaximum), schema.ExclusiveMaximum.ToString()),
-      (nameof(schema.MultipleOf), schema.MultipleOf.ToString())
-    });
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
+    return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "number";
   }

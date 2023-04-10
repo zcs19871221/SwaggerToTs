@@ -11,10 +11,12 @@ public class OneOfHandler : SchemaObjectHandler
     return schema.Oneof.Any();
   }
 
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new OneOfSnippet(schema, Controller);
+    var oneOfs = schema.Oneof.Select(Controller.SchemaObjectHandlerWrapper.Construct).ToList();
+    return new OneOfSnippet(oneOfs);
   }
+  
 
   public OneOfHandler(Controller controller) : base(controller)
   {

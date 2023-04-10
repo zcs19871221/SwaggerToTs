@@ -1,4 +1,5 @@
 using SwaggerToTs.OpenAPIElements;
+using SwaggerToTs.SchemaHandlers;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
@@ -10,15 +11,16 @@ public class OperationObjectHandler : Handler
     var parameterObjectHandler = Controller.ParameterObjectHandler;
     var requestBodyObjectHandler = Controller.RequestBodyObjectHandler;
     var responseObjectHandler = Controller.ResponseObjectHandler;
-    // operationObject.Parameters =
-    //   operationObject.Parameters.Where(e => parameterObjectHandler.GetRefOrSelf(e).Schema != null).ToList();
+    
+    operationObject.Parameters =
+      operationObject.Parameters.Where(parameterObjectHandler.HasSchema).ToList();
     var parametersGroupedByType = operationObject.Parameters.GroupBy(e => parameterObjectHandler.GetRefOrSelf(e).In, (key, g) => (key, g));
     var parameterContents = parametersGroupedByType.Where(e => e.g.Any()).Select(group =>
     {
       var parameterTypeName = ToPascalCase(group.key ?? throw new InvalidOperationException());
       var groupedParametersRequired = group.g.Any(p => parameterObjectHandler.GetRefOrSelf(p).Required);
       var parameterFields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
-      var parameterSet = parameterFields.Count == 1 ? parameterFields.First() : new ValuesSnippet(parameterFields);
+      var parameterSet = parameterFields.Count == 1 ? parameterFields.First() : AllOfHandler.CreateAllOfSnippet(parameterFields);
  
       if (!Controller.Options.Get<InlineRequest>().Value)
       {

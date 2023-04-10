@@ -4,27 +4,21 @@ using SwaggerToTs.Snippets;
 namespace SwaggerToTs.SchemaSnippets;
 
 
-public class StringSnippet : SchemaSnippet
+public class StringSnippet : ValueSnippet
 {
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = ${GenerateContent(options, generatingInfo)};";
+    return $"export type {ExportName} = ${GenerateContent(generatingInfo)};";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "string";
   }
 
-  public StringSnippet(SchemaObject schema) : base(schema)
+  public StringSnippet() 
   {
     ExportType = ExportType.Type;
-    AddComments(new []
-    {
-      (nameof(schema.Pattern), schema.Pattern),
-      (nameof(schema.MinLength), schema.MinLength.ToString()),
-      (nameof(schema.MaxLength), schema.MaxLength.ToString())
-    });
   }
 }

@@ -11,10 +11,18 @@ public class ArrayHandler : SchemaObjectHandler
     return schema.Type?.ToLower() == "array";
   }
 
-
-  public override ValueSnippet Construct(SchemaObject schema)
+  public override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    return new ArraySnippet(schema, Controller);
+    var item = Controller.SchemaObjectHandlerWrapper.Construct(schema.Items ??
+                                                                       throw new InvalidOperationException());
+    var arraySnippet = new ArraySnippet(item);
+    arraySnippet.AddComments(new []
+    {
+      (nameof(schema.MaxItems), schema.MaxItems.ToString()),
+      (nameof(schema.MinItems), schema.MinItems.ToString()),
+      (nameof(schema.UniqueItems), schema.UniqueItems?.ToString())
+    });
+    return new ArraySnippet(item);
   }
 
   public ArrayHandler(Controller controller) : base(controller)

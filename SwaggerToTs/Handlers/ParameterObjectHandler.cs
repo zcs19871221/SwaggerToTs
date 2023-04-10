@@ -19,10 +19,11 @@ public class ParameterObjectHandler: ReferenceObjectHandler
   {
   }
 
-  // public bool HasSchema(ParameterObject parameterObject)
-  // {
-  //   return parameterObject.Schema == null && parameterObject
-  // }
+  public bool HasSchema(ParameterObject parameterObject)
+  {
+    var p = GetRefOrSelf(parameterObject);
+    return p.Schema != null || p.Content?.Count > 0;
+  }
   public ValueSnippet Generate(ParameterObject parameterObject)
   {
     return Handle(parameterObject, p =>

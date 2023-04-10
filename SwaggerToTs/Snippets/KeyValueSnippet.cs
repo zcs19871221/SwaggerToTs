@@ -16,7 +16,7 @@ public class KeyValueSnippet:ValueSnippet
         switch (value)
         {
             case EnumSnippet when value.ExportType == ExportType.Enum:
-            case AllOfSnippet {Type: AllOfGenerateType.Interface}:
+            // case AllOfSnippet {ExportType:ExportType.Interface}:
                 Value = value.Export(Handler.ToPascalCase(key.Name), "data-schema", controller);
                 break;
         }
@@ -24,14 +24,15 @@ public class KeyValueSnippet:ValueSnippet
         Comments = key.Comments.Concat(value.Comments).ToList();
     }
 
-    public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+    public override string GenerateContent(GeneratingInfo generatingInfo)
     {
-        var content = CreateContent(options, generatingInfo);
+        var content = CreateContent(generatingInfo);
         return CreateComments() + content;
     }
 
-    private string CreateContent(Options options, GeneratingInfo generatingInfo)
+    private string CreateContent(GeneratingInfo generatingInfo)
     {
+        var options = generatingInfo.Controller.Options;
         var nullAsOptional = options.Get<NullAsOptional>().Value;
         var nonNullAsRequired = options.Get<NonNullAsRequired>().Value;
 
@@ -44,7 +45,7 @@ public class KeyValueSnippet:ValueSnippet
             Key.Required = true;
         }
         
-        var content = Value.Generate(options, generatingInfo);
+        var content = Value.Generate(generatingInfo);
         var isReadOnly = Value.IsReadOnly;
         switch (Value)
         {
@@ -62,8 +63,8 @@ public class KeyValueSnippet:ValueSnippet
         var showNull = !options.Get<NullAsOptional>().Value && Value.IsNullable;
         return Key + (isReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "") + ";";
     }
-    public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+    public override string GenerateExportedContent(GeneratingInfo generatingInfo)
     { 
-        return $"export interface {ExportName} " + AddBrackets(CreateContent(options, generatingInfo));
+        return $"export interface {ExportName} " + AddBrackets(CreateContent(generatingInfo));
     }
 }

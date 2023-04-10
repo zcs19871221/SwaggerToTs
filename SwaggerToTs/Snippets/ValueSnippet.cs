@@ -16,13 +16,13 @@ public abstract class ValueSnippet:CommonSnippet
   public int Priority { get; set; }
 
   public List<ExportedValueSnippet> UsedBy = new();
-  public abstract string GenerateExportedContent(Options options, GeneratingInfo generatingInfo);
-  public abstract string GenerateContent(Options options, GeneratingInfo generatingInfo);
+  public abstract string GenerateExportedContent(GeneratingInfo generatingInfo);
+  public abstract string GenerateContent(GeneratingInfo generatingInfo);
 
-  public string Generate(Options options, GeneratingInfo generatingInfo)
+  public string Generate(GeneratingInfo generatingInfo)
   {
     generatingInfo.AddImports(Dependencies);
-    return string.IsNullOrWhiteSpace(ExportName) ? GenerateContent(options, generatingInfo) : CreateComments() + GenerateExportedContent(options, generatingInfo);
+    return string.IsNullOrWhiteSpace(ExportName) ? GenerateContent(generatingInfo) : CreateComments() + GenerateExportedContent(generatingInfo);
   }
   public ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
   {

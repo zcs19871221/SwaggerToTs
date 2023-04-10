@@ -6,8 +6,13 @@ public class ValuesSnippet: ValueSnippet
   public List<ValueSnippet> Values;
   public ValuesSnippet(IEnumerable<ValueSnippet> values)
   {
-    Values = values.ToList();
-    Values.Sort((a, b) =>
+    Values = Sort(values);
+  }
+
+  public static List<ValueSnippet> Sort(IEnumerable<ValueSnippet> values)
+  {
+    var result = values.ToList();
+    result.Sort((a, b) =>
     {
       if (a is KeyValueSnippet aa && b is KeyValueSnippet bb)
       {
@@ -16,17 +21,17 @@ public class ValuesSnippet: ValueSnippet
 
       return 0;
     });
+    return result;
   }
-
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    return string.Join(NewLine, Values.Select(snippet => snippet.Generate(options, generatingInfo)));
+    return string.Join(NewLine, Values.Select(snippet => snippet.Generate(generatingInfo)));
   }
   
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     return $"export interface {ExportName} " + 
-           AddBrackets(GenerateContent(options, generatingInfo));
+           AddBrackets(GenerateContent(generatingInfo));
   }
 
 }

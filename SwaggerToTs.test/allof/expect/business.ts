@@ -20,8 +20,8 @@ export interface BusinessGetEP {
       Content: {
         'application/json': {
           readonly extends?: ExtendTwoAndProperties;
-          readonly inline?: Dog & Cat;
-          readonly inlineWithProperty?: Dog & Cat & {
+          readonly inline?: Cat & Dog;
+          readonly inlineWithProperty?: Cat & Dog & {
             /**
              * @Format money
              */

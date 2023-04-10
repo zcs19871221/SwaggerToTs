@@ -1,76 +1,57 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public enum AllOfGenerateType
+public class AllOfSnippet: ValueSnippet
 {
-  Join,
-  Interface
-}
-public class AllOfSnippet : SchemaSnippet
-{
-  private List<ValueSnippet> _allOfs;
+  private List<ValueSnippet> _properties;
 
-  private List<string>? _extends;
+  private List<ExportedValueSnippet>? _extends;
 
-  private ValueSnippet? _objectSnippet;
-
-
-  public AllOfSnippet(SchemaObject schema, Controller controller) : base(schema)
+  public AllOfSnippet(List<ValueSnippet> properties, List<ExportedValueSnippet>? extends)
   {
-    
-    var allof = schema.Allof.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
-    if (controller.SchemaObjectHandlerWrapper.ObjectHandler.IsMatch(schema))
-    {
-      allof.Add(controller.SchemaObjectHandlerWrapper.ObjectHandler.Construct(schema));
-    }
 
-    CreateAllOfSnippet(allof);
+    _properties = ValuesSnippet.Sort(properties);
+    _extends = extends;
   }
   
-  public AllOfSnippet(List<ValueSnippet> allOfs)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    
-    CreateAllOfSnippet(allOfs);
-  }
+    if (_properties.Count == 0)
+    {
+      return $"export type {ExportName} = {Join(generatingInfo)}";
+    }
   
-  private void CreateAllOfSnippet(List<ValueSnippet> allOfs)
-  {
-    var exportNames = allOfs.Where(e => e is ExportedValueSnippet).Select(e => e.ExportName).ToList();
-    var keyValues = allOfs.Where(e => e is KeyValueSnippet or ValuesSnippet).ToList();
-
-    if (exportNames.Count + keyValues.Count == allOfs.Count)
-    {
-      _extends = exportNames!;
-      ExportType = ExportType.Interface;    
-    } else
-    {
-      ExportType = ExportType.Type;
-    }
-
-    _allOfs = allOfs;
-  }
-
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
-  {
-    if (ExportType == ExportType.Interface)
-    {
-      return
-        $"export interface {ExportName} {(_extends != null ? " extends" + string.Join(", ", _extends) : "")}{AddBrackets(_objectSnippet == null ? "" : _objectSnippet.Generate(options, generatingInfo))}";
-    }
+    var extends = GetExtends(generatingInfo);
     
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
+    return
+      $"export interface {ExportName} {(extends.Count > 0 ? $"extends {string.Join(", ", extends)} ": "")}{AddBrackets(string.Join(NewLine, _properties.Select(snippet => snippet.Generate(generatingInfo))))}";
+    
+    // return $"export type {ExportName} = {Join(generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  private List<string> GetExtends(GeneratingInfo generatingInfo)
+  {
+    if (!(_extends?.Count > 0)) return new List<string>();
+
+    var extends = _extends.Select(e => e.Generate(generatingInfo)).ToList();
+    extends.Sort();
+    return extends;
+  }
+  public string Join(GeneratingInfo generatingInfo)
+  {
+    var extends = GetExtends(generatingInfo);
+    return string.Join(" & ", extends.Concat(_properties.Select(e => AddBrackets(e.Generate(generatingInfo)))));
+  }
+
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
 
-    if (ExportType == ExportType.Interface)
+    if (_properties.Count > 0 && (_extends == null || _extends.Count == 0))
     {
-      return string.Join(NewLine, _allOfs.Select(snippet => snippet.Generate(options, generatingInfo)));    
+      return AddBrackets(string.Join(NewLine, _properties.Select(snippet => snippet.Generate(generatingInfo))));    
     }
 
-    return string.Join("&", _allOfs.Select(e => e.Generate(options, generatingInfo)));
+    return Join(generatingInfo);
   }
 }

@@ -1,24 +1,23 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class AnyOfSnippet : SchemaSnippet
+public class AnyOfSnippet : ValueSnippet
 {
   private readonly List<ValueSnippet> _anyOfs;
 
-  public AnyOfSnippet(SchemaObject schema, Controller controller) : base(schema)
+  public AnyOfSnippet(List<ValueSnippet> anyOfs)
   {
-    _anyOfs = schema.AnyOf.Select(controller.SchemaObjectHandlerWrapper.Construct).ToList();
+    _anyOfs = anyOfs;
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
+    return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
     generatingInfo.AddHelper(Controller.AnyOfName);
-    return $"{Controller.AnyOfName}<{string.Join(NewLine, _anyOfs.Select(e => e.Generate(options, generatingInfo)))}>";  }
+    return $"{Controller.AnyOfName}<{string.Join(NewLine, _anyOfs.Select(e => e.Generate(generatingInfo)))}>";  }
 }

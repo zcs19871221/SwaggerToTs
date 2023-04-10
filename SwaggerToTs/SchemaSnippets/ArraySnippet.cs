@@ -1,35 +1,26 @@
-using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaSnippets;
 
-public class ArraySnippet : SchemaSnippet
+public class ArraySnippet : ValueSnippet
 {
 
-  private ValueSnippet _item;
-  public ArraySnippet(SchemaObject schema, Controller controller) : base(schema)
+  private readonly ValueSnippet _item;
+  public ArraySnippet(ValueSnippet item)
   {
     ExportType = ExportType.Type;
-    AddComments(new []
-    {
-      (nameof(schema.MaxItems), schema.MaxItems.ToString()),
-      (nameof(schema.MinItems), schema.MinItems.ToString()),
-      (nameof(schema.UniqueItems), schema.UniqueItems?.ToString())
-    });
-      IsReadOnly = true;
-      _item = controller.SchemaObjectHandlerWrapper.Construct(schema.Items ??
-                                                                       throw new InvalidOperationException());
-
+    IsReadOnly = true;
+    _item = item;
   }
 
-  public override string GenerateExportedContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(options, generatingInfo)}";
+    return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
   }
 
-  public override string GenerateContent(Options options, GeneratingInfo generatingInfo)
+  public override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    var itemContent = _item.Generate(options, generatingInfo);
+    var itemContent = _item.Generate(generatingInfo);
     if (_item.IsNullable)
     {
       itemContent += " | null";
