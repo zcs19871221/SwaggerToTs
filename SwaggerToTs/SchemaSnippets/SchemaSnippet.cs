@@ -10,9 +10,9 @@ public abstract class SchemaSnippet: ValueSnippet
   {
     AddComments(new[]
     {
-      (nameof(schema.Title), schema.Title),
       (nameof(schema.Description), schema.Description),
-      (nameof(schema.Deprecated), schema.Deprecated ? "true": ""),
+      (nameof(schema.Title), schema.Title),
+      (nameof(schema.Deprecated), schema.Deprecated ? "True": ""),
       (nameof(schema.Format), schema.Format),
     });
   }

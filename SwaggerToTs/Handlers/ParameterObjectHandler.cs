@@ -41,11 +41,11 @@ public class ParameterObjectHandler: ReferenceObjectHandler
       parameter.AddComments(new List<(string, string?)>
       {
         (nameof(p.Description), p.Description),
-        (nameof(p.Deprecated), p.Deprecated ? "true" : ""),
-        (nameof(p.AllowEmptyValue), p.AllowEmptyValue ? "true" : ""),
+        (nameof(p.Deprecated), p.Deprecated ? "True" : ""),
+        (nameof(p.AllowEmptyValue), p.AllowEmptyValue ? "True" : ""),
         ("SerializeFormat", serializeFormat),
-        (nameof(p.Explode), p.Explode ? "true" : ""),
-        (nameof(p.AllowReserved), p.AllowReserved ? "true" : ""),
+        (nameof(p.Explode), p.Explode ? "True" : ""),
+        (nameof(p.AllowReserved), p.AllowReserved ? "True" : ""),
       });
       return parameter;
     });

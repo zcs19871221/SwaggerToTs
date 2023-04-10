@@ -3,12 +3,12 @@
  * Do not make direct changes to the file.
  */
 
-export enum City {
+export const enum City {
   Beijing = 'Beijing',
   Shanghai = 'Shanghai'
 }
 
-export enum Color {
+export const enum Color {
   red = 'red',
   green = 'green'
 }

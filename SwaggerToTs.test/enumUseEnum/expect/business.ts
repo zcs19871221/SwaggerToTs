@@ -20,6 +20,6 @@ export interface BusinessGetEP {
 }
 
 export interface BusinessGetQuery {
-  readonly city?: City;
+  readonly city?: City | null;
   readonly color?: Color;
 }

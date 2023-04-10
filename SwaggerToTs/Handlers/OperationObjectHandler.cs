@@ -57,8 +57,8 @@ public class OperationObjectHandler : Handler
     var snippet = new ValuesSnippet(contents);
     snippet.AddComments(new List<(string, string?)>
     {
-      (nameof(operationObject.Description), operationObject.Description),
       (nameof(operationObject.Summary), operationObject.Summary),
+      (nameof(operationObject.Description), operationObject.Description),
       (nameof(operationObject.Deprecated), operationObject.Deprecated.ToString())
     });
     return snippet;
