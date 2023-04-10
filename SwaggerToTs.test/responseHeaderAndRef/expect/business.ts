@@ -25,13 +25,9 @@ export interface BusinessGetEP {
         /**
          * @Description date time
          *
-         * @Deprecated False
-         *
-         * @AllowEmptyValue False
+         * @Format Date
          *
          * @SerializeFormat application/json
-         *
-         * @Format Date
          */
         date: string;
         encoding?: Encoding;

@@ -18,13 +18,13 @@ public class ExportedValueSnippet: ValueSnippet
   }
 
   public string? Generic { get; set; }
-  
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     throw new Exception("extracted snippet should not export again");
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return (string.IsNullOrWhiteSpace(Generic) ? IsolateSnippet.ExportName : $"{Generic}<{IsolateSnippet.ExportName}>") ?? throw new InvalidOperationException();  }
 }

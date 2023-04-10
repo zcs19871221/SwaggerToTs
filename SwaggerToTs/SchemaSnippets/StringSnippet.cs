@@ -6,13 +6,12 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class StringSnippet : ValueSnippet
 {
-
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     return $"export type {ExportName} = ${GenerateContent(generatingInfo)};";
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "string";
   }

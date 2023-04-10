@@ -9,8 +9,6 @@ export interface Cat {
 }
 
 export interface Dog {
-  readonly bark: string;
-  readonly color?: 'red' | 'green' | null;
   /**
    * @Format date-time
    */
@@ -19,6 +17,8 @@ export interface Dog {
    * @Format date-time
    */
   readonly 'date-timeNull'?: string | null;
+  readonly bark: string;
+  readonly color?: 'red' | 'green' | null;
   readonly size?: 'Big' | 'small';
   /**
    * @Format uuid

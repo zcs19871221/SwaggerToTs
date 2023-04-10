@@ -15,12 +15,12 @@ public class ArraySnippet : ValueSnippet
     item.Comments.Clear();
   }
 
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
-    return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
+    return $"export type {ExportName} = {GenerateContent(generatingInfo)};";
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     var itemContent = _item.Generate(generatingInfo);
     if (_item.IsNullable)

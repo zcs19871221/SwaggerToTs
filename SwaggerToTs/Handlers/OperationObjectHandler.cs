@@ -20,7 +20,7 @@ public class OperationObjectHandler : Handler
       var parameterTypeName = ToPascalCase(group.key ?? throw new InvalidOperationException());
       var groupedParametersRequired = group.g.Any(p => parameterObjectHandler.GetRefOrSelf(p).Required);
       var parameterFields = group.g.Select(p => parameterObjectHandler.Generate(p)).ToList();
-      ValueSnippet parameterSet = parameterFields.Count == 1 ? parameterFields.First() : new AllOfSnippet(parameterFields);
+      var parameterSet = parameterFields.Count == 1 ? parameterFields.First() : new AllOfSnippet(parameterFields);
  
       if (!Controller.Options.Get<InlineRequest>().Value)
       {

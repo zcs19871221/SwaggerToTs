@@ -26,7 +26,6 @@ public class ReferenceObjectHandler: Handler
       
     var refObject = GetRef(referenceObject);
     var snippet = create(refObject);
-    snippet.ReferenceUrl = reference;
     Controller.RefMappingIsolate.Add(reference, snippet);
     return snippet.Export(Controller.ReferenceMappingShortName.GetValueOrDefault(GetKey(reference)) ?? throw new InvalidOperationException(), "data-schema", Controller);
   }

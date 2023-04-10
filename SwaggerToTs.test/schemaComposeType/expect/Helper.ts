@@ -20,3 +20,14 @@ export type OneOf<T extends any[]> = {
 
 export type AnyOf<T extends any[]> = OneOf<Permutations<T>>;
 
+type NullKeys<T> = {
+    [k in keyof T]: null extends T[k] ? k : never;
+}[keyof T];
+
+export type NonNullAsRequired<T> = T extends (infer U)[]
+  ? NonNullAsRequired<U>[]
+  : T extends object
+  ? Pick<T, NullKeys<T>> & {
+  [K in Exclude<keyof T, NullKeys<T>>]-?: NonNullAsRequired<T[K]>;
+    }
+  : T;

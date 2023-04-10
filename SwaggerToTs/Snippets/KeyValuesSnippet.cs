@@ -10,12 +10,12 @@ public class KeyValuesSnippet: ValueSnippet
     Values.Sort((a,b) => string.CompareOrdinal(a.Key.Name, b.Key.Name));
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return string.Join(NewLine, Values.Select(snippet => snippet.Generate(generatingInfo)));
   }
-  
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     return $"export interface {ExportName} " + 
            AddBrackets(GenerateContent(generatingInfo));

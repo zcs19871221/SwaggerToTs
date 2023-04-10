@@ -10,12 +10,12 @@ public class RecordObjectSnippet : ValueSnippet
     ExportType = ExportType.Type;
   }
 
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     return $"export type {ExportName} = {GenerateContent(generatingInfo)}";
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return @"Record<string, unknown>";  
   }

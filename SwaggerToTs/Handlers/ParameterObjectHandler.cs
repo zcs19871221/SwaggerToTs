@@ -24,7 +24,8 @@ public class ParameterObjectHandler: ReferenceObjectHandler
     var p = GetRefOrSelf(parameterObject);
     return p.Schema != null || p.Content?.Count > 0;
   }
-  public ValueSnippet Generate(ParameterObject parameterObject)
+
+  public ValueSnippet Generate(ParameterObject parameterObject, bool isForHeader = false)
   {
     return GetOrCreateThenSaveValue(parameterObject, p =>
     {
@@ -37,8 +38,18 @@ public class ParameterObjectHandler: ReferenceObjectHandler
         serializeFormat ??= content.FirstOrDefault().Key;
       }
 
-      var snippet = new KeyValueSnippet(new KeySnippet(p.Name, p.Required, true),
-        Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
+      ValueSnippet snippet;
+      
+      if (isForHeader)
+      {
+        snippet = Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException());
+      }
+      else
+      {
+        snippet = new KeyValueSnippet(new KeySnippet(p.Name, p.Required, true),
+          Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
+      }
+      
       snippet.AddComments(new List<(string, string?)>
       {
         (nameof(p.Description), p.Description),

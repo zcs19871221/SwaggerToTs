@@ -4,7 +4,7 @@
  */
 
 import { Cat, Dog } from './data-schema';
-import { AnyOf, OneOf } from './helper';
+import { AnyOf, OneOf } from './Helper';
 
 export interface BusinessGetEP {
   Responses: {
@@ -14,24 +14,14 @@ export interface BusinessGetEP {
     200: {
       Content: {
         'application/json': {
-          readonly allOf?: Dog & Cat;
+          readonly allOf?: Cat & Dog;
           readonly anyOf?: AnyOf<[Dog, Cat]>;
-          /**
-           * @Description name
-           *
-           * @Description age
-           *
-           * @Description city
-           *
-           * @Description salary
-           */
           readonly mix?: OneOf<[AnyOf<[{
             readonly name?: string;
           }, {
             readonly age?: number;
           }, {
             readonly city?: string;
-          } & {
             readonly salary?: number | null;
           }]>, Cat]>;
           readonly oneOf?: OneOf<[Dog, Cat]>;

@@ -11,19 +11,19 @@ public class AllOfSnippet: ValueSnippet
 
   public AllOfSnippet(List<ValueSnippet> allOfs)
   {
-    var keyValues = new List<KeyValueSnippet>();
+    var list = new List<KeyValueSnippet>();
     foreach (var valueSnippet in allOfs)
     {
       switch (valueSnippet)
       {
         case KeyValueSnippet k:
-          keyValues.Add(k);
+          list.Add(k);
           break;
         case ExportedValueSnippet e:
           _extends.Add(e);
           break;
         case KeyValuesSnippet kvs:
-          keyValues.AddRange(kvs.Values);
+          list.AddRange(kvs.Values);
           break;
         default:
           _others.Add(valueSnippet);
@@ -31,16 +31,10 @@ public class AllOfSnippet: ValueSnippet
       }
     }
 
-    _property = new KeyValuesSnippet(keyValues);
+    _property = new KeyValuesSnippet(list);
   }
-  
-  public AllOfSnippet(List<KeyValueSnippet> allOfs)
-  {
 
-    _property = new KeyValuesSnippet(allOfs);
-  }
-  
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     if (_others.Count > 0)
     {
@@ -50,18 +44,12 @@ public class AllOfSnippet: ValueSnippet
     var extends = GetExtends(generatingInfo);
     
     return
-      $"export interface {ExportName} {(extends.Count > 0 ? $"extends {string.Join(", ", extends)} ": "")}{AddBrackets(_property.Generate(generatingInfo))}";
+      $"export interface {ExportName} {(extends.Count > 0 ? $"extends {string.Join(", ", extends)} ": "")}{AddBrackets(string.Join(NewLine, _property.Generate(generatingInfo)))}";
     
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    //
-    // if (_property.Count > 0 && (_extends == null || _extends.Count == 0))
-    // {
-    //   return AddBrackets(string.Join(NewLine, _property.Select(snippet => snippet.Generate(generatingInfo))));    
-    // }
-
     return Join(generatingInfo);
   }
   private List<string> GetExtends(GeneratingInfo generatingInfo)

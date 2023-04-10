@@ -9,12 +9,12 @@ public class BoolSnippet : ValueSnippet
     ExportType = ExportType.Type;
   }
 
-  public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
   {
     return $"export type = {GenerateContent(generatingInfo)};";
   }
 
-  public override string GenerateContent(GeneratingInfo generatingInfo)
+  protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
     return "boolean";
   }

@@ -5,7 +5,7 @@
 
 export interface BusinessGetEP {
   Request: {
-    Query: BusinessGetQuery;
+    Query?: BusinessGetQuery;
   };
   Responses: {
     /**
@@ -19,29 +19,29 @@ export interface BusinessGetEP {
 
 export interface BusinessGetQuery {
   /**
-   * @Description string field of info
-   *
    * @Title string field of info
+   *
+   * @Description string field of info
    *
    * @Format address
    *
-   * @Pattern /[a-z]*\/
+   * @MaxLength 50
    *
    * @MinLength 5
    *
-   * @MaxLength 50
+   * @Pattern /[a-z]*\/
    */
   readonly address?: string | null;
   /**
    * @Description (5 ~ 17] % 8 == true
    *
-   * @Minimum 5
-   *
-   * @Maximum 17
+   * @ExclusiveMaximum False
    *
    * @ExclusiveMinimum True
    *
-   * @ExclusiveMaximum False
+   * @Maximum 17
+   *
+   * @Minimum 5
    *
    * @MultipleOf 8
    */
@@ -59,9 +59,9 @@ export interface BusinessGetQuery {
   readonly isDeprecated?: boolean | null;
   readonly record?: Record<string, unknown> | null;
   /**
-   * @MinProperties 3
-   *
    * @MaxProperties 8
+   *
+   * @MinProperties 3
    */
   readonly versionInfo?: {
     readonly id: number;

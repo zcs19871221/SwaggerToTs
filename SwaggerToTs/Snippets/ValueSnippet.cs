@@ -1,4 +1,6 @@
 
+using SwaggerToTs.Handlers;
+
 namespace SwaggerToTs.Snippets;
 
 public abstract class ValueSnippet:CommonSnippet
@@ -9,15 +11,13 @@ public abstract class ValueSnippet:CommonSnippet
   
   public ExportType ExportType { get; set; }
   
-  public string? ReferenceUrl { get; set; }
-
   public string? ExportName { get; set; }
   public string? FileLocate { get; set; }
   public int Priority { get; set; }
 
   public List<ExportedValueSnippet> UsedBy = new();
-  public abstract string GenerateExportedContent(GeneratingInfo generatingInfo);
-  public abstract string GenerateContent(GeneratingInfo generatingInfo);
+  protected abstract string GenerateExportedContent(GeneratingInfo generatingInfo);
+  protected abstract string GenerateContent(GeneratingInfo generatingInfo);
 
   public string Generate(GeneratingInfo generatingInfo)
   {
@@ -30,7 +30,7 @@ public abstract class ValueSnippet:CommonSnippet
     {
       return alreadyExport;
     }
-    ExportName = exportName;
+    ExportName = Handler.ToPascalCase(exportName);
     FileLocate = fileLocate;
     var extractedSnippet = new ExportedValueSnippet(this, controller);
     return extractedSnippet;    

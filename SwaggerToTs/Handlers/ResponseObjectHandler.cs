@@ -25,21 +25,15 @@ public class ResponseObjectHandler: ReferenceObjectHandler
       var contents = new List<KeyValueSnippet>();
       if (res.Headers != null)
       {
-        var headerContent = new KeyValuesSnippet(res.Headers.Select(e =>
-        {
-          return Controller.HeaderObjectHandler.Generate(e.Value, e.Key);
-        }));
-        contents.Add(new KeyValueSnippet(new KeySnippet("Headers"), headerContent, Controller));
+        var headerContent = new KeyValuesSnippet(res.Headers.Select(e => Controller.HeaderObjectHandler.Generate(e.Value, e.Key)));
+        contents.Add(new KeyValueSnippet(new KeySnippet("Headers", isFormat: false), headerContent, Controller));
       }
 
       if (res.Content != null)
       {
-        var content = new KeyValuesSnippet(res.Content.Where(e => e.Value.Schema != null).Select(e =>
-        {
-          return new KeyValueSnippet(new KeySnippet(e.Key),
-            Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()),
-            Controller);
-        }));
+        var content = new KeyValuesSnippet(res.Content.Where(e => e.Value.Schema != null).Select(e => new KeyValueSnippet(new KeySnippet(e.Key),
+          Controller.SchemaObjectHandlerWrapper.Construct(e.Value.Schema ?? throw new InvalidOperationException()),
+          Controller)));
         contents.Add(new KeyValueSnippet(new KeySnippet("Content", isFormat: false), content, Controller));
       }
       else

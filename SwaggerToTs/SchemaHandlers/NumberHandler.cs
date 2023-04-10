@@ -13,7 +13,7 @@ public class NumberHandler: SchemaObjectHandler
 
   protected override ValueSnippet DoConstruct(SchemaObject schema)
   {
-    var snippet =  new NumberSnippet(schema);
+    var snippet =  new NumberSnippet();
     snippet.AddComments(new []
     {
       (nameof(schema.Maximum), schema.Maximum.ToString()),

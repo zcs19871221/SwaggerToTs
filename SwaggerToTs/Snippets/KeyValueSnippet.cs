@@ -22,7 +22,7 @@ public class KeyValueSnippet:ValueSnippet
         Comments = key.Comments.Concat(value.Comments).ToList();
     }
 
-    public override string GenerateContent(GeneratingInfo generatingInfo)
+    protected override string GenerateContent(GeneratingInfo generatingInfo)
     {
         var content = CreateContent(generatingInfo);
         return CreateComments() + content;
@@ -60,7 +60,8 @@ public class KeyValueSnippet:ValueSnippet
         var showNull = !options.Get<NullAsOptional>().Value && Value.IsNullable;
         return Key + (isReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "") + ";";
     }
-    public override string GenerateExportedContent(GeneratingInfo generatingInfo)
+
+    protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
     { 
         return $"export interface {ExportName} " + AddBrackets(CreateContent(generatingInfo));
     }
