@@ -39,6 +39,20 @@
   "paths": {
     "/business": {
       "get": {
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/usedByRequestAndResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
         "parameters": [
           {
             "in": "query",
