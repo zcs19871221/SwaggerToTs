@@ -1,12 +1,13 @@
-using System.Text.RegularExpressions;
-using SwaggerToTs.Snippets;
-
 namespace SwaggerToTs.OpenAPIElements;
 
 public class OpenApiObject
 {
   public OpenApiObject(SortedDictionary<string, PathItemObject>? paths, Info? info, string? openApi)
   {
+    if (paths == null || info == null || openApi == null)
+    {
+      throw new Exception("should not be null");
+    }
     Paths = paths;
     Info = info;
     OpenApi = openApi;

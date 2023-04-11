@@ -21,14 +21,12 @@ public class Controller
   public ParameterObjectHandler ParameterObjectHandler { get; set; }
   public RequestBodyObjectHandler RequestBodyObjectHandler { get; set; }
   public ResponseObjectHandler ResponseObjectHandler { get; set; }
-  
   public HeaderObjectHandler HeaderObjectHandler { get; set; }
-  
   public Dictionary<string, string> ReferenceMappingShortName { get; set; }
 
   public SchemaObjectHandlerWrapper SchemaObjectHandlerWrapper { get;  }
- 
-  
+
+  public CodeLocate? CurrentLocate { get; set; }
   public Controller(Options options)
   {
     Options = options;
@@ -75,10 +73,10 @@ type NullKeys<T> = {{
 }}[keyof T];
 
 export type {NonNullAsRequired}<T> = T extends (infer U)[]
-  ? NonNullAsRequired<U>[]
+  ? {NonNullAsRequired}<U>[]
   : T extends object
   ? Pick<T, NullKeys<T>> & {{
-  [K in Exclude<keyof T, NullKeys<T>>]-?: NonNullAsRequired<T[K]>;
+  [K in Exclude<keyof T, NullKeys<T>>]-?: {NonNullAsRequired}<T[K]>;
     }}
   : T;
 ";
@@ -134,11 +132,11 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
         //   throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
         //
         // dup.Add(isolateSnippet.ExportName);
-        if (Options.Get<NonNullAsRequired>().Value)
+        if (Options.Get<NonNullResponsePropertyAsRequired>().Value)
         {
           var responses = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response).ToList();
           var requests = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response);
-          ;
+          
           if (responses.Any() && requests.Any())
           {
             fileMappingExportNames.GetOrCreate("Helper").Add(NonNullAsRequired);
@@ -146,6 +144,9 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
             {
               response.Generic = NonNullAsRequired;
             }
+          } else if (responses.Any())
+          {
+            
           }
         }
 

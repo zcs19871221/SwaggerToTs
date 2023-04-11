@@ -1,5 +1,4 @@
 using SwaggerToTs.OpenAPIElements;
-using SwaggerToTs.SchemaSnippets;
 using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.SchemaHandlers;
@@ -8,7 +7,7 @@ public class ObjectHandler: SchemaObjectHandler
 {
   public override bool IsMatch(SchemaObject schema)
   {
-    return schema.Type?.ToLower() == "object";
+    return schema.Type?.ToLower() == "object" || schema.Properties.Count > 0;
   }
 
   protected override ValueSnippet DoConstruct(SchemaObject schema)

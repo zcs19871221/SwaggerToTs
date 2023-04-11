@@ -141,4 +141,11 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"allof");
   }
+  
+    
+  [Test]
+  public void ShouldNonNullResponseAsRequired()
+  { 
+    InvokeThenAssert(dir:"nonNullResponseAsRequired");
+  }
 }

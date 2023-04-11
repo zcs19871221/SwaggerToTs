@@ -7,17 +7,6 @@ public abstract class SchemaObjectHandler
 {
   protected readonly Controller Controller;
 
-  protected void AddCommonComments(ValueSnippet snippet, SchemaObject schema)
-  {
-    snippet.AddComments(new[]
-    {
-      (nameof(schema.Description), schema.Description),
-      (nameof(schema.Title), schema.Title),
-      (nameof(schema.Deprecated), schema.Deprecated ? "True": ""),
-      (nameof(schema.Format), schema.Format)
-    });
-  }
-  
   public abstract bool IsMatch(SchemaObject schema);
 
   protected abstract ValueSnippet DoConstruct(SchemaObject schema);

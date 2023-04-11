@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace SwaggerToTs.OpenAPIElements;
 
 public class ResponseObject : ReferenceObject

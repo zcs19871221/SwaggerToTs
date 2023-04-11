@@ -9,13 +9,13 @@ public abstract class ValueSnippet:CommonSnippet
   
   public bool IsReadOnly { get; set; }
   
-  public ExportType ExportType { get; set; }
+  public ExportType ExportType { get;set; }
   
   public string? ExportName { get; set; }
   public string? FileLocate { get; set; }
   public int Priority { get; set; }
 
-  public List<ExportedValueSnippet> UsedBy = new();
+  public readonly List<ExportedValueSnippet> UsedBy = new();
   protected abstract string GenerateExportedContent(GeneratingInfo generatingInfo);
   protected abstract string GenerateContent(GeneratingInfo generatingInfo);
 

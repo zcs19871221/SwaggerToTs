@@ -1,4 +1,3 @@
-using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.OpenAPIElements;
 

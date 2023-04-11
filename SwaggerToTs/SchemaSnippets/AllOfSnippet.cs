@@ -4,10 +4,10 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class AllOfSnippet: ValueSnippet
 {
-  private KeyValuesSnippet _property;
+  private readonly KeyValuesSnippet _property;
 
-  private List<ExportedValueSnippet> _extends = new ();
-  private List<ValueSnippet> _others = new ();
+  private readonly List<ExportedValueSnippet> _extends = new ();
+  private readonly List<ValueSnippet> _others = new ();
 
   public AllOfSnippet(List<ValueSnippet> allOfs)
   {

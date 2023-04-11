@@ -6,8 +6,7 @@ namespace SwaggerToTs.Snippets;
 public abstract class CommonSnippet
 
 {
-
-  public List<ValueSnippet> Dependencies = new();
+  protected readonly List<ValueSnippet> Dependencies = new();
 
   public List<(string, string)> Comments = new();
   
@@ -17,17 +16,18 @@ public abstract class CommonSnippet
   {
     Comments.AddRange(comments.Where(e => !string.IsNullOrWhiteSpace(e.Item2))!);
   }
-  
-  public static string NewLine = "\n";
 
-  private static Dictionary<string, int> CommentMapping = new()
+  protected const string NewLine = "\n";
+
+  private static readonly Dictionary<string, int> CommentMapping = new()
   {
     { "OpenApi", 1 },
     { "Summary", 2 },
     { "Title", 3 },
     { "Description", 4 },
   };
-  public string CreateComments(IEnumerable<(string, string)>? commentsToMerge = null)
+
+  protected string CreateComments(IEnumerable<(string, string)>? commentsToMerge = null)
   {
     var comments = Comments.Concat(commentsToMerge ?? Array.Empty<(string, string)>()).ToList();
     comments.Sort((a, b) =>
@@ -64,8 +64,8 @@ public abstract class CommonSnippet
     
     return sb.ToString();
   }
-  
-  public string AddBrackets(string content)
+
+  protected static string AddBrackets(string content)
   {
     if (content.StartsWith("{")) return content;
     if (string.IsNullOrWhiteSpace(content))

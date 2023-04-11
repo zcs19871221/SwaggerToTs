@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using SwaggerToTs.OpenAPIElements;
 using SwaggerToTs.Snippets;
 
@@ -6,8 +5,7 @@ namespace SwaggerToTs.Handlers;
 
 public class ReferenceObjectHandler: Handler
 {
-
-  protected T GetRef<T>(T reference) where T : ReferenceObject
+  private T GetRef<T>(T reference) where T : ReferenceObject
   {
     return GetRefMaybe(reference) ?? throw new InvalidOperationException();
   }
@@ -34,8 +32,8 @@ public class ReferenceObjectHandler: Handler
   {
     return GetRefMaybe(obj) ?? obj;
   }
-  
-  public T? GetRefMaybe<T>(T reference) where T : ReferenceObject
+
+  protected T? GetRefMaybe<T>(T reference) where T : ReferenceObject
   {
     var components = Controller.Components;
 
@@ -68,7 +66,8 @@ public class ReferenceObjectHandler: Handler
   {
     return reference[(reference.LastIndexOf("/", StringComparison.Ordinal) + 1)..];
   }
-    public ReferenceObjectHandler(Controller controller) : base(controller)
+
+  protected ReferenceObjectHandler(Controller controller) : base(controller)
   {
   }
 }

@@ -12,7 +12,7 @@ public interface IOption
 
 public class Options
 {
-  public List<IOption> OptionHandlers { get; set; } = new()
+  private List<IOption> OptionHandlers { get; set; } = new()
   {
     new Swagger(),
     new Dist(),
@@ -21,7 +21,7 @@ public class Options
     new PrintWidth(),
     new EnumUseEnum(),
     new InlineRequest(),
-    new NonNullAsRequired(),
+    new NonNullResponsePropertyAsRequired(),
     new NullAsOptional(),
     new Helper()
   };
@@ -83,7 +83,7 @@ class Swagger : IOption
   public string Desc => "swagger file locate to use";
 
   private static readonly string DefaultPath = Path.Combine(Directory.GetCurrentDirectory(), "swagger.json");
-  public string Value { get; set; } = DefaultPath;
+  public string Value { get; private set; } = DefaultPath;
 
   public string DefaultValue => DefaultPath;
   
@@ -182,9 +182,9 @@ class InlineRequest : BoolOptionHandler, IOption
 
 }
 
-class NonNullAsRequired : BoolOptionHandler, IOption
+class NonNullResponsePropertyAsRequired : BoolOptionHandler, IOption
 {
-  public string CommandName => "nonNullAsRequired";
+  public string CommandName => "NonNullResponsePropertyAsRequired";
   public string ShortCommandName => "nnr";
   public string Desc => "if Response field is not null then make it required";
 

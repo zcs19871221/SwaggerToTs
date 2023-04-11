@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger To Ts",
+    "version": "V1"
+  },
+  "components": {
+    "schemas": {
+      "usedByResponse": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": false
+          },
+          "age": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "usedByRequestAndResponse": {
+        "type": "object",
+        "nullable": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": false
+          },
+          "age": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/business": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/usedByRequestAndResponse"
+            },
+            "name": "req"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "inline": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": false
+                        },
+                        "age": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "usedInResponse": {
+                          "$ref": "#/components/schemas/usedByResponse"
+                        },
+                        "usedInResponseAndRequest": {
+                          "$ref": "#/components/schemas/usedByRequestAndResponse"
+                        }
+                      }
+                    },
+                    "usedInResponse": {
+                      "$ref": "#/components/schemas/usedByResponse"
+                    },
+                    "usedInResponseAndRequest": {
+                      "$ref": "#/components/schemas/usedByRequestAndResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

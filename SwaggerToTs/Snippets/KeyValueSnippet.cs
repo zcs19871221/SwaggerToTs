@@ -6,8 +6,9 @@ namespace SwaggerToTs.Snippets;
 public class KeyValueSnippet:ValueSnippet
 {
 
-    public KeySnippet Key { get; set; }
-    public ValueSnippet Value { get; set; }
+    public KeySnippet Key { get; }
+    private ValueSnippet Value { get; }
+    
     
     public KeyValueSnippet(KeySnippet key, ValueSnippet value, Controller controller)
     {
@@ -20,6 +21,7 @@ public class KeyValueSnippet:ValueSnippet
         };
 
         Comments = key.Comments.Concat(value.Comments).ToList();
+        CodeLocate = controller.CurrentLocate;
     }
 
     protected override string GenerateContent(GeneratingInfo generatingInfo)
@@ -32,7 +34,7 @@ public class KeyValueSnippet:ValueSnippet
     {
         var options = generatingInfo.Controller.Options;
         var nullAsOptional = options.Get<NullAsOptional>().Value;
-        var nonNullAsRequired = options.Get<NonNullAsRequired>().Value;
+        var nonNullAsRequired = options.Get<NonNullResponsePropertyAsRequired>().Value;
 
         if (nullAsOptional && Value.IsNullable)
         {

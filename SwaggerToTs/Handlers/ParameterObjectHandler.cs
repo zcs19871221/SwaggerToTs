@@ -3,16 +3,13 @@ using SwaggerToTs.Snippets;
 
 namespace SwaggerToTs.Handlers;
 
-public class ParameterObjectHandler: ReferenceObjectHandler
+public class ParameterObjectHandler : ReferenceObjectHandler
 {
-  
-
   public string GetKey(ParameterObject p)
   {
     var parameterObject = GetRefMaybe(p) ?? p;
-    
+
     return parameterObject.Name + "_" + parameterObject.In;
-    
   }
 
   public ParameterObjectHandler(Controller controller) : base(controller)
@@ -39,17 +36,13 @@ public class ParameterObjectHandler: ReferenceObjectHandler
       }
 
       ValueSnippet snippet;
-      
+
       if (isForHeader)
-      {
         snippet = Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException());
-      }
       else
-      {
         snippet = new KeyValueSnippet(new KeySnippet(p.Name, p.Required, true),
           Controller.SchemaObjectHandlerWrapper.Construct(schema ?? throw new InvalidOperationException()), Controller);
-      }
-      
+
       snippet.AddComments(new List<(string, string?)>
       {
         (nameof(p.Description), p.Description),
@@ -57,11 +50,9 @@ public class ParameterObjectHandler: ReferenceObjectHandler
         (nameof(p.AllowEmptyValue), p.AllowEmptyValue ? "True" : ""),
         ("SerializeFormat", serializeFormat),
         (nameof(p.Explode), p.Explode ? "True" : ""),
-        (nameof(p.AllowReserved), p.AllowReserved ? "True" : ""),
+        (nameof(p.AllowReserved), p.AllowReserved ? "True" : "")
       });
       return snippet;
     });
   }
-
-
 }

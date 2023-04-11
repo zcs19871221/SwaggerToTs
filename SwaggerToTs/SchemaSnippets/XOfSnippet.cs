@@ -6,7 +6,8 @@ public class XOfSnippet : ValueSnippet
   private readonly List<ValueSnippet> _items;
 
   private readonly string _ofType;
-  public XOfSnippet(List<ValueSnippet> items, string ofType)
+
+  protected XOfSnippet(List<ValueSnippet> items, string ofType)
   {
     _items = items;
     _ofType = ofType;

@@ -1,6 +1,3 @@
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-
 namespace SwaggerToTs.OpenAPIElements;
 
 public class ComponentsObject

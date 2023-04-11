@@ -10,14 +10,15 @@ public class OpenApiObjectHandler : Handler
     const string name = "Routes";
     var routes =
       new KeyValuesSnippet(openApiObject.Paths.Select(pathItem =>
-        new KeyValueSnippet(new KeySnippet(pathItem.Key), Controller.PathItemObjectHandler.Generate(pathItem.Key, pathItem.Value),
+        new KeyValueSnippet(new KeySnippet(pathItem.Key),
+          Controller.PathItemObjectHandler.Construct(pathItem.Key, pathItem.Value),
           Controller)));
     routes.AddComments(new List<(string, string?)>
     {
       (nameof(openApiObject.OpenApi), openApiObject.OpenApi),
       (nameof(openApiObject.Info.Description), openApiObject.Info.Description),
       (nameof(openApiObject.Info.Title), openApiObject.Info.Title),
-      (nameof(openApiObject.Info.Version), openApiObject.Info.Version),
+      (nameof(openApiObject.Info.Version), openApiObject.Info.Version)
     });
     routes.Export(name, name, Controller);
   }
@@ -26,5 +27,4 @@ public class OpenApiObjectHandler : Handler
   public OpenApiObjectHandler(Controller controller) : base(controller)
   {
   }
-  
 }
