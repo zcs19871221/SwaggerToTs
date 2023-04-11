@@ -7,15 +7,13 @@ public abstract class ValueSnippet:CommonSnippet
 {
   public bool IsNullable { get; set; }
   
-  public bool IsReadOnly { get; set; }
+  public bool IsReadOnly { get; protected init; }
   
-  public ExportType ExportType { get;set; }
+  public ExportType ExportType { get; protected init; }
   
-  public string? ExportName { get; set; }
-  public string? FileLocate { get; set; }
+  public string? ExportName { get; private set; }
+  public string? FileLocate { get; private set; }
   public int Priority { get; set; }
-
-  public readonly List<ExportedValueSnippet> UsedBy = new();
   protected abstract string GenerateExportedContent(GeneratingInfo generatingInfo);
   protected abstract string GenerateContent(GeneratingInfo generatingInfo);
 

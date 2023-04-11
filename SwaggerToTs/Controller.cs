@@ -127,29 +127,6 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
       foreach (var isolateSnippet in isolateSnippets)
       {
         if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
-        //
-        // if (dup.Contains(isolateSnippet.ExportName))
-        //   throw new Exception($"dup export name {isolateSnippet.ExportName} in {fileLocate}");
-        //
-        // dup.Add(isolateSnippet.ExportName);
-        if (Options.Get<NonNullResponsePropertyAsRequired>().Value)
-        {
-          var responses = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response).ToList();
-          var requests = isolateSnippet.UsedBy.Where(e => e.CodeLocate == CodeLocate.Response);
-          
-          if (responses.Any() && requests.Any())
-          {
-            fileMappingExportNames.GetOrCreate("Helper").Add(NonNullAsRequired);
-            foreach (var response in responses)
-            {
-              response.Generic = NonNullAsRequired;
-            }
-          } else if (responses.Any())
-          {
-            
-          }
-        }
-
         var content = isolateSnippet.Generate(generatingInfo);
         if (contents.Length > 0) contents.AppendLine();
         contents.AppendLine(content);

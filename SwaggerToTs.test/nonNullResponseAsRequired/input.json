@@ -8,7 +8,7 @@
     "schemas": {
       "usedByResponse": {
         "type": "object",
-        "nullable": true,
+        "nullable": false,
         "properties": {
           "name": {
             "type": "string",
@@ -22,7 +22,7 @@
       },
       "usedByRequestAndResponse": {
         "type": "object",
-        "nullable": false,
+        "nullable": true,
         "properties": {
           "name": {
             "type": "string",
@@ -66,10 +66,9 @@
                           "type": "number",
                           "nullable": true
                         },
-                        "usedInResponse": {
+                        "usedInResponseInline": {
                           "$ref": "#/components/schemas/usedByResponse"
-                        },
-                        "usedInResponseAndRequest": {
+                        }, "usedInResponseAndRequestInline": {
                           "$ref": "#/components/schemas/usedByRequestAndResponse"
                         }
                       }

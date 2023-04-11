@@ -3,16 +3,15 @@ namespace SwaggerToTs.Snippets;
 
 public class ExportedValueSnippet: ValueSnippet
 {
-  private readonly ValueSnippet _isolateSnippet;
+  public readonly ValueSnippet IsolateSnippet;
 
   public ExportedValueSnippet(ValueSnippet isolateSnippet,Controller controller)
   {
-    _isolateSnippet = isolateSnippet;
-    if (_isolateSnippet.IsNullable && _isolateSnippet.ExportType is ExportType.Type or ExportType.Enum)
+    IsolateSnippet = isolateSnippet;
+    if (IsolateSnippet.IsNullable && IsolateSnippet.ExportType is ExportType.Enum)
     {
       IsNullable = true;
     }
-    _isolateSnippet.UsedBy.Add(this);
     Dependencies.Add(isolateSnippet);
     controller.IsolateSnippets.Add(isolateSnippet);
   }
@@ -26,6 +25,6 @@ public class ExportedValueSnippet: ValueSnippet
 
   protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    return (string.IsNullOrWhiteSpace(Generic) ? _isolateSnippet.ExportName : $"{Generic}<{_isolateSnippet.ExportName}>") ?? throw new InvalidOperationException();  }
+    return (string.IsNullOrWhiteSpace(Generic) ? IsolateSnippet.ExportName : $"{Generic}<{IsolateSnippet.ExportName}>") ?? throw new InvalidOperationException();  }
 }
 

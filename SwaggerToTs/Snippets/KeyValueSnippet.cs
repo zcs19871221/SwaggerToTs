@@ -36,11 +36,16 @@ public class KeyValueSnippet:ValueSnippet
         var nullAsOptional = options.Get<NullAsOptional>().Value;
         var nonNullAsRequired = options.Get<NonNullResponsePropertyAsRequired>().Value;
 
-        if (nullAsOptional && Value.IsNullable)
+        var valueIsNullable = Value.IsNullable;
+        if (Value is ExportedValueSnippet e)
+        {
+            valueIsNullable = e.IsolateSnippet.IsNullable;
+        }
+        if (nullAsOptional && valueIsNullable)
         {
             Key.Required = false;
         }
-        else if (CodeLocate == Snippets.CodeLocate.Response && nonNullAsRequired && !Value.IsNullable)
+        else if (CodeLocate == Snippets.CodeLocate.Response && nonNullAsRequired && !valueIsNullable)
         {
             Key.Required = true;
         }
@@ -59,7 +64,7 @@ public class KeyValueSnippet:ValueSnippet
                 break;
         }
 
-        var showNull = !options.Get<NullAsOptional>().Value && Value.IsNullable;
+        var showNull = Value.IsNullable && !options.Get<NullAsOptional>().Value;
         return Key + (isReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "") + ";";
     }
 
