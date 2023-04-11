@@ -6,9 +6,9 @@
   },
   "components": {
     "schemas": {
-      "nullRef": {
+      "usedByResponse": {
         "type": "object",
-        "nullable": true,
+        "nullable": false,
         "properties": {
           "name": {
             "type": "string",
@@ -20,9 +20,9 @@
           }
         }
       },
-      "NonNullRef": {
+      "usedByRequestAndResponse": {
         "type": "object",
-        "nullable": false,
+        "nullable": true,
         "properties": {
           "name": {
             "type": "string",
@@ -43,7 +43,7 @@
           {
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/nullRef"
+              "$ref": "#/components/schemas/usedByRequestAndResponse"
             },
             "name": "req"
           }
@@ -66,19 +66,18 @@
                           "type": "number",
                           "nullable": true
                         },
-                        "nullRefInline": {
-                          "$ref": "#/components/schemas/nullRef"
-                        }, 
-                        "NonnullRefInline": {
-                          "$ref": "#/components/schemas/NonNullRef"
+                        "usedInResponseInline": {
+                          "$ref": "#/components/schemas/usedByResponse"
+                        }, "usedInResponseAndRequestInline": {
+                          "$ref": "#/components/schemas/usedByRequestAndResponse"
                         }
                       }
                     },
-                    "NullRef": {
-                      "$ref": "#/components/schemas/nullRef"
+                    "usedInResponse": {
+                      "$ref": "#/components/schemas/usedByResponse"
                     },
-                    "NonNullRef": {
-                      "$ref": "#/components/schemas/NonNullRef"
+                    "usedInResponseAndRequest": {
+                      "$ref": "#/components/schemas/usedByRequestAndResponse"
                     }
                   }
                 }
