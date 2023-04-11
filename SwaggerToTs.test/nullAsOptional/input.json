@@ -6,23 +6,10 @@
   },
   "components": {
     "schemas": {
-      "nullRef": {
+      "RefObject": {
         "type": "object",
         "nullable": true,
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": false
-          },
-          "age": {
-            "type": "number",
-            "nullable": true
-          }
-        }
-      },
-      "NonNullRef": {
-        "type": "object",
-        "nullable": false,
+        "required": ["name", "age"],
         "properties": {
           "name": {
             "type": "string",
@@ -43,9 +30,10 @@
           {
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/nullRef"
+              "$ref": "#/components/schemas/RefObject"
             },
-            "name": "req"
+            "name": "req",
+            "required": true
           }
         ],
         "responses": {
@@ -54,6 +42,7 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "required": ["inline", "RefObjectInline"],
                   "properties": {
                     "inline": {
                       "type": "object",
@@ -65,20 +54,11 @@
                         "age": {
                           "type": "number",
                           "nullable": true
-                        },
-                        "nullRefInline": {
-                          "$ref": "#/components/schemas/nullRef"
-                        }, 
-                        "NonnullRefInline": {
-                          "$ref": "#/components/schemas/NonNullRef"
                         }
                       }
                     },
-                    "NullRef": {
-                      "$ref": "#/components/schemas/nullRef"
-                    },
-                    "NonNullRef": {
-                      "$ref": "#/components/schemas/NonNullRef"
+                    "RefObject": {
+                      "$ref": "#/components/schemas/RefObject"
                     }
                   }
                 }

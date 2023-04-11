@@ -148,4 +148,10 @@ public class Test:TestBase
   { 
     InvokeThenAssert(dir:"nonNullResponseAsRequired", new []{"-nnr"});
   }
+  
+  [Test]
+  public void ShouldNullAsOptional()
+  { 
+    InvokeThenAssert(dir:"nullAsOptional", new []{"-nullAsOptional"});
+  }
 }
