@@ -8,7 +8,7 @@ public class KeyValueSnippet:ValueSnippet
 
     public KeySnippet Key { get; }
     private ValueSnippet Value { get; }
-    
+
     
     public KeyValueSnippet(KeySnippet key, ValueSnippet value, Controller controller)
     {
@@ -21,7 +21,11 @@ public class KeyValueSnippet:ValueSnippet
         };
 
         Comments = key.Comments.Concat(value.Comments).ToList();
-        CodeLocate = controller.CurrentLocate;
+        CodeLocates.Add(controller.CurrentLocate);
+        if (Value is ExportedValueSnippet e)
+        {
+            e.IsolateSnippet.CodeLocates.Add(controller.CurrentLocate);
+        }
     }
 
     protected override string GenerateContent(GeneratingInfo generatingInfo)
@@ -45,7 +49,7 @@ public class KeyValueSnippet:ValueSnippet
         {
             Key.Required = false;
         }
-        else if (CodeLocate == Snippets.CodeLocate.Response && nonNullAsRequired && !valueIsNullable)
+        else if (CodeLocates.Any(codeLocate => codeLocate == CodeLocate.Response) && CodeLocates.All(codeLocate => codeLocate != CodeLocate.Request) && nonNullAsRequired && !valueIsNullable)
         {
             Key.Required = true;
         }

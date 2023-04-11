@@ -9,8 +9,9 @@ public abstract class CommonSnippet
   protected readonly List<ValueSnippet> Dependencies = new();
 
   public List<(string, string)> Comments = new();
-  
-  public CodeLocate? CodeLocate { get; set; }
+
+  public List<CodeLocate?> CodeLocates { get; set; } = new();
+
   
   public void AddComments(IEnumerable<(string, string?)> comments)
   {
