@@ -26,7 +26,7 @@ public class Controller
 
   public SchemaObjectHandlerWrapper SchemaObjectHandlerWrapper { get;  }
 
-  public CodeLocate? CurrentLocate { get; set; }
+  public CodeLocation CurrentLocation { get; set; }
   public Controller(Options options)
   {
     Options = options;
@@ -180,6 +180,8 @@ public class GeneratingInfo
     Controller = controller;
     FileLocate = fileLocate;
   }
+
+  public IsolatedSnippet InWhichIsolateSnippet { get; set; }
 
 
   public void AddImports(List<ValueSnippet> imports)

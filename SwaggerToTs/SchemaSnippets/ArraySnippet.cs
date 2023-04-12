@@ -15,7 +15,7 @@ public class ArraySnippet : ValueSnippet
     item.Comments.Clear();
   }
 
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     return $"export type {ExportName} = {GenerateContent(generatingInfo)};";
   }

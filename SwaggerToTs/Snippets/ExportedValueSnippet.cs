@@ -12,13 +12,14 @@ public class ExportedValueSnippet: ValueSnippet
     {
       IsNullable = true;
     }
+    IsolateSnippet.AppearedLocations.Add(controller.CurrentLocation);
     Dependencies.Add(isolateSnippet);
     controller.IsolateSnippets.Add(isolateSnippet);
   }
 
   public string? Generic { get; set; }
 
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     throw new Exception("extracted snippet should not export again");
   }

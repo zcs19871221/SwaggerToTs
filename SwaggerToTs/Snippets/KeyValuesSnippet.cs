@@ -4,6 +4,7 @@ namespace SwaggerToTs.Snippets;
 public class KeyValuesSnippet: ValueSnippet
 {
   public readonly List<KeyValueSnippet> Values;
+
   public KeyValuesSnippet(IEnumerable<KeyValueSnippet> values)
   {
     Values = values.ToList();
@@ -15,7 +16,7 @@ public class KeyValuesSnippet: ValueSnippet
     return string.Join(NewLine, Values.Select(snippet => snippet.Generate(generatingInfo)));
   }
 
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     return $"export interface {ExportName} " + 
            AddBrackets(GenerateContent(generatingInfo));

@@ -10,13 +10,13 @@ public class OperationObjectHandler : Handler
   {
     var contents = new List<KeyValueSnippet>();
 
-    Controller.CurrentLocate = CodeLocate.Request;
+    Controller.CurrentLocation = CodeLocation.Request;
     ConstructRequest(operationObject, exportName, fileLocate, contents);
 
-    Controller.CurrentLocate = CodeLocate.Response;
+    Controller.CurrentLocation = CodeLocation.Response;
     var response = Controller.ResponseObjectHandler.Generate(operationObject.Responses);
 
-    Controller.CurrentLocate = null;
+    Controller.CurrentLocation = CodeLocation.Response;
     contents.Add(response);
     var snippet = new KeyValuesSnippet(contents);
     snippet.AddComments(new List<(string, string?)>

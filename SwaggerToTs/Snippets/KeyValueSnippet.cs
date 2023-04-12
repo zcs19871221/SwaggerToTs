@@ -9,10 +9,12 @@ public class KeyValueSnippet:ValueSnippet
     public KeySnippet Key { get; }
     private ValueSnippet Value { get; }
 
-    
+    private readonly CodeLocation _firstConstructLocation;
+
     public KeyValueSnippet(KeySnippet key, ValueSnippet value, Controller controller)
     {
         Key = key;
+        _firstConstructLocation = controller.CurrentLocation;
         Value = value switch
         {
             EnumSnippet when value.ExportType == ExportType.Enum => value.Export(Handler.ToPascalCase(key.Name),
@@ -21,11 +23,6 @@ public class KeyValueSnippet:ValueSnippet
         };
 
         Comments = key.Comments.Concat(value.Comments).ToList();
-        CodeLocates.Add(controller.CurrentLocate);
-        if (Value is ExportedValueSnippet e)
-        {
-            e.IsolateSnippet.CodeLocates.Add(controller.CurrentLocate);
-        }
     }
 
     protected override string GenerateContent(GeneratingInfo generatingInfo)
@@ -49,11 +46,11 @@ public class KeyValueSnippet:ValueSnippet
         {
             Key.Required = false;
         }
-        else if (CodeLocates.Any(codeLocate => codeLocate == CodeLocate.Response) && CodeLocates.All(codeLocate => codeLocate != CodeLocate.Request) && nonNullAsRequired && !valueIsNullable)
+        else if (nonNullAsRequired && !valueIsNullable && generatingInfo.InWhichIsolateSnippet.IsAppearedOnlyInResponse(_firstConstructLocation))
         {
             Key.Required = true;
         }
-        
+
         var content = Value.Generate(generatingInfo);
         var isReadOnly = Value.IsReadOnly;
         switch (Value)
@@ -72,7 +69,7 @@ public class KeyValueSnippet:ValueSnippet
         return Key + (isReadOnly ? "readonly " : "") +  content + (showNull ? " | null" : "") + ";";
     }
 
-    protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+    protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
     { 
         return $"export interface {ExportName} " + AddBrackets(CreateContent(generatingInfo));
     }

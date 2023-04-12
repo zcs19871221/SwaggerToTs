@@ -13,7 +13,7 @@ public class EnumSnippet : ValueSnippet
     ExportType = exportType;
   }
 
-  protected override string GenerateExportedContent( GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent( GeneratingInfo generatingInfo)
   {
     var contents = GenerateContent(generatingInfo);
     return ExportType == ExportType.Enum ? $"export const enum {ExportName} {AddBrackets(contents)}" : $"export type {ExportName} = {contents};";

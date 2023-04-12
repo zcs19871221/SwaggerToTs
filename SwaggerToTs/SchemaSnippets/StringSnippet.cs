@@ -5,7 +5,7 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class StringSnippet : ValueSnippet
 {
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     return $"export type {ExportName} = ${GenerateContent(generatingInfo)};";
   }

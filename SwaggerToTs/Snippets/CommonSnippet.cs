@@ -3,16 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace SwaggerToTs.Snippets;
 
-public abstract class CommonSnippet
+public class CommonSnippet
 
 {
   protected readonly List<ValueSnippet> Dependencies = new();
 
   public List<(string, string)> Comments = new();
 
-  public List<CodeLocate?> CodeLocates { get; set; } = new();
-
-  
   public void AddComments(IEnumerable<(string, string?)> comments)
   {
     Comments.AddRange(comments.Where(e => !string.IsNullOrWhiteSpace(e.Item2))!);
@@ -82,7 +79,8 @@ public abstract class CommonSnippet
   }
 }
 
-public enum CodeLocate {
+public enum CodeLocation {
+  EqualOrHigherThanOperation,
   Request,
   Response,
 }

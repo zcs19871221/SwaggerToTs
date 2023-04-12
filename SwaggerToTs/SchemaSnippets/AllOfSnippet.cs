@@ -34,7 +34,7 @@ public class AllOfSnippet: ValueSnippet
     _property = new KeyValuesSnippet(list);
   }
 
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     if (_others.Count > 0)
     {

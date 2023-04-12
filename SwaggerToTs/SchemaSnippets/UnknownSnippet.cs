@@ -4,7 +4,7 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class UnknownSnippet : ValueSnippet
 {
-  protected override string GenerateExportedContent(GeneratingInfo generatingInfo)
+  protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
     throw new Exception("should not export unknown type");
   }
