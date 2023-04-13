@@ -46,7 +46,7 @@ public class KeyValueSnippet:ValueSnippet
         {
             Key.Required = false;
         }
-        else if (nonNullAsRequired && !valueIsNullable && generatingInfo.InWhichIsolateSnippet.IsAppearedOnlyInResponse(_firstConstructLocation))
+        else if (nonNullAsRequired && !valueIsNullable && (generatingInfo.InWhichIsolateSnippet ?? throw new InvalidOperationException()).IsAppearedOnlyInResponse(_firstConstructLocation))
         {
             Key.Required = true;
         }

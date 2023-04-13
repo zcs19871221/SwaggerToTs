@@ -7,22 +7,22 @@ using SwaggerToTs.Snippets;
 namespace SwaggerToTs;
 public class Controller
 {
-  public HashSet<ValueSnippet> IsolateSnippets = new ();
+  public readonly HashSet<ValueSnippet> IsolateSnippets = new ();
 
-  public Dictionary<string, ValueSnippet> RefMappingIsolate = new();
+  public readonly Dictionary<string, ValueSnippet> RefMappingIsolate  = new();
 
-  public Options Options;
+  public readonly Options Options;
 
   public ComponentsObject? Components;
-  public OpenApiObjectHandler OpenApiObjectHandler { get; }
-  public ComponentsObjectHandler ComponentsObjectHandler { get; }
-  public PathItemObjectHandler PathItemObjectHandler { get; set; }
-  public OperationObjectHandler OperationObjectHandler { get; set; }
-  public ParameterObjectHandler ParameterObjectHandler { get; set; }
-  public RequestBodyObjectHandler RequestBodyObjectHandler { get; set; }
-  public ResponseObjectHandler ResponseObjectHandler { get; set; }
-  public HeaderObjectHandler HeaderObjectHandler { get; set; }
-  public Dictionary<string, string> ReferenceMappingShortName { get; set; }
+  private OpenApiObjectHandler OpenApiObjectHandler { get; }
+  private ComponentsObjectHandler ComponentsObjectHandler { get; }
+  public PathItemObjectHandler PathItemObjectHandler { get; }
+  public OperationObjectHandler OperationObjectHandler { get; }
+  public ParameterObjectHandler ParameterObjectHandler { get;  }
+  public RequestBodyObjectHandler RequestBodyObjectHandler { get;  }
+  public ResponseObjectHandler ResponseObjectHandler { get;  }
+  public HeaderObjectHandler HeaderObjectHandler { get;  }
+  public Dictionary<string, string> ReferenceMappingShortName { get; private set; }
 
   public SchemaObjectHandlerWrapper SchemaObjectHandlerWrapper { get;  }
 
@@ -40,46 +40,6 @@ public class Controller
     HeaderObjectHandler = new HeaderObjectHandler(this);
     SchemaObjectHandlerWrapper = new SchemaObjectHandlerWrapper(this);
   }
-
-  public static string Helper = "Helper";
-
-  public static string OneOfName = "OneOf";
-  public static string AnyOfName = "AnyOf";
-  public static string NonNullAsRequired = "NonNullAsRequired";
-  private static readonly string HelperContent = $@"/* eslint-disable @typescript-eslint/no-explicit-any */
-type IntersectionTuple<S, T extends any[]> = T extends [infer F, ...infer R]
-  ? [S & F, ...IntersectionTuple<S, R>]
-  : T;
-
-type Permutations<T extends readonly unknown[]> = T['length'] extends 0 | 1
-  ? T
-  : T extends [infer F, ...infer R]
-  ? [F, ...IntersectionTuple<F, Permutations<R>>, ...Permutations<R>]
-  : T;
-
-type AllKeysOf<T> = T extends any ? keyof T : never;
-
-type ProhibitKeys<K extends keyof any> = {{ [P in K]?: never }};
-
-export type {OneOfName}<T extends any[]> = {{
-  [K in keyof T]: T[K] &
-    ProhibitKeys<Exclude<AllKeysOf<T[number]>, keyof T[K]>>;
-}}[number];
-
-export type {AnyOfName}<T extends any[]> = OneOf<Permutations<T>>;
-
-type NullKeys<T> = {{
-    [k in keyof T]: null extends T[k] ? k : never;
-}}[keyof T];
-
-export type {NonNullAsRequired}<T> = T extends (infer U)[]
-  ? {NonNullAsRequired}<U>[]
-  : T extends object
-  ? Pick<T, NullKeys<T>> & {{
-  [K in Exclude<keyof T, NullKeys<T>>]-?: {NonNullAsRequired}<T[K]>;
-    }}
-  : T;
-";
 
   private string CreateImport(List<string> imports, string fileToImport,
     bool exclusiveRow = false)
@@ -116,14 +76,11 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
       {
         throw new Exception("fileLocate should not null");
       }
-      isolateSnippets.Sort((x, y) =>
-      {
-        return x.Priority != y.Priority ? x.Priority.CompareTo(y.Priority) : string.Compare(x.ExportName, y.ExportName, StringComparison.Ordinal);
-      });
+      isolateSnippets.Sort((x, y) => x.Priority != y.Priority ? x.Priority.CompareTo(y.Priority) : string.Compare(x.ExportName, y.ExportName, StringComparison.Ordinal));
       SortedDictionary<string, HashSet<string>> fileMappingExportNames = new();
       StringBuilder contents = new();
       StringBuilder importBlock = new();
-      var generatingInfo = new GeneratingInfo(this, fileLocate);
+      var generatingInfo = new GeneratingInfo(this);
       foreach (var isolateSnippet in isolateSnippets)
       {
         if (string.IsNullOrEmpty(isolateSnippet.ExportName) || string.IsNullOrEmpty(isolateSnippet.FileLocate)) throw new Exception("empty Export name or Locate");
@@ -143,9 +100,9 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
 
       var target = GetFullPath(fileLocate);
       fileMappingText.Add(target, Warning + NewLine + NewLine + importBlock + contents);
-      if (generatingInfo.Helpers.Count > 0)
+      if (generatingInfo.HelperNames.Count > 0)
       {
-        fileMappingText.Add(GetFullPath(Helper), HelperContent);
+        fileMappingText.Add(GetFullPath(Helpers.FileName), Helpers.HelperContent);
       }
     }
 
@@ -157,10 +114,10 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
   {
     return  Path.Combine(Options.Get<Dist>().Value, fileLocate + ".ts");
   }
-  
-  public static readonly string NewLine = "\n";
 
-  
+  private const string NewLine = "\n";
+
+
   private const string Warning = @"/**
  * This file was auto-generated by the program based on the back-end data structure.
  * Do not make direct changes to the file.
@@ -170,37 +127,35 @@ export type {NonNullAsRequired}<T> = T extends (infer U)[]
 
 public class GeneratingInfo
 {
-  public HashSet<ValueSnippet> Imports = new();
-  public HashSet<string> Helpers = new();
-  public Controller Controller;
-  public string FileLocate;
+  private readonly HashSet<ValueSnippet> _imports = new();
+  public readonly HashSet<string> HelperNames = new();
+  public readonly Controller Controller;
 
-  public GeneratingInfo(Controller controller, string fileLocate)
+  public GeneratingInfo(Controller controller)
   {
     Controller = controller;
-    FileLocate = fileLocate;
   }
 
-  public IsolatedSnippet InWhichIsolateSnippet { get; set; }
+  public IsolatedSnippet? InWhichIsolateSnippet { get; set; }
 
 
   public void AddImports(List<ValueSnippet> imports)
   {
     foreach (var import in imports)
     {
-      Imports.Add(import);
+      _imports.Add(import);
     }
   }
   
   public void AddHelper(string helperName)
   {
-    Helpers.Add(helperName);
+    HelperNames.Add(helperName);
   }
   
   public void AggregateImports(SortedDictionary<string, HashSet<string>> fileMappingExportNames, string fileLocate)
   {
-      
-    foreach (var codeDependency in Imports)
+    
+    foreach (var codeDependency in _imports)
     {
       if (codeDependency.ExportName == null || string.IsNullOrEmpty(codeDependency.FileLocate)) throw new Exception("exportName or fileLocate should not have empty valueSnippet");
 
@@ -208,9 +163,9 @@ public class GeneratingInfo
     }
 
 
-    foreach (var helperName in Helpers)
+    foreach (var helperName in HelperNames)
     {      
-      fileMappingExportNames.GetOrCreate(Controller.Helper).Add(helperName);
+      fileMappingExportNames.GetOrCreate(Helpers.FileName).Add(helperName);
     }
   }
 }

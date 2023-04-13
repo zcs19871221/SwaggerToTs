@@ -3,11 +3,11 @@ namespace SwaggerToTs.Snippets;
 
 public abstract class IsolatedSnippet: CommonSnippet
 {
-  public ExportType ExportType { set; get; }
-  public string? ExportName { set; get; }
-  public string? FileLocate { set; get; }
+  public ExportType ExportType { protected init; get; }
+  public string? ExportName { protected set; get; }
+  public string? FileLocate { protected set; get; }
 
-  public List<CodeLocation?> AppearedLocations { set; get; } = new();
+  public List<CodeLocation?> AppearedLocations { get; } = new();
 
   protected bool IsIsolateSnippet()
   {

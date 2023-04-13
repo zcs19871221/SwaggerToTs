@@ -4,7 +4,7 @@ namespace SwaggerToTs.SchemaSnippets;
 
 public class OneOfSnippet : XOfSnippet
 {
-  public OneOfSnippet(List<ValueSnippet> oneOfs) : base(oneOfs, Controller.OneOfName)
+  public OneOfSnippet(List<ValueSnippet> oneOfs) : base(oneOfs, Helpers.OneOfName)
   {
   }
 

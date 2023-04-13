@@ -3,9 +3,9 @@ namespace SwaggerToTs.OpenAPIElements;
 
 public class ParameterObject : ReferenceObject
 {
-  public string Name;
-  public string In { get; set; }
-  
+  public string Name = null!;
+  public string In { get; set; } = null!;
+
   public string? Description { get; set; }
   
   public bool Required { get; set; }

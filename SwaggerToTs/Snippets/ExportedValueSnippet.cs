@@ -17,7 +17,6 @@ public class ExportedValueSnippet: ValueSnippet
     controller.IsolateSnippets.Add(isolateSnippet);
   }
 
-  public string? Generic { get; set; }
 
   protected override string GenerateIsolateContent(GeneratingInfo generatingInfo)
   {
@@ -26,6 +25,7 @@ public class ExportedValueSnippet: ValueSnippet
 
   protected override string GenerateContent(GeneratingInfo generatingInfo)
   {
-    return (string.IsNullOrWhiteSpace(Generic) ? IsolateSnippet.ExportName : $"{Generic}<{IsolateSnippet.ExportName}>") ?? throw new InvalidOperationException();  }
+    return IsolateSnippet.ExportName ?? throw new InvalidOperationException();  
+  }
 }
 

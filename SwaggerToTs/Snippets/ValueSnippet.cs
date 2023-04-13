@@ -16,7 +16,7 @@ public abstract class ValueSnippet:IsolatedSnippet
     generatingInfo.AddImports(Dependencies);
     return IsIsolateSnippet() ? GenerateIsolate(generatingInfo) : GenerateContent(generatingInfo);
   }
-  
+
   public ExportedValueSnippet Export(string exportName, string fileLocate, Controller controller)
   {
     if (this is ExportedValueSnippet alreadyExport)

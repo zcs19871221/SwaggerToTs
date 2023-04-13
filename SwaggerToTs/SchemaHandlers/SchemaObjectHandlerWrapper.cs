@@ -6,28 +6,27 @@ namespace SwaggerToTs.SchemaHandlers;
 
 public class SchemaObjectHandlerWrapper: ReferenceObjectHandler
 {
-
-  public AllOfHandler AllOfHandler { get; set; }
-  public RecordObjectHandler RecordObjectHandler { get; set; }
-  public AnyOfHandler AnyOfHandler { get; set; }
-  public ArrayHandler ArrayHandler { get; set; }
-  public BoolHandler BoolHandler { get; set; }
-  public EnumHandler EnumHandler { get; set; }
+  private AllOfHandler AllOfHandler { get; }
+  private RecordObjectHandler RecordObjectHandler { get; }
+  private AnyOfHandler AnyOfHandler { get;  }
+  private ArrayHandler ArrayHandler { get;  }
+  private BoolHandler BoolHandler { get; }
+  private EnumHandler EnumHandler { get; }
   
-  public NumberHandler NumberHandler { get; set; }
-  public ObjectHandler ObjectHandler { get; set; }
-  public OneOfHandler OneOfHandler { get; set; }
+  private NumberHandler NumberHandler { get; }
+  public ObjectHandler ObjectHandler { get;  }
+  private OneOfHandler OneOfHandler { get; }
   
-  public StringHandler StringHandler { get; set; }
-  public UnknownHandler UnknownHandler { get; set; }
+  private StringHandler StringHandler { get; }
+  private UnknownHandler UnknownHandler { get;  }
 
-  public List<SchemaObjectHandler> SchemaHandlers;
+  private readonly List<SchemaObjectHandler> _schemaHandlers;
 
   public ValueSnippet Construct(SchemaObject schema)
   {
     return GetOrCreateThenSaveValue(schema, p =>
     {
-      var handler = SchemaHandlers.Find(h => h.IsMatch(p));
+      var handler = _schemaHandlers.Find(h => h.IsMatch(p));
       return (handler ?? throw new Exception("cant find handler for schema")).Construct(p);
     });
   }
@@ -46,7 +45,7 @@ public class SchemaObjectHandlerWrapper: ReferenceObjectHandler
     OneOfHandler = new OneOfHandler(controller);
     UnknownHandler = new UnknownHandler(controller);
     StringHandler = new StringHandler(controller);
-    SchemaHandlers = new List<SchemaObjectHandler>()
+    _schemaHandlers = new List<SchemaObjectHandler>()
     {
       EnumHandler,
       OneOfHandler,

@@ -7,7 +7,6 @@ public interface IOption
   public string Desc { get; }
   public void SetValue(string param);
   public string? DefaultValue => null;
-
 }
 
 public class Options
@@ -104,7 +103,7 @@ class Dist : IOption
   }
 
   private static readonly string DefaultPath = Path.Combine(Directory.GetCurrentDirectory(), "apis");
-  public string Value { get; set; } = DefaultPath;
+  public string Value { get; private set; } = DefaultPath;
 
   public string DefaultValue => DefaultPath;
 }
@@ -119,7 +118,7 @@ class IgnoreTags : IOption
     Value = args.Split(",").ToList();
   }
 
-  public List<string> Value { get; set; } = new();
+  public List<string> Value { get; private set; } = new();
 
   public string DefaultValue => "will not skip any tags";
 }
@@ -135,7 +134,7 @@ class PrintWidth : IOption
   }
 
   private const int Default = 80;
-  public int Value { get; set; } = Default;
+  public int Value { get; private set; } = Default;
 
   public string DefaultValue => Default.ToString();
 }
@@ -151,7 +150,7 @@ class MatchTags : IOption
     Value = args.Split(",").ToList();
   }
 
-  public List<string> Value { get; set; } = new();
+  public List<string> Value { get; private set; } = new();
   
   public string DefaultValue => "will include all tags";
 }
@@ -163,18 +162,18 @@ internal class BoolOptionHandler
     Value = true;
   }
 
-  public bool Value { get; set; }
+  public bool Value { get; private set; }
 }
 
 class EnumUseEnum : BoolOptionHandler, IOption
 {
   public string CommandName => "enumUseEnum";
   public string ShortCommandName => "eUe";
-  public string Desc => "Convert enumerated types to Enum type (default: Convert enumerated types to union types)";
+  public string Desc => "Convert enumerated types to const enum type (default: Convert enumerated types to union types)";
 
 }
 
-class InlineRequest : BoolOptionHandler, IOption
+internal class InlineRequest : BoolOptionHandler, IOption
 {
   public string CommandName => "inlineRequest";
   public string ShortCommandName => "inlineR";
@@ -182,7 +181,7 @@ class InlineRequest : BoolOptionHandler, IOption
 
 }
 
-class NonNullResponsePropertyAsRequired : BoolOptionHandler, IOption
+internal class NonNullResponsePropertyAsRequired : BoolOptionHandler, IOption
 {
   public string CommandName => "NonNullResponsePropertyAsRequired";
   public string ShortCommandName => "nnr";
@@ -190,8 +189,7 @@ class NonNullResponsePropertyAsRequired : BoolOptionHandler, IOption
 
 }
 
-
-class NullAsOptional : BoolOptionHandler, IOption
+internal class NullAsOptional : BoolOptionHandler, IOption
 {
   public string CommandName => "nullAsOptional";
   public string ShortCommandName => "nao";
@@ -199,14 +197,13 @@ class NullAsOptional : BoolOptionHandler, IOption
 
 }
 
-
-class Helper : IOption
+internal class Helper : IOption
 {
   public string CommandName => "help";
   public string ShortCommandName => "h";
   public string Desc => "show all options";
 
-  public string Value { get; set; } = "";
+  public string Value { get; private set; } = "";
   public void SetValue(string param)
   {
     Value = param;

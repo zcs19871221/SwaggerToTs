@@ -5,7 +5,7 @@ namespace SwaggerToTs.SchemaSnippets;
 public class AnyOfSnippet : XOfSnippet
 {
 
-  public AnyOfSnippet(List<ValueSnippet> anyOfs): base(anyOfs, Controller.AnyOfName)
+  public AnyOfSnippet(List<ValueSnippet> anyOfs): base(anyOfs, Helpers.AnyOfName)
   {
   }
 }
